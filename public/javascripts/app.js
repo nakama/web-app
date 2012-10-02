@@ -915,7 +915,7 @@ window.require.define({"views/header_view": function(exports, require, module) {
 
     HeaderView.prototype.id = 'navigation';
 
-    HeaderView.prototype.className = 'navbar';
+    HeaderView.prototype.className = 'navbar navbar-fixed-top';
 
     HeaderView.prototype.container = '#header-container';
 

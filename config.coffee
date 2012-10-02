@@ -25,7 +25,6 @@ exports.config =
         'test/stylesheets/test.css': /^test/
       order:
         before: [
-          'vendor/styles/normalize-1.0.1.css',
           'vendor/styles/bootstrap.min.css',
           'vendor/styles/bootstrap-responsive.min.css',
           'vendor/styles/isotope.css'
