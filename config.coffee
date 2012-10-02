@@ -15,7 +15,8 @@ exports.config =
           'vendor/scripts/jquery-1.8.2.js',
           'vendor/scripts/underscore-1.4.0.js',
           'vendor/scripts/backbone-0.9.2.js',
-          'vendor/scripts/bootstrap.min.js'
+          'vendor/scripts/bootstrap.min.js',
+          'vendor/scripts/isotope-1.5.9.min.js'
         ]
 
     stylesheets:
@@ -26,7 +27,8 @@ exports.config =
         before: [
           'vendor/styles/normalize-1.0.1.css',
           'vendor/styles/bootstrap.min.css',
-          'vendor/styles/bootstrap-responsive.min.css'
+          'vendor/styles/bootstrap-responsive.min.css',
+          'vendor/styles/isotope.css'
         ]
         after: ['vendor/styles/helpers.css']
 
