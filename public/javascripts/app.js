@@ -154,6 +154,12 @@ window.require.define({"controllers/base/controller": function(exports, require,
   
 }});
 
+window.require.define({"controllers/dashboard_controller": function(exports, require, module) {
+  
+
+  
+}});
+
 window.require.define({"controllers/header_controller": function(exports, require, module) {
   var Controller, Header, HeaderController, HeaderView,
     __hasProp = {}.hasOwnProperty,
@@ -861,6 +867,33 @@ window.require.define({"views/base/view": function(exports, require, module) {
   
 }});
 
+window.require.define({"views/dashboard_view": function(exports, require, module) {
+  var DashboardView, PageView, template,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  template = require('views/templates/home');
+
+  PageView = require('views/base/page_view');
+
+  module.exports = DashboardView = (function(_super) {
+
+    __extends(DashboardView, _super);
+
+    function DashboardView() {
+      return DashboardView.__super__.constructor.apply(this, arguments);
+    }
+
+    DashboardView.prototype.template = template;
+
+    DashboardView.prototype.className = 'dashboard-page';
+
+    return DashboardView;
+
+  })(PageView);
+  
+}});
+
 window.require.define({"views/header_view": function(exports, require, module) {
   var HeaderView, View, template,
     __hasProp = {}.hasOwnProperty,
@@ -880,9 +913,9 @@ window.require.define({"views/header_view": function(exports, require, module) {
 
     HeaderView.prototype.template = template;
 
-    HeaderView.prototype.id = 'header';
+    HeaderView.prototype.id = 'navigation';
 
-    HeaderView.prototype.className = 'header';
+    HeaderView.prototype.className = 'navbar';
 
     HeaderView.prototype.container = '#header-container';
 
@@ -1027,34 +1060,10 @@ window.require.define({"views/login_view": function(exports, require, module) {
 window.require.define({"views/templates/header": function(exports, require, module) {
   module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
     helpers = helpers || Handlebars.helpers;
-    var stack1, stack2, foundHelper, tmp1, self=this, functionType="function", helperMissing=helpers.helperMissing, undef=void 0, escapeExpression=this.escapeExpression;
+    var foundHelper, self=this;
 
-  function program1(depth0,data) {
-    
-    var buffer = "", stack1;
-    buffer += "\n  <a class=\"header-link\" href=\"";
-    foundHelper = helpers.href;
-    stack1 = foundHelper || depth0.href;
-    if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
-    else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "href", { hash: {} }); }
-    buffer += escapeExpression(stack1) + "\">";
-    foundHelper = helpers.title;
-    stack1 = foundHelper || depth0.title;
-    if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
-    else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "title", { hash: {} }); }
-    buffer += escapeExpression(stack1) + "</a>\n";
-    return buffer;}
 
-    foundHelper = helpers.items;
-    stack1 = foundHelper || depth0.items;
-    stack2 = helpers.each;
-    tmp1 = self.program(1, program1, data);
-    tmp1.hash = {};
-    tmp1.fn = tmp1;
-    tmp1.inverse = self.noop;
-    stack1 = stack2.call(depth0, stack1, tmp1);
-    if(stack1 || stack1 === 0) { return stack1; }
-    else { return ''; }});
+    return "<div class=\"navbar-inner\">\n	<div class=\"container\">\n		<a class=\"brand\" href=\"#\">Nakama</a>\n		<ul class=\"nav\"></ul>\n\n		<form class=\"navbar-search pull-left\">\n			<input id=\"search\" class=\"search-query\" placeholder=\"Search\" type=\"text\" />\n		</form>\n	</div>\n</div>\n";});
 }});
 
 window.require.define({"views/templates/home": function(exports, require, module) {
