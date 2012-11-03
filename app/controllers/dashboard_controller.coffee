@@ -1,6 +1,5 @@
 Controller = require 'controllers/base/controller'
-PhotoController = require 'controllers/photo_controller'
-Photos     = require 'collections/photos'
+PhotoCollection     = require 'collections/photos'
 PhotoView  = require 'views/photo_view'
 PhotoCollectionView  = require 'views/photo_collection_view'
 
@@ -11,9 +10,12 @@ module.exports = class DashboardController extends Controller
   historyURL: 'dashboard'
 
   index: ->
-    log 'Loading Photo Controller...'
+    log 'Loading Photo Collection'
 
-    new PhotoController
+    #new PhotoController
+    @view = new PhotoCollectionView
+        collection: new PhotoCollection()
+    PhotoCollection.fetch()
 
     #@render = ->
     #	new PhotoCollectionView({collection: @collection})

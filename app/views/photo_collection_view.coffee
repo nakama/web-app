@@ -10,9 +10,13 @@ module.exports = class PhotoCollectionView extends CollectionView
   # listSelector: '#photos-list'
 
   initialize: (data) ->
-  	super
-  	# console.log "Collection data"
-  	# console.log data
+    super
+    console.log("Initializing the PhotoCollectionView");
+    rendered = no
+    @modelBind 'change', =>
+      @render() unless rendered
+      rendered = yes
+    
 
   afterRender: ->
   	console.log 'rendering collection'

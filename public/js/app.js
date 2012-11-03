@@ -175,15 +175,13 @@ window.require.define({"controllers/base/controller": function(exports, require,
 }});
 
 window.require.define({"controllers/dashboard_controller": function(exports, require, module) {
-  var Controller, DashboardController, PhotoCollectionView, PhotoController, PhotoView, Photos, log, logger,
+  var Controller, DashboardController, PhotoCollection, PhotoCollectionView, PhotoView, log, logger,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   Controller = require('controllers/base/controller');
 
-  PhotoController = require('controllers/photo_controller');
-
-  Photos = require('collections/photos');
+  PhotoCollection = require('collections/photos');
 
   PhotoView = require('views/photo_view');
 
@@ -204,8 +202,11 @@ window.require.define({"controllers/dashboard_controller": function(exports, req
     DashboardController.prototype.historyURL = 'dashboard';
 
     DashboardController.prototype.index = function() {
-      log('Loading Photo Controller...');
-      return new PhotoController;
+      log('Loading Photo Collection');
+      this.view = new PhotoCollectionView({
+        collection: new PhotoCollection()
+      });
+      return PhotoCollection.fetch();
     };
 
     return DashboardController;
@@ -740,6 +741,11 @@ window.require.define({"models/photo": function(exports, require, module) {
       tags: []
     };
 
+    Photo.prototype.initialize = function() {
+      console.log("Initializing the Photo Model");
+      return Photo.__super__.initialize.apply(this, arguments);
+    };
+
     return Photo;
 
   })(Model);
@@ -1063,7 +1069,17 @@ window.require.define({"views/photo_collection_view": function(exports, require,
     PhotoCollectionView.prototype.itemView = itemView;
 
     PhotoCollectionView.prototype.initialize = function(data) {
-      return PhotoCollectionView.__super__.initialize.apply(this, arguments);
+      var rendered,
+        _this = this;
+      PhotoCollectionView.__super__.initialize.apply(this, arguments);
+      console.log("Initializing the PhotoCollectionView");
+      rendered = false;
+      return this.modelBind('change', function() {
+        if (!rendered) {
+          _this.render();
+        }
+        return rendered = true;
+      });
     };
 
     PhotoCollectionView.prototype.afterRender = function() {
