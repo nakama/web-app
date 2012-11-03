@@ -175,15 +175,13 @@ window.require.define({"controllers/base/controller": function(exports, require,
 }});
 
 window.require.define({"controllers/dashboard_controller": function(exports, require, module) {
-  var Controller, DashboardController, PhotoCollection, PhotoCollectionView, PhotoView, log, logger,
+  var Controller, DashboardController, PhotoCollection, PhotoCollectionView, log, logger,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   Controller = require('controllers/base/controller');
 
   PhotoCollection = require('collections/photos');
-
-  PhotoView = require('views/photo_view');
 
   PhotoCollectionView = require('views/photo_collection_view');
 
@@ -203,10 +201,11 @@ window.require.define({"controllers/dashboard_controller": function(exports, req
 
     DashboardController.prototype.index = function() {
       log('Loading Photo Collection');
+      this.collection = new PhotoCollection;
       this.view = new PhotoCollectionView({
-        collection: new PhotoCollection()
+        collection: this.collection
       });
-      return PhotoCollection.fetch();
+      return this.view.collection.fetch();
     };
 
     return DashboardController;
@@ -238,75 +237,6 @@ window.require.define({"controllers/header_controller": function(exports, requir
     };
 
     return HeaderController;
-
-  })(Controller);
-  
-}});
-
-window.require.define({"controllers/home_controller": function(exports, require, module) {
-  var Controller, HomeController, HomePageView,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  Controller = require('controllers/base/controller');
-
-  HomePageView = require('views/home_page_view');
-
-  module.exports = HomeController = (function(_super) {
-
-    __extends(HomeController, _super);
-
-    function HomeController() {
-      return HomeController.__super__.constructor.apply(this, arguments);
-    }
-
-    HomeController.prototype.historyURL = 'home';
-
-    HomeController.prototype.index = function() {
-      return this.view = new HomePageView();
-    };
-
-    return HomeController;
-
-  })(Controller);
-  
-}});
-
-window.require.define({"controllers/photo_controller": function(exports, require, module) {
-  var Controller, PhotoCollection, PhotoCollectionView, PhotoController, PhotoView,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  Controller = require('controllers/base/controller');
-
-  PhotoCollection = require('collections/photos');
-
-  PhotoView = require('views/photo_view');
-
-  PhotoCollectionView = require('views/photo_collection_view');
-
-  module.exports = PhotoController = (function(_super) {
-
-    __extends(PhotoController, _super);
-
-    function PhotoController() {
-      return PhotoController.__super__.constructor.apply(this, arguments);
-    }
-
-    PhotoController.prototype.initialize = function(data) {
-      PhotoController.__super__.initialize.apply(this, arguments);
-      this.collection = new PhotoCollection();
-      this.collection.fetch();
-      return this.collection.on("reset", this.render, this);
-    };
-
-    PhotoController.prototype.render = function() {
-      return this.view = new PhotoCollectionView({
-        collection: this.collection
-      });
-    };
-
-    return PhotoController;
 
   })(Controller);
   
@@ -951,33 +881,6 @@ window.require.define({"views/header_view": function(exports, require, module) {
   
 }});
 
-window.require.define({"views/home_page_view": function(exports, require, module) {
-  var HomePageView, PageView, template,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  template = require('views/templates/home');
-
-  PageView = require('views/base/page_view');
-
-  module.exports = HomePageView = (function(_super) {
-
-    __extends(HomePageView, _super);
-
-    function HomePageView() {
-      return HomePageView.__super__.constructor.apply(this, arguments);
-    }
-
-    HomePageView.prototype.template = template;
-
-    HomePageView.prototype.className = 'home-page';
-
-    return HomePageView;
-
-  })(PageView);
-  
-}});
-
 window.require.define({"views/layout": function(exports, require, module) {
   var Chaplin, Layout,
     __hasProp = {}.hasOwnProperty,
@@ -1024,6 +927,10 @@ window.require.define({"views/photo_collection_item_view": function(exports, req
 
     PhotoCollectionItemView.prototype.autoRender = false;
 
+    PhotoCollectionItemView.prototype.tagName = 'li';
+
+    PhotoCollectionItemView.prototype.className = 'photo-wrapper';
+
     PhotoCollectionItemView.prototype.initialize = function() {
       PhotoCollectionItemView.__super__.initialize.apply(this, arguments);
       return console.log('PhotoCollectionItemView#initialize');
@@ -1031,8 +938,7 @@ window.require.define({"views/photo_collection_item_view": function(exports, req
 
     PhotoCollectionItemView.prototype.render = function() {
       PhotoCollectionItemView.__super__.render.apply(this, arguments);
-      console.log('render', this);
-      return this;
+      return console.log('Photo Rendered', this);
     };
 
     return PhotoCollectionItemView;
@@ -1062,28 +968,166 @@ window.require.define({"views/photo_collection_view": function(exports, require,
 
     PhotoCollectionView.prototype.template = template;
 
-    PhotoCollectionView.prototype.container = '#page-container';
+    PhotoCollectionView.prototype.container = '#master-container';
 
     PhotoCollectionView.prototype.autoRender = true;
 
     PhotoCollectionView.prototype.itemView = itemView;
 
+    PhotoCollectionView.prototype.listSelector = '#photos-list';
+
+    PhotoCollectionView.prototype.id = "photo-collection-wrapper";
+
     PhotoCollectionView.prototype.initialize = function(data) {
-      var rendered,
-        _this = this;
       PhotoCollectionView.__super__.initialize.apply(this, arguments);
       console.log("Initializing the PhotoCollectionView");
-      rendered = false;
-      return this.modelBind('change', function() {
-        if (!rendered) {
-          _this.render();
-        }
-        return rendered = true;
-      });
+      return this.wrapMethod('renderAllItems');
+      /*
+          rendered = no
+          @modelBind 'change', =>
+            @render() unless rendered
+            rendered = yes
+      */
+
     };
 
     PhotoCollectionView.prototype.afterRender = function() {
-      return console.log('rendering collection');
+      PhotoCollectionView.__super__.afterRender.apply(this, arguments);
+      return console.log("How many times am I rendering?");
+    };
+
+    PhotoCollectionView.prototype.afterRenderAllItems = function() {
+      var $photoList, isotopeConfig;
+      console.log('collection rendered');
+      $photoList = $("#photos-list");
+      isotopeConfig = {
+        itemSelector: ".photo-wrapper",
+        layoutMode: "cellsByRow",
+        cellsByRow: {
+          columnWidth: 260,
+          rowHeight: 400
+        }
+      };
+      return $photoList.imagesLoaded(function() {
+        console.log("Photos loaded", this);
+        $photoList.isotope(isotopeConfig);
+        return $photoList.isotope({
+          getSortData: {
+            stars: function($elem) {
+              return $elem.find("[data-stars]").text();
+            }
+          }
+        });
+      });
+      /*
+          navButtons = {
+            stars: {
+              els: $('#navigation .btn'),
+              pressed: [],
+              pressedCount: 0,
+      
+              1: {}
+            }
+          }
+      
+          filters = {};
+          filters.stars = (values) ->
+            filter = '';
+      
+            _.each values, (value, key) ->
+              if(key > 0)
+                filter = filter + ', '
+      
+              filter = filter + '[data-stars=' + value + ']'
+      
+            $photoList.isotope({ filter: filter });
+      
+          #Top navigation - Clicking on stars
+          $('#filter-star-container').on 'click', '.btn', (e) ->
+            e.preventDefault();
+      
+            id    = $(@).attr('id')
+            value = id.substr(id.length - 1)
+      
+            #If button has not been pressed
+            if _.indexOf(navButtons.stars.pressed, value) == -1
+              #navButtons.stars.els.removeClass('active');
+              $(@).addClass('active');
+              navButtons.stars.pressed.push(value);
+              navButtons.stars.pressedCount += 1;
+              filters.stars(navButtons.stars.pressed);
+            
+            #If button has been pressed
+            else
+              $(@).removeClass('active');
+              navButtons.stars.pressedCount -= 1;
+              navButtons.stars.pressed.splice(navButtons.stars.pressed.indexOf(value),1); #Remove value from pressed array
+      
+              if navButtons.stars.pressedCount == 0
+                $photoList.isotope({ filter: isotopeConfig.itemSelector });
+                navButtons.stars.pressed = null;
+      
+              else
+                filters.stars(navButtons.stars.pressed);
+      
+          #Photo - Colors
+          setPhotoColor = ($photo, color) ->
+            $photoWrapper = $photo.parents('.photo-wrapper');
+      
+            if $photo.hasClass('active')
+              $photo.removeClass('active');
+              $photoWrapper.attr('data-color-' + color, 0);
+            
+            else
+              $photo.addClass('active');
+              $photoWrapper.attr('data-color-' + color, 1);
+      
+          $('.photo-colors').on 'click', 'a', (e) ->
+            e.preventDefault()
+      
+            if $(@).hasClass('photo-color-red')
+              setPhotoColor($(@), 'red')
+      
+            if $(@).hasClass('photo-color-orange')
+              setPhotoColor($(@), 'orange')
+      
+            if $(@).hasClass('photo-color-yellow')
+              setPhotoColor($(@), 'yellow')
+      
+            if $(@).hasClass('photo-color-green')
+              setPhotoColor($(@), 'green');
+      
+            if $(@).hasClass('photo-color-blue')
+              setPhotoColor($(@), 'blue')
+      
+            if $(@).hasClass('photo-color-purple')
+              setPhotoColor($(@), 'purple')
+      
+          #Photo - Stars dropup
+          $('.num-stars-container').on 'click', 'a', (e) ->
+            e.preventDefault();
+      
+            $photoWrapper = $(@).parents('.photo-wrapper')
+            value         = $(@).html();
+      
+            #Updates the star count in the dropup display
+            $photoWrapper.find('.num-stars').html(value);
+      
+            #Update the star count on the photo's html data attribute
+            $photoWrapper.attr('data-stars', value);
+      
+            #Check to see if isotope filter needs to be run again to reflect photo star value change
+            if navButtons.stars.pressed != null
+              filters.stars(navButtons.stars.pressed);
+      
+          #Sidebar - star sorting
+          $("#sort-stars-highest").on 'click', ->
+            $photoList.isotope({ sortBy: 'stars', sortAscending : false });
+      
+          $("#sort-stars-lowest").on 'click', ->
+            $photoList.isotope({ sortBy: 'stars', sortAscending : true });
+      */
+
     };
 
     return PhotoCollectionView;
@@ -1092,69 +1136,13 @@ window.require.define({"views/photo_collection_view": function(exports, require,
   
 }});
 
-window.require.define({"views/photo_view": function(exports, require, module) {
-  var Photo, PhotoView, View, template,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  View = require('views/base/view');
-
-  Photo = require('models/photo');
-
-  template = require('views/templates/photo');
-
-  module.exports = PhotoView = (function(_super) {
-
-    __extends(PhotoView, _super);
-
-    function PhotoView() {
-      return PhotoView.__super__.constructor.apply(this, arguments);
-    }
-
-    PhotoView.prototype.template = template;
-
-    PhotoView.prototype.container = '#page-container';
-
-    PhotoView.prototype.autoRender = true;
-
-    PhotoView.prototype.tagName = 'li';
-
-    PhotoView.prototype.className = 'photo-wrapper';
-
-    PhotoView.prototype.initialize = function(data) {
-      PhotoView.__super__.initialize.apply(this, arguments);
-      console.log("Photo Data");
-      return console.log(data);
-    };
-
-    return PhotoView;
-
-  })(View);
-  
-}});
-
-window.require.define({"views/templates/photo": function(exports, require, module) {
-  module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-    helpers = helpers || Handlebars.helpers;
-    var buffer = "", stack1, foundHelper, self=this, functionType="function", helperMissing=helpers.helperMissing, undef=void 0, escapeExpression=this.escapeExpression;
-
-
-    buffer += "<div class=\"photo-container\">\n	<img src=\"";
-    foundHelper = helpers.items;
-    stack1 = foundHelper || depth0.items;
-    if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
-    else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "items", { hash: {} }); }
-    buffer += escapeExpression(stack1) + "\" />\n</div>\n";
-    return buffer;});
-}});
-
 window.require.define({"views/templates/photo_collection": function(exports, require, module) {
   module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
     helpers = helpers || Handlebars.helpers;
     var foundHelper, self=this;
 
 
-    return "<ul id=\"photos-list\">\n\n</ul>";});
+    return "<ul id=\"photos-list\"></ul>";});
 }});
 
 window.require.define({"views/templates/photo_collection_item": function(exports, require, module) {
@@ -1163,12 +1151,12 @@ window.require.define({"views/templates/photo_collection_item": function(exports
     var buffer = "", stack1, foundHelper, self=this, functionType="function", helperMissing=helpers.helperMissing, undef=void 0, escapeExpression=this.escapeExpression;
 
 
-    buffer += "<li class=\"photo-wrapper\">\n	<div class=\"photo-container\">\n		<img src=\"";
+    buffer += "<div class=\"photo-container\">\n	<img src=\"";
     foundHelper = helpers.path;
     stack1 = foundHelper || depth0.path;
     if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
     else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "path", { hash: {} }); }
-    buffer += escapeExpression(stack1) + "\" />\n		BLAH\n	</div>\n</li>";
+    buffer += escapeExpression(stack1) + "\" />\n</div>";
     return buffer;});
 }});
 

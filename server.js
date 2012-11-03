@@ -17,8 +17,8 @@ var config  = require('./config/app'),
 require('./config/express')(app, config, __dirname, express, gzippo, hbs, path, raven, util);
 
 // - Routes
-//app.get('/', routes.index);
-app.all('*', function(req, res) {
+app.get('/', routes.index);
+/*app.all('*', function(req, res) {
 
 	var path = req.url,
 		type = mime.lookup(path)
@@ -39,7 +39,7 @@ app.all('*', function(req, res) {
 	}
 
 	res.render('index');
-});
+});*/
 
 // - Start Up Server
 require('./config/startup')(_, app, config, process, util);
