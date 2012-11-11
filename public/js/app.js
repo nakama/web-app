@@ -81,7 +81,7 @@ window.require.define({"application": function(exports, require, module) {
 
   Chaplin = require('chaplin');
 
-  mediator = require('mediator');
+  mediator = Chaplin.mediator;
 
   routes = require('routes');
 
@@ -95,12 +95,13 @@ window.require.define({"application": function(exports, require, module) {
       return Application.__super__.constructor.apply(this, arguments);
     }
 
-    Application.prototype.title = 'Brunch example application';
+    Application.prototype.title = 'Nakama';
 
     Application.prototype.initialize = function() {
       Application.__super__.initialize.apply(this, arguments);
       this.initDispatcher();
       this.initLayout();
+      this.initTemplateHelpers();
       this.initMediator();
       this.initControllers();
       this.initRouter(routes);
@@ -112,6 +113,8 @@ window.require.define({"application": function(exports, require, module) {
         title: this.title
       });
     };
+
+    Application.prototype.initTemplateHelpers = function() {};
 
     Application.prototype.initControllers = function() {};
 
@@ -150,6 +153,29 @@ window.require.define({"collections/photos": function(exports, require, module) 
     return Photos;
 
   })(Collection);
+  
+}});
+
+window.require.define({"common": function(exports, require, module) {
+  var Chaplin, common, logger;
+
+  Chaplin = require('chaplin');
+
+  logger = require('lib/logger');
+
+  module.exports = common = {
+    mediator: Chaplin.mediator,
+    error: logger.error,
+    log: logger.log,
+    warn: logger.warn,
+    Application: require('application'),
+    Collection: require('models/base/collection'),
+    CollectionView: require('views/base/collection_view'),
+    Controller: require('controllers/base/controller'),
+    Model: require('models/base/model'),
+    PageView: require('views/base/page_view'),
+    View: require('views/base/view')
+  };
   
 }});
 
@@ -214,29 +240,36 @@ window.require.define({"controllers/dashboard_controller": function(exports, req
   
 }});
 
-window.require.define({"controllers/header_controller": function(exports, require, module) {
-  var Controller, HeaderController, HeaderView,
+window.require.define({"controllers/home_controller": function(exports, require, module) {
+  var Controller, HomeController, LoginView, User, log, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  Controller = require('controllers/base/controller');
+  _ref = require('common'), Controller = _ref.Controller, log = _ref.log;
 
-  HeaderView = require('views/header_view');
+  LoginView = require('views/login');
 
-  module.exports = HeaderController = (function(_super) {
+  User = require('models/user');
 
-    __extends(HeaderController, _super);
+  module.exports = HomeController = (function(_super) {
 
-    function HeaderController() {
-      return HeaderController.__super__.constructor.apply(this, arguments);
+    __extends(HomeController, _super);
+
+    function HomeController() {
+      return HomeController.__super__.constructor.apply(this, arguments);
     }
 
-    HeaderController.prototype.initialize = function() {
-      HeaderController.__super__.initialize.apply(this, arguments);
-      return this.view = new HeaderView();
+    HomeController.prototype.historyURL = '';
+
+    HomeController.prototype.index = function() {
+      log('Loading Login View');
+      this.user = new User;
+      return this.view = new LoginView({
+        model: this.user
+      });
     };
 
-    return HeaderController;
+    return HomeController;
 
   })(Controller);
   
@@ -330,278 +363,6 @@ window.require.define({"lib/logger": function(exports, require, module) {
     warn: warn,
     error: error
   };
-  
-}});
-
-window.require.define({"lib/services/service_provider": function(exports, require, module) {
-  var Chaplin, ServiceProvider, utils;
-
-  utils = require('lib/utils');
-
-  Chaplin = require('chaplin');
-
-  module.exports = ServiceProvider = (function() {
-
-    _(ServiceProvider.prototype).extend(Chaplin.EventBroker);
-
-    ServiceProvider.prototype.loading = false;
-
-    function ServiceProvider() {
-      _(this).extend($.Deferred());
-      utils.deferMethods({
-        deferred: this,
-        methods: ['triggerLogin', 'getLoginStatus'],
-        onDeferral: this.load
-      });
-    }
-
-    ServiceProvider.prototype.disposed = false;
-
-    ServiceProvider.prototype.dispose = function() {
-      if (this.disposed) {
-        return;
-      }
-      this.unsubscribeAllEvents();
-      this.disposed = true;
-      return typeof Object.freeze === "function" ? Object.freeze(this) : void 0;
-    };
-
-    return ServiceProvider;
-
-  })();
-
-  /*
-
-    Standard methods and their signatures:
-
-    load: ->
-      # Load a script like this:
-      utils.loadLib 'http://example.org/foo.js', @loadHandler, @reject
-
-    loadHandler: =>
-      # Init the library, then resolve
-      ServiceProviderLibrary.init(foo: 'bar')
-      @resolve()
-
-    isLoaded: ->
-      # Return a Boolean
-      Boolean window.ServiceProviderLibrary and ServiceProviderLibrary.login
-
-    # Trigger login popup
-    triggerLogin: (loginContext) ->
-      callback = _(@loginHandler).bind(this, loginContext)
-      ServiceProviderLibrary.login callback
-
-    # Callback for the login popup
-    loginHandler: (loginContext, response) =>
-
-      eventPayload = {provider: this, loginContext}
-      if response
-        # Publish successful login
-        @publishEvent 'loginSuccessful', eventPayload
-
-        # Publish the session
-        @publishEvent 'serviceProviderSession',
-          provider: this
-          userId: response.userId
-          accessToken: response.accessToken
-          # etc.
-
-      else
-        @publishEvent 'loginFail', eventPayload
-
-    getLoginStatus: (callback = @loginStatusHandler, force = false) ->
-      ServiceProviderLibrary.getLoginStatus callback, force
-
-    loginStatusHandler: (response) =>
-      return unless response
-      @publishEvent 'serviceProviderSession',
-        provider: this
-        userId: response.userId
-        accessToken: response.accessToken
-        # etc.
-  */
-
-  
-}});
-
-window.require.define({"lib/support": function(exports, require, module) {
-  var Chaplin, support, utils;
-
-  Chaplin = require('chaplin');
-
-  utils = require('lib/utils');
-
-  support = utils.beget(Chaplin.support);
-
-  module.exports = support;
-  
-}});
-
-window.require.define({"lib/utils": function(exports, require, module) {
-  var Chaplin, utils,
-    __hasProp = {}.hasOwnProperty;
-
-  Chaplin = require('chaplin');
-
-  utils = Chaplin.utils.beget(Chaplin.utils);
-
-  _(utils).extend({
-    /*
-      Wrap methods so they can be called before a deferred is resolved.
-      The actual methods are called once the deferred is resolved.
-    
-      Parameters:
-    
-      Expects an options hash with the following properties:
-    
-      deferred
-        The Deferred object to wait for.
-    
-      methods
-        Either:
-        - A string with a method name e.g. 'method'
-        - An array of strings e.g. ['method1', 'method2']
-        - An object with methods e.g. {method: -> alert('resolved!')}
-    
-      host (optional)
-        If you pass an array of strings in the `methods` parameter the methods
-        are fetched from this object. Defaults to `deferred`.
-    
-      target (optional)
-        The target object the new wrapper methods are created at.
-        Defaults to host if host is given, otherwise it defaults to deferred.
-    
-      onDeferral (optional)
-        An additional callback function which is invoked when the method is called
-        and the Deferred isn't resolved yet.
-        After the method is registered as a done handler on the Deferred,
-        this callback is invoked. This can be used to trigger the resolving
-        of the Deferred.
-    
-      Examples:
-    
-      deferMethods(deferred: def, methods: 'foo')
-        Wrap the method named foo of the given deferred def and
-        postpone all calls until the deferred is resolved.
-    
-      deferMethods(deferred: def, methods: def.specialMethods)
-        Read all methods from the hash def.specialMethods and
-        create wrapped methods with the same names at def.
-    
-      deferMethods(
-        deferred: def, methods: def.specialMethods, target: def.specialMethods
-      )
-        Read all methods from the object def.specialMethods and
-        create wrapped methods at def.specialMethods,
-        overwriting the existing ones.
-    
-      deferMethods(deferred: def, host: obj, methods: ['foo', 'bar'])
-        Wrap the methods obj.foo and obj.bar so all calls to them are postponed
-        until def is resolved. obj.foo and obj.bar are overwritten
-        with their wrappers.
-    */
-
-    deferMethods: function(options) {
-      var deferred, func, host, methods, methodsHash, name, onDeferral, target, _i, _len, _results;
-      deferred = options.deferred;
-      methods = options.methods;
-      host = options.host || deferred;
-      target = options.target || host;
-      onDeferral = options.onDeferral;
-      methodsHash = {};
-      if (typeof methods === 'string') {
-        methodsHash[methods] = host[methods];
-      } else if (methods.length && methods[0]) {
-        for (_i = 0, _len = methods.length; _i < _len; _i++) {
-          name = methods[_i];
-          func = host[name];
-          if (typeof func !== 'function') {
-            throw new TypeError("utils.deferMethods: method " + name + " notfound on host " + host);
-          }
-          methodsHash[name] = func;
-        }
-      } else {
-        methodsHash = methods;
-      }
-      _results = [];
-      for (name in methodsHash) {
-        if (!__hasProp.call(methodsHash, name)) continue;
-        func = methodsHash[name];
-        if (typeof func !== 'function') {
-          continue;
-        }
-        _results.push(target[name] = utils.createDeferredFunction(deferred, func, target, onDeferral));
-      }
-      return _results;
-    },
-    createDeferredFunction: function(deferred, func, context, onDeferral) {
-      if (context == null) {
-        context = deferred;
-      }
-      return function() {
-        var args;
-        args = arguments;
-        if (deferred.state() === 'resolved') {
-          return func.apply(context, args);
-        } else {
-          deferred.done(function() {
-            return func.apply(context, args);
-          });
-          if (typeof onDeferral === 'function') {
-            return onDeferral.apply(context);
-          }
-        }
-      };
-    }
-  });
-
-  module.exports = utils;
-  
-}});
-
-window.require.define({"lib/view_helper": function(exports, require, module) {
-  var mediator, utils;
-
-  mediator = require('mediator');
-
-  utils = require('chaplin/lib/utils');
-
-  Handlebars.registerHelper('if_logged_in', function(options) {
-    if (mediator.user) {
-      return options.fn(this);
-    } else {
-      return options.inverse(this);
-    }
-  });
-
-  Handlebars.registerHelper('with', function(context, options) {
-    if (!context || Handlebars.Utils.isEmpty(context)) {
-      return options.inverse(this);
-    } else {
-      return options.fn(context);
-    }
-  });
-
-  Handlebars.registerHelper('without', function(context, options) {
-    var inverse;
-    inverse = options.inverse;
-    options.inverse = options.fn;
-    options.fn = inverse;
-    return Handlebars.helpers["with"].call(this, context, options);
-  });
-
-  Handlebars.registerHelper('with_user', function(options) {
-    var context;
-    context = mediator.user || {};
-    return Handlebars.helpers["with"].call(this, context, options);
-  });
-  
-}});
-
-window.require.define({"mediator": function(exports, require, module) {
-  
-  module.exports = require('chaplin').mediator;
   
 }});
 
@@ -706,7 +467,8 @@ window.require.define({"models/user": function(exports, require, module) {
 window.require.define({"routes": function(exports, require, module) {
   
   module.exports = function(match) {
-    return match('', 'dashboard#index');
+    match('', 'home#index');
+    return match('dashboard', 'dashboard#index');
   };
   
 }});
@@ -733,6 +495,48 @@ window.require.define({"views/base/collection_view": function(exports, require, 
     return CollectionView;
 
   })(Chaplin.CollectionView);
+  
+}});
+
+window.require.define({"views/base/modal": function(exports, require, module) {
+  var ModalView, View,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  View = require('common').View;
+
+  module.exports = ModalView = (function(_super) {
+
+    __extends(ModalView, _super);
+
+    function ModalView() {
+      return ModalView.__super__.constructor.apply(this, arguments);
+    }
+
+    ModalView.prototype.container = 'body';
+
+    ModalView.prototype.className = 'modal hide fade';
+
+    ModalView.prototype.attributes = {
+      role: 'dialog',
+      'aria-hidden': true,
+      'tabindex': '-1'
+    };
+
+    ModalView.prototype.defaults = {
+      isModal: true,
+      size: 'normal'
+    };
+
+    ModalView.prototype.afterRender = function() {
+      this.$el.on('hidden', $.proxy(this.dispose, this));
+      this.$el.addClass('size-' + this.options.size);
+      return this.$el.modal('show');
+    };
+
+    return ModalView;
+
+  })(View);
   
 }});
 
@@ -795,8 +599,6 @@ window.require.define({"views/base/view": function(exports, require, module) {
 
   Chaplin = require('chaplin');
 
-  require('lib/view_helper');
-
   module.exports = View = (function(_super) {
 
     __extends(View, _super);
@@ -842,45 +644,6 @@ window.require.define({"views/dashboard_view": function(exports, require, module
   
 }});
 
-window.require.define({"views/header_view": function(exports, require, module) {
-  var HeaderView, View, template,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  View = require('views/base/view');
-
-  template = require('views/templates/header');
-
-  module.exports = HeaderView = (function(_super) {
-
-    __extends(HeaderView, _super);
-
-    function HeaderView() {
-      return HeaderView.__super__.constructor.apply(this, arguments);
-    }
-
-    HeaderView.prototype.template = template;
-
-    HeaderView.prototype.id = 'navigation';
-
-    HeaderView.prototype.className = 'navbar navbar-fixed-top';
-
-    HeaderView.prototype.container = '#header-container';
-
-    HeaderView.prototype.autoRender = true;
-
-    HeaderView.prototype.initialize = function() {
-      HeaderView.__super__.initialize.apply(this, arguments);
-      this.subscribeEvent('loginStatus', this.render);
-      return this.subscribeEvent('startupController', this.render);
-    };
-
-    return HeaderView;
-
-  })(View);
-  
-}});
-
 window.require.define({"views/layout": function(exports, require, module) {
   var Chaplin, Layout,
     __hasProp = {}.hasOwnProperty,
@@ -903,6 +666,54 @@ window.require.define({"views/layout": function(exports, require, module) {
     return Layout;
 
   })(Chaplin.Layout);
+  
+}});
+
+window.require.define({"views/login": function(exports, require, module) {
+  var LoginView, ModalView, template,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  ModalView = require('views/base/modal');
+
+  template = require('views/templates/login');
+
+  module.exports = LoginView = (function(_super) {
+
+    __extends(LoginView, _super);
+
+    function LoginView() {
+      this.modalSubmit = __bind(this.modalSubmit, this);
+      return LoginView.__super__.constructor.apply(this, arguments);
+    }
+
+    LoginView.prototype.template = template;
+
+    LoginView.prototype.container = 'body';
+
+    LoginView.prototype.autoRender = true;
+
+    LoginView.prototype.id = "view-login-modal";
+
+    LoginView.prototype.events = {
+      'click #modal-submit': 'modalSubmit'
+    };
+
+    LoginView.prototype.initialize = function(data) {
+      LoginView.__super__.initialize.apply(this, arguments);
+      return console.log("Initializing the Login View");
+    };
+
+    LoginView.prototype.modalSubmit = function(e) {
+      e.preventDefault();
+      console.log("hit");
+      return window.location.href = '/dashboard';
+    };
+
+    return LoginView;
+
+  })(ModalView);
   
 }});
 
@@ -1134,6 +945,15 @@ window.require.define({"views/photo_collection_view": function(exports, require,
 
   })(CollectionView);
   
+}});
+
+window.require.define({"views/templates/login": function(exports, require, module) {
+  module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+    helpers = helpers || Handlebars.helpers;
+    var foundHelper, self=this;
+
+
+    return "<div class=\"modal-container\">\n	<input type=\"text\" placeholder=\"Username\" />\n	<input type=\"password\" placeholder=\"Password\" />\n	<button id=\"modal-submit\" class=\"btn btn-primary\">Login</button>\n</div>";});
 }});
 
 window.require.define({"views/templates/photo_collection": function(exports, require, module) {

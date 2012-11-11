@@ -1,5 +1,5 @@
 Chaplin = require 'chaplin'
-mediator = require 'mediator'
+mediator = Chaplin.mediator
 routes = require 'routes'
 Layout = require 'views/layout'
 
@@ -7,7 +7,7 @@ Layout = require 'views/layout'
 module.exports = class Application extends Chaplin.Application
   # Set your application name here so the document title is set to
   # “Controller title – Site title” (see Layout#adjustTitle)
-  title: 'Brunch example application'
+  title: 'Nakama'
 
   initialize: ->
     super
@@ -15,6 +15,7 @@ module.exports = class Application extends Chaplin.Application
     # Initialize core components
     @initDispatcher()
     @initLayout()
+    @initTemplateHelpers()
     @initMediator()
 
     # Application-specific scaffold
@@ -37,6 +38,10 @@ module.exports = class Application extends Chaplin.Application
     # Use an application-specific Layout class. Currently this adds
     # no features to the standard Chaplin Layout, it’s an empty placeholder.
     @layout = new Layout {@title}
+
+  # Instantiate template helpers
+  # ------------------------------
+  initTemplateHelpers: ->
 
   # Instantiate common controllers
   # ------------------------------

@@ -1,4 +1,4 @@
-module.exports = function(app, config, DIR, express, gzippo, hbs, path, raven, util) {
+module.exports = function(app, config, DIR, express, hbs, path, util) {
 	//app.error(raven.middleware.express('https://8592bbebebb8415facaa2b192871c2a1:d4d68ac170d84b909ea27b7b53e03ac4@app.getsentry.com/3302'));
 
 	app.configure(function() {
@@ -15,7 +15,6 @@ module.exports = function(app, config, DIR, express, gzippo, hbs, path, raven, u
 		app.use(express.cookieParser(config.app.cookie_secret));
 		app.use(express.methodOverride());
 		
-		app.use(app.router);
 		app.use(express.session());
 		app.use(express.csrf());
 		app.use(function(req, res, next){
@@ -27,19 +26,13 @@ module.exports = function(app, config, DIR, express, gzippo, hbs, path, raven, u
 		// Last, but not least: Express' default error handler is very useful in dev, but probably not in prod.
 		if ((typeof process.env['NODE_SERVE_STATIC'] !== 'undefined') && process.env['NODE_SERVE_STATIC'] == 1) {
 			util.log("Serving static files through node.js at: ");
-			/*var static = path.join(DIR, config.app.static)
+			var static = path.join(DIR, config.app.static)
 			console.log(static);
 			app.use(express.static(static));
-		    app.get(/\/css/, express.static(path.join(static,'css')));
-		    app.get(/\/font/, express.static(path.join(static,'img')));
-		    app.get(/\/images/, express.static(path.join(static,'img')));
-		    app.get(/\/js/, express.static(path.join(static,'js')));*/
-		    app.use(gzippo.staticGzip(DIR + '/public'));
 			app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 		}
-
 		
-		//app.use(express.responseTime());
+		app.use(app.router);
 
 		// Catch-all error handler. Override as you see fit
 		app.use(function(err, req, res, next) {

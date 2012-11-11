@@ -651,6 +651,9 @@ li {
   -ms-transition-duration: 0s;
   transition-duration: 0s;
 }
+.modal-container {
+  padding: 10px;
+}
 #photos-container {
   float: left;
   width: 72%;
