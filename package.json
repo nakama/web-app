@@ -17,10 +17,7 @@
   },
   "dependencies": {
     "express": "3.0.0rc5",
-    "gzippo": "0.2.0",
     "hbs": "1.0.5",
-    "mime": "1.2.7",
-    "raven": "0.4.3",
     "underscore": "1.4.2",
 
     "brunch": "latest",

@@ -1,5 +1,3 @@
-# Responsive mixin for views
-
 ###
   log 'This is a message',
     info: data
