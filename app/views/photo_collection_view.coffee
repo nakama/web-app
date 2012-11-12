@@ -13,7 +13,7 @@ module.exports = class PhotoCollectionView extends CollectionView
   initialize: (data) ->
     super
     console.log("Initializing the PhotoCollectionView");
-    @wrapMethod('renderAllItems')
+    #@wrapMethod('renderAllItems')
 
     ###
     rendered = no
@@ -27,8 +27,8 @@ module.exports = class PhotoCollectionView extends CollectionView
 
     console.log "How many times am I rendering?"
 
-  afterRenderAllItems: ->
-    #super
+  renderAllItems: ->
+    super
     console.log 'collection rendered'
 
     $photoList = $("#photos-list")

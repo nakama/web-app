@@ -791,8 +791,7 @@ window.require.define({"views/photo_collection_view": function(exports, require,
 
     PhotoCollectionView.prototype.initialize = function(data) {
       PhotoCollectionView.__super__.initialize.apply(this, arguments);
-      console.log("Initializing the PhotoCollectionView");
-      return this.wrapMethod('renderAllItems');
+      return console.log("Initializing the PhotoCollectionView");
       /*
           rendered = no
           @modelBind 'change', =>
@@ -807,8 +806,9 @@ window.require.define({"views/photo_collection_view": function(exports, require,
       return console.log("How many times am I rendering?");
     };
 
-    PhotoCollectionView.prototype.afterRenderAllItems = function() {
+    PhotoCollectionView.prototype.renderAllItems = function() {
       var $photoList, isotopeConfig;
+      PhotoCollectionView.__super__.renderAllItems.apply(this, arguments);
       console.log('collection rendered');
       $photoList = $("#photos-list");
       isotopeConfig = {
