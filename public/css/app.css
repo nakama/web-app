@@ -579,23 +579,50 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   line-height: 18px;
-  margin-top: 80px;
+  padding-top: 40px;
 }
 ul,
 li {
   list-style: none;
 }
-.navbar {
-  display: block;
+.navbar-inner {
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
 }
-.navbar .navbar-search,
-.navbar .navbar-search.pullleft {
+.brand {
+  float: left;
+}
+.navbar-search,
+.navbar-search.pullleft {
   display: inline-block;
   float: none;
 }
-.navbar .search-query {
+.search-query {
   display: inline-block;
   height: 30px;
+}
+.navbar-inner {
+  padding: 0;
+}
+.navbar-inner .brand {
+  line-height: 40px;
+}
+.navbar-inner .nav {
+  float: right;
+  margin: 0;
+}
+.navbar-inner li {
+  line-height: 40px;
+}
+.navbar-inner a {
+  color: #000;
+  padding: 0 10px;
+}
+.navbar-inner a:hover {
+  text-decoration: none;
 }
 .isotope-item {
   z-index: 2;

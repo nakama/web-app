@@ -100,9 +100,9 @@ window.require.define({"application": function(exports, require, module) {
     Application.prototype.initialize = function() {
       Application.__super__.initialize.apply(this, arguments);
       this.initDispatcher();
-      this.initLayout();
-      this.initTemplateHelpers();
       this.initMediator();
+      this.initTemplateHelpers();
+      this.initLayout();
       this.initControllers();
       this.initRouter(routes);
       return typeof Object.freeze === "function" ? Object.freeze(this) : void 0;
@@ -235,6 +235,42 @@ window.require.define({"controllers/dashboard_controller": function(exports, req
     };
 
     return DashboardController;
+
+  })(Controller);
+  
+}});
+
+window.require.define({"controllers/header_controller": function(exports, require, module) {
+  var Controller, HeaderController, HeaderView, User, log, _ref,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  _ref = require('common'), Controller = _ref.Controller, log = _ref.log;
+
+  HeaderView = require('views/header');
+
+  User = require('models/user');
+
+  module.exports = HeaderController = (function(_super) {
+
+    __extends(HeaderController, _super);
+
+    function HeaderController() {
+      return HeaderController.__super__.constructor.apply(this, arguments);
+    }
+
+    HeaderController.prototype.historyURL = '';
+
+    HeaderController.prototype.initialize = function() {
+      HeaderController.__super__.initialize.apply(this, arguments);
+      log('Loading Header View');
+      this.user = new User;
+      return this.view = new HeaderView({
+        model: this.user
+      });
+    };
+
+    return HeaderController;
 
   })(Controller);
   
@@ -644,12 +680,56 @@ window.require.define({"views/dashboard_view": function(exports, require, module
   
 }});
 
+window.require.define({"views/header": function(exports, require, module) {
+  var HeaderView, View, template,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  View = require('views/base/view');
+
+  template = require('views/templates/header');
+
+  module.exports = HeaderView = (function(_super) {
+
+    __extends(HeaderView, _super);
+
+    function HeaderView() {
+      return HeaderView.__super__.constructor.apply(this, arguments);
+    }
+
+    HeaderView.prototype.autoRender = true;
+
+    HeaderView.prototype.className = "navbar-inner";
+
+    HeaderView.prototype.container = 'body';
+
+    HeaderView.prototype.containerMethod = 'prepend';
+
+    HeaderView.prototype.tagName = 'header';
+
+    HeaderView.prototype.template = template;
+
+    HeaderView.prototype.initialize = function() {
+      HeaderView.__super__.initialize.apply(this, arguments);
+      return console.log("Initializing the Header View");
+    };
+
+    return HeaderView;
+
+  })(View);
+  
+}});
+
 window.require.define({"views/layout": function(exports, require, module) {
-  var Chaplin, Layout,
+  var Chaplin, HeaderView, Layout, User,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   Chaplin = require('chaplin');
+
+  User = require('models/user');
+
+  HeaderView = require('views/header');
 
   module.exports = Layout = (function(_super) {
 
@@ -660,7 +740,10 @@ window.require.define({"views/layout": function(exports, require, module) {
     }
 
     Layout.prototype.initialize = function() {
-      return Layout.__super__.initialize.apply(this, arguments);
+      Layout.__super__.initialize.apply(this, arguments);
+      return this.header = new HeaderView({
+        modal: User
+      });
     };
 
     return Layout;
@@ -945,6 +1028,15 @@ window.require.define({"views/photo_collection_view": function(exports, require,
 
   })(CollectionView);
   
+}});
+
+window.require.define({"views/templates/header": function(exports, require, module) {
+  module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+    helpers = helpers || Handlebars.helpers;
+    var foundHelper, self=this;
+
+
+    return "<div class=\"container\">\n	<a class=\"brand\" href=\"#\">Nakama</a>\n	<ul class=\"nav\">\n		<li><a href=\"#\">Logout</a></li>\n	</ul>\n</div>";});
 }});
 
 window.require.define({"views/templates/login": function(exports, require, module) {

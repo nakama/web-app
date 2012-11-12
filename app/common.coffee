@@ -1,5 +1,5 @@
 Chaplin  = require 'chaplin'
-logger = require 'lib/logger'
+logger   = require 'lib/logger'
 
 module.exports = common =
 	mediator : Chaplin.mediator

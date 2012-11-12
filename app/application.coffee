@@ -14,9 +14,9 @@ module.exports = class Application extends Chaplin.Application
 
     # Initialize core components
     @initDispatcher()
-    @initLayout()
-    @initTemplateHelpers()
     @initMediator()
+    @initTemplateHelpers()
+    @initLayout()
 
     # Application-specific scaffold
     @initControllers()
@@ -46,7 +46,6 @@ module.exports = class Application extends Chaplin.Application
   # Instantiate common controllers
   # ------------------------------
   initControllers: ->
-
 
   # Create additional mediator properties
   # -------------------------------------
