@@ -1,12 +1,9 @@
 Chaplin    = require 'chaplin'
 User       = require 'models/user'
 HeaderView = require 'views/header'
-#UploadView = require 'views/upload'
+UploadView = require 'views/upload'
 
 module.exports = class Layout extends Chaplin.Layout
-
-	events:
-        'click a[href="#upload"]': 'upload'
 
 	initialize: ->
     	super
@@ -14,9 +11,7 @@ module.exports = class Layout extends Chaplin.Layout
     	console.log "Initializing the Layout"
 
     	@header = new HeaderView
-    		modal: User
+    		#model: User
 
-    upload: ->
-		#e.preventDefault()
-
-		console.log "hittttt"
+    	@upload = new UploadView
+    		#model: User

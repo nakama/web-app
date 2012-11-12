@@ -1,7 +1,7 @@
-{View} = require('common')
+View = require 'views/base/view'
 
 module.exports = class ModalView extends View
-  container: 'body'
+  #container: 'body'
   className: 'modal hide fade'
   attributes:
     role: 'dialog'

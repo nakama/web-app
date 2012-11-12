@@ -74,61 +74,6 @@
   globals.require.brunch = true;
 })();
 
-window.require.define({"application": function(exports, require, module) {
-  var Application, Chaplin, Layout, mediator, routes,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  Chaplin = require('chaplin');
-
-  mediator = Chaplin.mediator;
-
-  routes = require('routes');
-
-  Layout = require('views/layout');
-
-  module.exports = Application = (function(_super) {
-
-    __extends(Application, _super);
-
-    function Application() {
-      return Application.__super__.constructor.apply(this, arguments);
-    }
-
-    Application.prototype.title = 'Nakama';
-
-    Application.prototype.initialize = function() {
-      Application.__super__.initialize.apply(this, arguments);
-      this.initDispatcher();
-      this.initMediator();
-      this.initTemplateHelpers();
-      this.initLayout();
-      this.initControllers();
-      this.initRouter(routes);
-      return typeof Object.freeze === "function" ? Object.freeze(this) : void 0;
-    };
-
-    Application.prototype.initLayout = function() {
-      return this.layout = new Layout({
-        title: this.title
-      });
-    };
-
-    Application.prototype.initTemplateHelpers = function() {};
-
-    Application.prototype.initControllers = function() {};
-
-    Application.prototype.initMediator = function() {
-      mediator.user = null;
-      return mediator.seal();
-    };
-
-    return Application;
-
-  })(Chaplin.Application);
-  
-}});
-
 window.require.define({"collections/photos": function(exports, require, module) {
   var Collection, Photo, Photos,
     __hasProp = {}.hasOwnProperty,
@@ -157,24 +102,47 @@ window.require.define({"collections/photos": function(exports, require, module) 
 }});
 
 window.require.define({"common": function(exports, require, module) {
-  var Chaplin, common, logger;
+  var Chaplin, Layout, common, logger, routes;
 
   Chaplin = require('chaplin');
 
   logger = require('lib/logger');
+
+  routes = require('routes');
+
+  Layout = require('views/layout');
 
   module.exports = common = {
     mediator: Chaplin.mediator,
     error: logger.error,
     log: logger.log,
     warn: logger.warn,
-    Application: require('application'),
     Collection: require('models/base/collection'),
     CollectionView: require('views/base/collection_view'),
     Controller: require('controllers/base/controller'),
     Model: require('models/base/model'),
     PageView: require('views/base/page_view'),
-    View: require('views/base/view')
+    View: require('views/base/view'),
+    Application: Chaplin.Application.extend({
+      title: 'Nakama',
+      initialize: function() {
+        this.initTemplateHelpers();
+        this.initDispatcher();
+        this.initLayout();
+        this.initRouter(routes);
+        return typeof Object.freeze === "function" ? Object.freeze(this) : void 0;
+      },
+      initLayout: function() {
+        return this.layout = new Layout({
+          title: this.title
+        });
+      },
+      initTemplateHelpers: function() {},
+      initMediator: function() {
+        mediator.user = null;
+        return mediator.seal();
+      }
+    })
   };
   
 }});
@@ -256,11 +224,11 @@ window.require.define({"controllers/dashboard_controller": function(exports, req
 }});
 
 window.require.define({"controllers/header_controller": function(exports, require, module) {
-  var Controller, HeaderController, HeaderView, User, log, _ref,
+  var Controller, HeaderController, HeaderView, User,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  _ref = require('common'), Controller = _ref.Controller, log = _ref.log;
+  Controller = require('controllers/base/controller');
 
   HeaderView = require('views/header');
 
@@ -274,11 +242,9 @@ window.require.define({"controllers/header_controller": function(exports, requir
       return HeaderController.__super__.constructor.apply(this, arguments);
     }
 
-    HeaderController.prototype.historyURL = '';
-
     HeaderController.prototype.initialize = function() {
       HeaderController.__super__.initialize.apply(this, arguments);
-      log('Loading Header View');
+      console.log('Loading Header View');
       this.user = new User;
       return this.view = new HeaderView({
         model: this.user
@@ -292,11 +258,11 @@ window.require.define({"controllers/header_controller": function(exports, requir
 }});
 
 window.require.define({"controllers/home_controller": function(exports, require, module) {
-  var Controller, HomeController, LoginView, User, log, _ref,
+  var Controller, HomeController, LoginView, User,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  _ref = require('common'), Controller = _ref.Controller, log = _ref.log;
+  Controller = require('controllers/base/controller');
 
   LoginView = require('views/login');
 
@@ -313,7 +279,7 @@ window.require.define({"controllers/home_controller": function(exports, require,
     HomeController.prototype.historyURL = '';
 
     HomeController.prototype.index = function() {
-      log('Loading Login View');
+      console.log('Loading Login View');
       this.user = new User;
       return this.view = new LoginView({
         model: this.user
@@ -329,10 +295,11 @@ window.require.define({"controllers/home_controller": function(exports, require,
 window.require.define({"initialize": function(exports, require, module) {
   var Application;
 
-  Application = require('application');
+  Application = require('common').Application;
 
-  $(document).on('ready', function() {
+  $(function() {
     var app;
+    console.log("Starting the application");
     app = new Application();
     return app.initialize();
   });
@@ -554,7 +521,7 @@ window.require.define({"views/base/modal": function(exports, require, module) {
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  View = require('common').View;
+  View = require('views/base/view');
 
   module.exports = ModalView = (function(_super) {
 
@@ -563,8 +530,6 @@ window.require.define({"views/base/modal": function(exports, require, module) {
     function ModalView() {
       return ModalView.__super__.constructor.apply(this, arguments);
     }
-
-    ModalView.prototype.container = 'body';
 
     ModalView.prototype.className = 'modal hide fade';
 
@@ -724,9 +689,17 @@ window.require.define({"views/header": function(exports, require, module) {
 
     HeaderView.prototype.template = template;
 
+    HeaderView.prototype.events = {
+      'click a[href="#upload"]': 'showUpload'
+    };
+
     HeaderView.prototype.initialize = function() {
       HeaderView.__super__.initialize.apply(this, arguments);
       return console.log("Initializing the Header View");
+    };
+
+    HeaderView.prototype.showUpload = function(e) {
+      return e.preventDefault();
     };
 
     return HeaderView;
@@ -736,7 +709,7 @@ window.require.define({"views/header": function(exports, require, module) {
 }});
 
 window.require.define({"views/layout": function(exports, require, module) {
-  var Chaplin, HeaderView, Layout, User,
+  var Chaplin, HeaderView, Layout, UploadView, User,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -746,6 +719,8 @@ window.require.define({"views/layout": function(exports, require, module) {
 
   HeaderView = require('views/header');
 
+  UploadView = require('views/upload');
+
   module.exports = Layout = (function(_super) {
 
     __extends(Layout, _super);
@@ -754,21 +729,12 @@ window.require.define({"views/layout": function(exports, require, module) {
       return Layout.__super__.constructor.apply(this, arguments);
     }
 
-    Layout.prototype.events = {
-      'click a[href="#upload"]': 'upload'
-    };
-
     Layout.prototype.initialize = function() {
       Layout.__super__.initialize.apply(this, arguments);
       console.log("Initializing the Layout");
-      return this.header = new HeaderView({
-        modal: User
-      });
+      this.header = new HeaderView;
+      return this.upload = new UploadView;
     };
-
-    Layout.prototype.upload = function() {};
-
-    console.log("hittttt");
 
     return Layout;
 
@@ -1122,6 +1088,8 @@ window.require.define({"views/upload": function(exports, require, module) {
       return UploadView.__super__.constructor.apply(this, arguments);
     }
 
+    UploadView.prototype.autoRender = true;
+
     UploadView.prototype.container = '#master-upload';
 
     UploadView.prototype.id = 'view-upload';
@@ -1130,7 +1098,7 @@ window.require.define({"views/upload": function(exports, require, module) {
 
     UploadView.prototype.initialize = function() {
       UploadView.__super__.initialize.apply(this, arguments);
-      return console.log("Initializing Upload View");
+      return console.log("Initializing the Upload View");
     };
 
     return UploadView;

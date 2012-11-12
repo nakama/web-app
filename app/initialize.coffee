@@ -1,6 +1,8 @@
-Application = require 'application'
+{Application} = require 'common'
 
 # Initialize the application on DOM ready event.
-$(document).on 'ready', ->
+$ ->
+  console.log "Starting the application"
+
   app = new Application()
   app.initialize()

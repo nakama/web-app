@@ -1,13 +1,12 @@
-{Controller, log} = require 'common'
+Controller        = require 'controllers/base/controller'
 HeaderView        = require 'views/header'
 User              = require 'models/user'
 
 module.exports = class HeaderController extends Controller
-	historyURL: ''
 
 	initialize: ->
 		super
-		log 'Loading Header View'
+		console.log 'Loading Header View'
 
 		@user = new User
 		@view = new HeaderView

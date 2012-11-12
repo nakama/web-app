@@ -2,6 +2,7 @@ ModalView = require 'views/base/modal'
 template  = require 'views/templates/upload'
 
 module.exports = class UploadView extends ModalView
+	autoRender: true
 	container: '#master-upload'
 	id: 'view-upload'
 	tempate: template
@@ -9,4 +10,4 @@ module.exports = class UploadView extends ModalView
 
 	initialize: ->
 		super
-		console.log "Initializing Upload View"
+		console.log "Initializing the Upload View"
