@@ -615,6 +615,7 @@ li {
   margin: 0;
 }
 .navbar-inner li {
+  display: inline-block;
   line-height: 40px;
 }
 .navbar-inner a {

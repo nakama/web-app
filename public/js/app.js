@@ -194,6 +194,21 @@ window.require.define({"controllers/base/controller": function(exports, require,
       return Controller.__super__.constructor.apply(this, arguments);
     }
 
+    Controller.prototype.initialize = function() {
+      var _this = this;
+      Controller.__super__.initialize.apply(this, arguments);
+      if (this.events) {
+        return _(this.events).each(function(fn_name, event_name) {
+          if (typeof _this[fn_name] === 'function') {
+            return Chaplin.mediator.subscribe(event_name, $.proxy(_this[fn_name], _this));
+          } else {
+            console.log("The listener for " + event_name + " (@" + fn_name + ") doesn't exist.");
+            return console.log("@[" + fn_name + "]", _this[fn_name]);
+          }
+        });
+      }
+    };
+
     return Controller;
 
   })(Chaplin.Controller);
@@ -739,12 +754,21 @@ window.require.define({"views/layout": function(exports, require, module) {
       return Layout.__super__.constructor.apply(this, arguments);
     }
 
+    Layout.prototype.events = {
+      'click a[href="#upload"]': 'upload'
+    };
+
     Layout.prototype.initialize = function() {
       Layout.__super__.initialize.apply(this, arguments);
+      console.log("Initializing the Layout");
       return this.header = new HeaderView({
         modal: User
       });
     };
+
+    Layout.prototype.upload = function() {};
+
+    console.log("hittttt");
 
     return Layout;
 
@@ -1036,7 +1060,7 @@ window.require.define({"views/templates/header": function(exports, require, modu
     var foundHelper, self=this;
 
 
-    return "<div class=\"container\">\n	<a class=\"brand\" href=\"#\">Nakama</a>\n	<ul class=\"nav\">\n		<li><a href=\"#\">Logout</a></li>\n	</ul>\n</div>";});
+    return "<div class=\"container\">\n	<a class=\"brand\" href=\"#\">Nakama</a>\n	<ul class=\"nav\">\n		<li><a href=\"#upload\">Upload</a></li>\n		<li><a href=\"#\">Logout</a></li>\n	</ul>\n</div>";});
 }});
 
 window.require.define({"views/templates/login": function(exports, require, module) {
@@ -1070,5 +1094,48 @@ window.require.define({"views/templates/photo_collection_item": function(exports
     else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "path", { hash: {} }); }
     buffer += escapeExpression(stack1) + "\" />\n</div>";
     return buffer;});
+}});
+
+window.require.define({"views/templates/upload": function(exports, require, module) {
+  module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+    helpers = helpers || Handlebars.helpers;
+    var foundHelper, self=this;
+
+
+    return "<div>Upload stuff</div>";});
+}});
+
+window.require.define({"views/upload": function(exports, require, module) {
+  var ModalView, UploadView, template,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  ModalView = require('views/base/modal');
+
+  template = require('views/templates/upload');
+
+  module.exports = UploadView = (function(_super) {
+
+    __extends(UploadView, _super);
+
+    function UploadView() {
+      return UploadView.__super__.constructor.apply(this, arguments);
+    }
+
+    UploadView.prototype.container = '#master-upload';
+
+    UploadView.prototype.id = 'view-upload';
+
+    UploadView.prototype.tempate = template;
+
+    UploadView.prototype.initialize = function() {
+      UploadView.__super__.initialize.apply(this, arguments);
+      return console.log("Initializing Upload View");
+    };
+
+    return UploadView;
+
+  })(ModalView);
+  
 }});
 

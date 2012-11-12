@@ -12,3 +12,5 @@ module.exports = class HeaderView extends View
     initialize: ->
         super
         console.log("Initializing the Header View");
+
+        
