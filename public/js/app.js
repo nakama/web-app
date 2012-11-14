@@ -689,17 +689,9 @@ window.require.define({"views/header": function(exports, require, module) {
 
     HeaderView.prototype.template = template;
 
-    HeaderView.prototype.events = {
-      'click a[href="#upload"]': 'showUpload'
-    };
-
     HeaderView.prototype.initialize = function() {
       HeaderView.__super__.initialize.apply(this, arguments);
       return console.log("Initializing the Header View");
-    };
-
-    HeaderView.prototype.showUpload = function(e) {
-      return e.preventDefault();
     };
 
     return HeaderView;
@@ -729,10 +721,19 @@ window.require.define({"views/layout": function(exports, require, module) {
       return Layout.__super__.constructor.apply(this, arguments);
     }
 
+    Layout.prototype.events = {
+      'click a[href="#upload"]': 'showUpload'
+    };
+
     Layout.prototype.initialize = function() {
       Layout.__super__.initialize.apply(this, arguments);
       console.log("Initializing the Layout");
-      this.header = new HeaderView;
+      return this.header = new HeaderView;
+    };
+
+    Layout.prototype.showUpload = function(e) {
+      e.preventDefault();
+      console.log("Showing Upload");
       return this.upload = new UploadView;
     };
 
@@ -1068,7 +1069,7 @@ window.require.define({"views/templates/upload": function(exports, require, modu
     var foundHelper, self=this;
 
 
-    return "<div>Upload stuff</div>";});
+    return "<div class=\"modal-container\">\n	<div>Upload stuff</div>\n</div>";});
 }});
 
 window.require.define({"views/upload": function(exports, require, module) {
@@ -1094,7 +1095,7 @@ window.require.define({"views/upload": function(exports, require, module) {
 
     UploadView.prototype.id = 'view-upload';
 
-    UploadView.prototype.tempate = template;
+    UploadView.prototype.template = template;
 
     UploadView.prototype.initialize = function() {
       UploadView.__super__.initialize.apply(this, arguments);

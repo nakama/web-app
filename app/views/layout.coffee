@@ -5,13 +5,21 @@ UploadView = require 'views/upload'
 
 module.exports = class Layout extends Chaplin.Layout
 
+	events:
+		'click a[href="#upload"]': 'showUpload'
+
 	initialize: ->
-    	super
-    
-    	console.log "Initializing the Layout"
+		super
 
-    	@header = new HeaderView
-    		#model: User
+		console.log "Initializing the Layout"
 
-    	@upload = new UploadView
-    		#model: User
+		@header = new HeaderView
+			#model: User
+
+	showUpload: (e) ->
+		e.preventDefault()
+
+		console.log "Showing Upload"
+
+		@upload = new UploadView
+			#model: User

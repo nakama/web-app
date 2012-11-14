@@ -9,14 +9,8 @@ module.exports = class HeaderView extends View
 	tagName: 'header'
 	template: template
 
-	events:
-		'click a[href="#upload"]': 'showUpload'
-
 	initialize: ->
 		super
 		console.log("Initializing the Header View");
-
-	showUpload: (e) ->
-		e.preventDefault()
 
 		

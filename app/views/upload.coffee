@@ -5,7 +5,7 @@ module.exports = class UploadView extends ModalView
 	autoRender: true
 	container: '#master-upload'
 	id: 'view-upload'
-	tempate: template
+	template: template
 	#persistant: yes
 
 	initialize: ->
