@@ -9,6 +9,7 @@ module.exports = class LoginView extends ModalView
 
   events:
     'click #modal-submit': 'modalSubmit'
+    'click a[href="#create-account"]': 'showCreateAccountView'
 
   initialize: (data) ->
     super
@@ -18,3 +19,7 @@ module.exports = class LoginView extends ModalView
     e.preventDefault();
     console.log "hit"
     window.location.href = '/dashboard'
+
+  showCreateAccountView: (e) ->
+    e.preventDefault();
+    window.location.href = '/join'

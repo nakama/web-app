@@ -5,15 +5,18 @@ module.exports = class User extends Model
 	initialize: ->
 		super
 
-	create: (options) ->
-		console.log "Creating user..."
+	create: (options, callback) ->
+		console.log "Creating user...", options
 
 		$.ajax
 			type: "POST"
 			url: "http://50.19.65.14:8080/auth/user/add"
-			data: data
-			success: ->
+			data: options
+			success: (data, status, jqxhr) ->
 				console.log "User creation successful", arguments
+				if typeof callback is "function"
+					callback(data, status, jqxhr)
+
 			error: ->
 				console.log "User creation failed", arguments
 

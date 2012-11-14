@@ -157,13 +157,15 @@ window.require.define({"common": function(exports, require, module) {
 }});
 
 window.require.define({"controllers/auth_controller": function(exports, require, module) {
-  var AuthController, User, mediator,
+  var AuthController, Controller, JoinView, User, mediator, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  mediator = require('common').mediator;
+  _ref = require('common'), Controller = _ref.Controller, mediator = _ref.mediator;
 
   User = require('models/user');
+
+  JoinView = require('views/join');
 
   module.exports = AuthController = (function(_super) {
 
@@ -173,7 +175,16 @@ window.require.define({"controllers/auth_controller": function(exports, require,
       return AuthController.__super__.constructor.apply(this, arguments);
     }
 
-    mediator.user = new User();
+    AuthController.prototype.initialize = function() {
+      AuthController.__super__.initialize.apply(this, arguments);
+      return this.user = mediator.user = new User;
+    };
+
+    AuthController.prototype.join = function() {
+      return new JoinView({
+        model: new User
+      });
+    };
 
     return AuthController;
 
@@ -514,14 +525,17 @@ window.require.define({"models/user": function(exports, require, module) {
       return User.__super__.initialize.apply(this, arguments);
     };
 
-    User.prototype.create = function(options) {
-      console.log("Creating user...");
+    User.prototype.create = function(options, callback) {
+      console.log("Creating user...", options);
       return $.ajax({
         type: "POST",
         url: "http://50.19.65.14:8080/auth/user/add",
-        data: data,
-        success: function() {
-          return console.log("User creation successful", arguments);
+        data: options,
+        success: function(data, status, jqxhr) {
+          console.log("User creation successful", arguments);
+          if (typeof callback === "function") {
+            return callback(data, status, jqxhr);
+          }
         },
         error: function() {
           return console.log("User creation failed", arguments);
@@ -554,7 +568,8 @@ window.require.define({"routes": function(exports, require, module) {
   
   module.exports = function(match) {
     match('', 'home#index');
-    return match('dashboard', 'dashboard#index');
+    match('dashboard', 'dashboard#index');
+    return match('join', 'auth#join');
   };
   
 }});
@@ -768,6 +783,62 @@ window.require.define({"views/header": function(exports, require, module) {
   
 }});
 
+window.require.define({"views/join": function(exports, require, module) {
+  var JoinView, ModalView, template,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  ModalView = require('views/base/modal');
+
+  template = require('views/templates/join');
+
+  module.exports = JoinView = (function(_super) {
+
+    __extends(JoinView, _super);
+
+    function JoinView() {
+      return JoinView.__super__.constructor.apply(this, arguments);
+    }
+
+    JoinView.prototype.template = template;
+
+    JoinView.prototype.container = 'body';
+
+    JoinView.prototype.autoRender = true;
+
+    JoinView.prototype.id = "view-join-modal";
+
+    JoinView.prototype.events = {
+      'click #modal-submit': 'modalSubmit'
+    };
+
+    JoinView.prototype.initialize = function(data) {
+      JoinView.__super__.initialize.apply(this, arguments);
+      return console.log("Initializing the Join View");
+    };
+
+    JoinView.prototype.modalSubmit = function(e) {
+      var data;
+      e.preventDefault();
+      data = {
+        name: $('#create-account-name').val(),
+        email: $('#create-account-email').val(),
+        username: $('#create-account-username').val(),
+        password: $('#create-account-password').val()
+      };
+      console.log("Submitting form with the data:", data);
+      return this.model.create(data, function(data) {
+        console.log("Join data response", data);
+        return window.location.href = '/dashboard';
+      });
+    };
+
+    return JoinView;
+
+  })(ModalView);
+  
+}});
+
 window.require.define({"views/layout": function(exports, require, module) {
   var Chaplin, HeaderView, Layout, UploadView, User,
     __hasProp = {}.hasOwnProperty,
@@ -839,7 +910,8 @@ window.require.define({"views/login": function(exports, require, module) {
     LoginView.prototype.id = "view-login-modal";
 
     LoginView.prototype.events = {
-      'click #modal-submit': 'modalSubmit'
+      'click #modal-submit': 'modalSubmit',
+      'click a[href="#create-account"]': 'showCreateAccountView'
     };
 
     LoginView.prototype.initialize = function(data) {
@@ -851,6 +923,11 @@ window.require.define({"views/login": function(exports, require, module) {
       e.preventDefault();
       console.log("hit");
       return window.location.href = '/dashboard';
+    };
+
+    LoginView.prototype.showCreateAccountView = function(e) {
+      e.preventDefault();
+      return window.location.href = '/join';
     };
 
     return LoginView;
@@ -1098,13 +1175,22 @@ window.require.define({"views/templates/header": function(exports, require, modu
     return "<div class=\"container\">\n	<a class=\"brand\" href=\"#\">Nakama</a>\n	<ul class=\"nav\">\n		<li><a href=\"#upload\">Upload</a></li>\n		<li><a href=\"#\">Logout</a></li>\n	</ul>\n</div>";});
 }});
 
+window.require.define({"views/templates/join": function(exports, require, module) {
+  module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+    helpers = helpers || Handlebars.helpers;
+    var foundHelper, self=this;
+
+
+    return "<div class=\"modal-container\">\n	<h1>Create Account</h1>\n	<div><input id=\"create-account-name\" type=\"text\" placeholder=\"Name\" /></div>\n	<div><input id=\"create-account-email\" type=\"text\" placeholder=\"Email\" /></div>\n	<div><input id=\"create-account-username\" type=\"text\" placeholder=\"Username\" /></div>\n	<div><input id=\"create-account-password\" type=\"password\" placeholder=\"Password\" /></div>\n	<div>\n		<button id=\"modal-submit\" class=\"btn btn-primary\">Submit</button>\n	</div>\n</div>";});
+}});
+
 window.require.define({"views/templates/login": function(exports, require, module) {
   module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
     helpers = helpers || Handlebars.helpers;
     var foundHelper, self=this;
 
 
-    return "<div class=\"modal-container\">\n	<h1>Login</h1>\n	<div><input type=\"text\" placeholder=\"Username\" /></div>\n	<div><input type=\"password\" placeholder=\"Password\" /></div>\n	<div><button id=\"modal-submit\" class=\"btn btn-primary\">Login</button></div>\n</div>";});
+    return "<div class=\"modal-container\">\n	<h1>Login</h1>\n	<div><input type=\"text\" placeholder=\"Username\" /></div>\n	<div><input type=\"password\" placeholder=\"Password\" /></div>\n	<div>\n		<button id=\"modal-submit\" class=\"btn btn-primary\">Login</button>\n		<a class=\"btn\" href=\"#create-account\">Create Account</a>\n	</div>\n</div>";});
 }});
 
 window.require.define({"views/templates/photo_collection": function(exports, require, module) {
