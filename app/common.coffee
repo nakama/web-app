@@ -1,7 +1,5 @@
 Chaplin  = require 'chaplin'
 logger   = require 'lib/logger'
-routes   = require 'routes'
-Layout   = require 'views/layout'
 
 module.exports = common =
 	mediator : Chaplin.mediator
@@ -23,6 +21,9 @@ module.exports = common =
 			#super
 
 			# Initialize core components
+			$.ajaxSetup
+				cache: false
+				dataType: 'json'
 
 			#@initMediator()
 			@initTemplateHelpers()
@@ -30,9 +31,10 @@ module.exports = common =
 			@initLayout()
 
 			# Application-specific scaffold
-			#@initControllers()
+			@initControllers()
 
 			# Register all routes and start routing
+			routes   = require 'routes'
 			@initRouter routes
 			# You might pass Router/History options as the second parameter.
 			# Chaplin enables pushState per default and Backbone uses / as
@@ -48,6 +50,7 @@ module.exports = common =
 		initLayout: ->
 			# Use an application-specific Layout class. Currently this adds
 			# no features to the standard Chaplin Layout, it’s an empty placeholder.
+			Layout   = require 'views/layout'
 			@layout = new Layout {@title}
 
 		# Instantiate template helpers
@@ -56,7 +59,9 @@ module.exports = common =
 
 		# Instantiate common controllers
 		# ------------------------------
-		#initControllers: ->
+		initControllers: ->
+			AuthController = require 'controllers/auth_controller'
+			@auth = new AuthController
 
 		# Create additional mediator properties
 		# -------------------------------------
@@ -65,4 +70,4 @@ module.exports = common =
 			mediator.user = null
 			# Add additional application-specific properties and methods
 			# Seal the mediator
-			mediator.seal()
+			#mediator.seal()

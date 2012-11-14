@@ -102,15 +102,11 @@ window.require.define({"collections/photos": function(exports, require, module) 
 }});
 
 window.require.define({"common": function(exports, require, module) {
-  var Chaplin, Layout, common, logger, routes;
+  var Chaplin, common, logger;
 
   Chaplin = require('chaplin');
 
   logger = require('lib/logger');
-
-  routes = require('routes');
-
-  Layout = require('views/layout');
 
   module.exports = common = {
     mediator: Chaplin.mediator,
@@ -126,24 +122,62 @@ window.require.define({"common": function(exports, require, module) {
     Application: Chaplin.Application.extend({
       title: 'Nakama',
       initialize: function() {
+        var routes;
+        $.ajaxSetup({
+          cache: false,
+          dataType: 'json'
+        });
         this.initTemplateHelpers();
         this.initDispatcher();
         this.initLayout();
+        this.initControllers();
+        routes = require('routes');
         this.initRouter(routes);
         return typeof Object.freeze === "function" ? Object.freeze(this) : void 0;
       },
       initLayout: function() {
+        var Layout;
+        Layout = require('views/layout');
         return this.layout = new Layout({
           title: this.title
         });
       },
       initTemplateHelpers: function() {},
+      initControllers: function() {
+        var AuthController;
+        AuthController = require('controllers/auth_controller');
+        return this.auth = new AuthController;
+      },
       initMediator: function() {
-        mediator.user = null;
-        return mediator.seal();
+        return mediator.user = null;
       }
     })
   };
+  
+}});
+
+window.require.define({"controllers/auth_controller": function(exports, require, module) {
+  var AuthController, User, mediator,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  mediator = require('common').mediator;
+
+  User = require('models/user');
+
+  module.exports = AuthController = (function(_super) {
+
+    __extends(AuthController, _super);
+
+    function AuthController() {
+      return AuthController.__super__.constructor.apply(this, arguments);
+    }
+
+    mediator.user = new User();
+
+    return AuthController;
+
+  })(Controller);
   
 }});
 
@@ -475,6 +509,40 @@ window.require.define({"models/user": function(exports, require, module) {
     function User() {
       return User.__super__.constructor.apply(this, arguments);
     }
+
+    User.prototype.initialize = function() {
+      return User.__super__.initialize.apply(this, arguments);
+    };
+
+    User.prototype.create = function(options) {
+      console.log("Creating user...");
+      return $.ajax({
+        type: "POST",
+        url: "http://50.19.65.14:8080/auth/user/add",
+        data: data,
+        success: function() {
+          return console.log("User creation successful", arguments);
+        },
+        error: function() {
+          return console.log("User creation failed", arguments);
+        }
+      });
+    };
+
+    User.prototype.login = function(options) {
+      console.log("Logging in user...");
+      return $.ajax({
+        type: "POST",
+        url: "http://50.19.65.14:8080/auth/user/login",
+        data: options,
+        success: function() {
+          return console.log("User login successful", arguments);
+        },
+        error: function() {
+          return console.log("User login failed", arguments);
+        }
+      });
+    };
 
     return User;
 
@@ -1036,7 +1104,7 @@ window.require.define({"views/templates/login": function(exports, require, modul
     var foundHelper, self=this;
 
 
-    return "<div class=\"modal-container\">\n	<input type=\"text\" placeholder=\"Username\" />\n	<input type=\"password\" placeholder=\"Password\" />\n	<button id=\"modal-submit\" class=\"btn btn-primary\">Login</button>\n</div>";});
+    return "<div class=\"modal-container\">\n	<h1>Login</h1>\n	<div><input type=\"text\" placeholder=\"Username\" /></div>\n	<div><input type=\"password\" placeholder=\"Password\" /></div>\n	<div><button id=\"modal-submit\" class=\"btn btn-primary\">Login</button></div>\n</div>";});
 }});
 
 window.require.define({"views/templates/photo_collection": function(exports, require, module) {
