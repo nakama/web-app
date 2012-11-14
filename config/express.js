@@ -24,13 +24,13 @@ module.exports = function(app, config, DIR, express, hbs, path, util) {
 
 		// This is not needed if you handle static files with, say, Nginx (recommended in production!)
 		// Last, but not least: Express' default error handler is very useful in dev, but probably not in prod.
-		if ((typeof process.env['NODE_SERVE_STATIC'] !== 'undefined') && process.env['NODE_SERVE_STATIC'] == 1) {
+		//if ((typeof process.env['NODE_SERVE_STATIC'] !== 'undefined') && process.env['NODE_SERVE_STATIC'] == 1) {
 			util.log("Serving static files through node.js at: ");
 			var static = path.join(DIR, config.app.static)
 			console.log(static);
 			app.use(express.static(static));
 			app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-		}
+		//}
 		
 		app.use(app.router);
 

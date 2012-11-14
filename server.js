@@ -5,7 +5,6 @@ var config  = require('./config/app'),
 	routes  = require('./config/routes'),
 	fs      = require('fs'),
 	hbs     = require('hbs'),
-	mime    = require('mime'),
 	path    = require('path'),
 	_       = require('underscore'),
 	util    = require('util')
