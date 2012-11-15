@@ -10,9 +10,13 @@ module.exports = class PhotoCollectionView extends CollectionView
   listSelector: '#photos-list'
   id: "photo-collection-wrapper"
 
+  #events:
+    #'hover .photo-wrapper': 'hoverInWrapper'
+    #'mouseout .photo-wrapper': 'hoverOutWrapper'
+
   initialize: (data) ->
     super
-    console.log("Initializing the PhotoCollectionView");
+    #console.log("Initializing the PhotoCollectionView");
     #@wrapMethod('renderAllItems')
 
     ###
@@ -25,11 +29,43 @@ module.exports = class PhotoCollectionView extends CollectionView
   afterRender: ->
     super
 
-    console.log "How many times am I rendering?"
+    #console.log "How many times am I rendering?"
+
+  hoverInWrapper: (e) ->
+    e.preventDefault()
+
+    if e.target.tagName is "IMG"
+      $container = $(e.target).parent()
+      $footer    = $container.parent().find('footer')
+      $height    = $container.height()
+
+      $container.animate({
+        height: '280px'
+      }, { duration: 200, queue: false } )
+
+      $footer.animate({
+        height: '100px'
+      }, { duration: 200, queue: false } )
+
+  hoverOutWrapper: (e) ->
+    e.preventDefault()
+
+    if e.target.tagName is "IMG"
+      $container = $(e.target).parent()
+      $footer    = $container.parent().find('footer')
+      $height    = $container.height()
+
+      $container.animate({
+        height: '320px'
+      }, { duration: 200, queue: false } )
+
+      $footer.animate({
+        height: '60px'
+      }, { duration: 200, queue: false } )
 
   renderAllItems: ->
     super
-    console.log 'collection rendered'
+    #console.log 'collection rendered'
 
     $photoList = $("#photos-list")
     isotopeConfig =
@@ -37,7 +73,7 @@ module.exports = class PhotoCollectionView extends CollectionView
       layoutMode: "cellsByRow"
       cellsByRow:
         columnWidth: 260
-        rowHeight: 400
+        rowHeight: 390
 
     $photoList.imagesLoaded ->
       console.log "Photos loaded", @
@@ -47,6 +83,36 @@ module.exports = class PhotoCollectionView extends CollectionView
       $photoList.isotope getSortData:
         stars: ($elem) ->
           $elem.find("[data-stars]").text()
+
+      $('#photos-list .photo-wrapper').hover ( (e) ->
+        e.preventDefault()
+
+        $container = $(this).find('.photo-container')
+        $footer    = $(this).find('footer')
+        $height    = $container.height()
+
+        $container.animate({
+          height: '280px'
+        }, { duration: 200, queue: false } )
+
+        $footer.animate({
+          height: '100px'
+        }, { duration: 200, queue: false } )
+
+      ), (e) ->
+        e.preventDefault()
+
+        $container = $(this).find('.photo-container')
+        $footer    = $(this).find('footer')
+        $height    = $container.height()
+
+        $container.animate({
+          height: '320px'
+        }, { duration: 200, queue: false } )
+
+        $footer.animate({
+          height: '60px'
+        }, { duration: 200, queue: false } )
 
     ###
     navButtons = {

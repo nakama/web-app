@@ -579,7 +579,7 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   line-height: 18px;
-  padding-top: 40px;
+  padding-top: 50px;
 }
 ul,
 li {
@@ -690,22 +690,48 @@ li {
   height: 100%;
   margin: 0;
 }
-.photo-wrapper {
-  background-color: #f7f8f9;
-  margin-bottom: 30px;
-  width: 250px;
-}
-.photo-container {
+.photo-wrapper .photo-container {
   height: 320px;
   line-height: 320px;
   position: relative;
-  width: 230px;
+  overflow: hidden;
+  width: 250px;
 }
-.photo-container img {
-  max-height: 100%;
-  max-width: 100%;
+.photo-wrapper .photo-container img {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.photo-wrapper footer {
+  background: #fff;
+  color: #000;
+  font-size: 16px;
+  height: 60px;
+  overflow: hidden;
   padding: 10px;
-  position: relative;
+  width: 100%;
+}
+.photo-wrapper footer h3 {
+  font-size: 16px;
+  line-height: 16px;
+  margin: 0;
+}
+.photo-wrapper footer p {
+  color: #999;
+  font-size: 12px;
+  line-height: 12px;
+  margin: 4px 0 0;
+}
+.photo-wrapper footer .actions {
+  display: block;
+  margin: 12px 0 0;
+}
+.photo-wrapper footer .actions a {
+  display: inline-block;
+  font-size: 12px;
+  margin-right: 10px;
 }
 .photo-footer {
   display: block;

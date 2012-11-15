@@ -962,13 +962,11 @@ window.require.define({"views/photo_collection_item_view": function(exports, req
     PhotoCollectionItemView.prototype.className = 'photo-wrapper';
 
     PhotoCollectionItemView.prototype.initialize = function() {
-      PhotoCollectionItemView.__super__.initialize.apply(this, arguments);
-      return console.log('PhotoCollectionItemView#initialize');
+      return PhotoCollectionItemView.__super__.initialize.apply(this, arguments);
     };
 
     PhotoCollectionItemView.prototype.render = function() {
-      PhotoCollectionItemView.__super__.render.apply(this, arguments);
-      return console.log('Photo Rendered', this);
+      return PhotoCollectionItemView.__super__.render.apply(this, arguments);
     };
 
     return PhotoCollectionItemView;
@@ -1009,8 +1007,7 @@ window.require.define({"views/photo_collection_view": function(exports, require,
     PhotoCollectionView.prototype.id = "photo-collection-wrapper";
 
     PhotoCollectionView.prototype.initialize = function(data) {
-      PhotoCollectionView.__super__.initialize.apply(this, arguments);
-      return console.log("Initializing the PhotoCollectionView");
+      return PhotoCollectionView.__super__.initialize.apply(this, arguments);
       /*
           rendered = no
           @modelBind 'change', =>
@@ -1021,32 +1018,111 @@ window.require.define({"views/photo_collection_view": function(exports, require,
     };
 
     PhotoCollectionView.prototype.afterRender = function() {
-      PhotoCollectionView.__super__.afterRender.apply(this, arguments);
-      return console.log("How many times am I rendering?");
+      return PhotoCollectionView.__super__.afterRender.apply(this, arguments);
+    };
+
+    PhotoCollectionView.prototype.hoverInWrapper = function(e) {
+      var $container, $footer, $height;
+      e.preventDefault();
+      if (e.target.tagName === "IMG") {
+        $container = $(e.target).parent();
+        $footer = $container.parent().find('footer');
+        $height = $container.height();
+        $container.animate({
+          height: '280px'
+        }, {
+          duration: 200,
+          queue: false
+        });
+        return $footer.animate({
+          height: '100px'
+        }, {
+          duration: 200,
+          queue: false
+        });
+      }
+    };
+
+    PhotoCollectionView.prototype.hoverOutWrapper = function(e) {
+      var $container, $footer, $height;
+      e.preventDefault();
+      if (e.target.tagName === "IMG") {
+        $container = $(e.target).parent();
+        $footer = $container.parent().find('footer');
+        $height = $container.height();
+        $container.animate({
+          height: '320px'
+        }, {
+          duration: 200,
+          queue: false
+        });
+        return $footer.animate({
+          height: '60px'
+        }, {
+          duration: 200,
+          queue: false
+        });
+      }
     };
 
     PhotoCollectionView.prototype.renderAllItems = function() {
       var $photoList, isotopeConfig;
       PhotoCollectionView.__super__.renderAllItems.apply(this, arguments);
-      console.log('collection rendered');
       $photoList = $("#photos-list");
       isotopeConfig = {
         itemSelector: ".photo-wrapper",
         layoutMode: "cellsByRow",
         cellsByRow: {
           columnWidth: 260,
-          rowHeight: 400
+          rowHeight: 390
         }
       };
       return $photoList.imagesLoaded(function() {
         console.log("Photos loaded", this);
         $photoList.isotope(isotopeConfig);
-        return $photoList.isotope({
+        $photoList.isotope({
           getSortData: {
             stars: function($elem) {
               return $elem.find("[data-stars]").text();
             }
           }
+        });
+        return $('#photos-list .photo-wrapper').hover((function(e) {
+          var $container, $footer, $height;
+          e.preventDefault();
+          $container = $(this).find('.photo-container');
+          $footer = $(this).find('footer');
+          $height = $container.height();
+          $container.animate({
+            height: '280px'
+          }, {
+            duration: 200,
+            queue: false
+          });
+          return $footer.animate({
+            height: '100px'
+          }, {
+            duration: 200,
+            queue: false
+          });
+        }), function(e) {
+          var $container, $footer, $height;
+          e.preventDefault();
+          $container = $(this).find('.photo-container');
+          $footer = $(this).find('footer');
+          $height = $container.height();
+          $container.animate({
+            height: '320px'
+          }, {
+            duration: 200,
+            queue: false
+          });
+          return $footer.animate({
+            height: '60px'
+          }, {
+            duration: 200,
+            queue: false
+          });
         });
       });
       /*
@@ -1213,7 +1289,7 @@ window.require.define({"views/templates/photo_collection_item": function(exports
     stack1 = foundHelper || depth0.path;
     if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
     else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "path", { hash: {} }); }
-    buffer += escapeExpression(stack1) + "\" />\n</div>";
+    buffer += escapeExpression(stack1) + "\" />\n</div>\n<footer>\n	<h3>Lorem Ipsum</h3>\n	<p>Lorem ipsum dolor sit amut.</p>\n	<div class=\"actions\">\n		<a href=\"#\">Like</a><a href=\"#\">Share</a>\n	</div>\n</footer>";
     return buffer;});
 }});
 

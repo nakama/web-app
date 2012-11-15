@@ -9,8 +9,8 @@ module.exports = class PhotoCollectionItemView extends View
 
   initialize: ->
     super
-    console.log 'PhotoCollectionItemView#initialize'
+    #console.log 'PhotoCollectionItemView#initialize'
 
   render: ->
     super
-    console.log 'Photo Rendered', @
+    #console.log 'Photo Rendered', @
