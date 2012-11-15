@@ -580,6 +580,7 @@ body {
   font-size: 13px;
   line-height: 18px;
   padding-top: 50px;
+  padding-bottom: 50px;
 }
 ul,
 li {
@@ -689,6 +690,7 @@ li {
 #photos-list {
   height: 100%;
   margin: 0;
+  padding: 0 6px;
 }
 .photo-wrapper .photo-container {
   height: 320px;
