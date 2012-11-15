@@ -3,12 +3,8 @@
     "Chris Abrams <mail@chrisabrams.com>"
   ],
   "name": "nakama",
-  "subdomain": "nakama",
-  "domains": [
-    "naka.ma"
-  ],
   "description": "photo sharing",
-  "version": "0.0.1-19",
+  "version": "0.0.1",
   "homepage": "",
   "repository": {
     "type": "git",
