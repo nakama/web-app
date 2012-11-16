@@ -531,6 +531,9 @@ window.require.define({"models/user": function(exports, require, module) {
         type: "POST",
         url: "http://50.19.65.14:8080/auth/user/add",
         data: options,
+        headers: {
+          'Accept': 'application/json'
+        },
         success: function(data, status, jqxhr) {
           console.log("User creation successful", arguments);
           if (typeof callback === "function") {
