@@ -24,7 +24,7 @@ module.exports = class JoinView extends ModalView
       password: $('#create-account-password').val()
 
     console.log "Submitting form with the data:", data
-    
+
     @model.create data, (data) ->
       console.log "Join data response", data
 

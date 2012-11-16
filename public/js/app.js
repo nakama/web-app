@@ -861,13 +861,36 @@ window.require.define({"views/layout": function(exports, require, module) {
     }
 
     Layout.prototype.events = {
-      'click a[href="#upload"]': 'showUpload'
+      'click a[href="#upload"]': 'showUpload',
+      'click #modal-submit': 'modalSubmit'
     };
 
     Layout.prototype.initialize = function() {
       Layout.__super__.initialize.apply(this, arguments);
       console.log("Initializing the Layout");
       return this.header = new HeaderView;
+    };
+
+    Layout.prototype.modalSubmit = function(e) {
+      e.preventDefault();
+      $("#modal-submit").text('');
+      return $("#modal-submit").spin({
+        lines: 11,
+        length: 3,
+        width: 2,
+        radius: 5,
+        corners: 0,
+        rotate: 0,
+        color: '#000',
+        speed: 1,
+        trail: 50,
+        shadow: false,
+        hwaccel: false,
+        className: 'spinner',
+        zIndex: 100,
+        top: 'auto',
+        left: 'auto'
+      });
     };
 
     Layout.prototype.showUpload = function(e) {
