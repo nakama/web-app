@@ -19,6 +19,7 @@ require.define 'chaplin/application': (exports, require, module) ->
   Dispatcher = require 'chaplin/dispatcher'
   Layout = require 'chaplin/views/layout'
   Router = require 'chaplin/lib/router'
+  EventBroker = require 'chaplin/lib/event_broker'
 
   # The application bootstrapper
   # ----------------------------
@@ -27,6 +28,9 @@ require.define 'chaplin/application': (exports, require, module) ->
 
     # Borrow the static extend method from Backbone
     @extend = Backbone.Model.extend
+
+    # Mixin an EventBroker
+    _(@prototype).extend EventBroker
 
     # The site title used in the document title
     title: ''
@@ -1166,7 +1170,8 @@ require.define 'chaplin/views/view': (exports, require, module) ->
       return if @disposed
 
       # Dispose subviews
-      subview.dispose() for subview in @subviews
+      if @subviews
+        subview.dispose() for subview in @subviews
 
       # Unbind handlers of global events
       @unsubscribeAllEvents()
@@ -1893,6 +1898,83 @@ require.define 'chaplin/lib/router': (exports, require, module) ->
       # You’re frozen when your heart’s not open
       Object.freeze? this
 
+require.define 'chaplin/lib/delayer': (exports, require, module) ->
+
+  # Delayer
+  # -------
+  #
+  # Add functionality to set unique, named timeouts and intervals
+  # so they can be cleared afterwards when disposing the object.
+  # This is especially useful in your custom View class which inherits
+  # from the standard Chaplin.View.
+  #
+  # Mixin this object to add the delayer capability to any object:
+  # _(object).extend Delayer
+  #
+  # Or to a prototype of a class:
+  # _(@prototype).extend Delayer
+  #
+  # In the dispose method, call `clearDelayed` to remove all pending
+  # timeouts and running intervals:
+  #
+  # dispose: ->
+  #   return if @disposed
+  #   @clearDelayed()
+  #   super
+
+  Delayer =
+
+    setTimeout: (name, time, handler) ->
+      @timeouts ?= {}
+      @clearTimeout name
+      wrappedHandler = =>
+        delete @timeouts[name]
+        handler()
+      handle = setTimeout wrappedHandler, time
+      @timeouts[name] = handle
+      handle
+
+    clearTimeout: (name) ->
+      return unless @timeouts and @timeouts[name]?
+      clearTimeout @timeouts[name]
+      delete @timeouts[name]
+      return
+
+    clearAllTimeouts: ->
+      return unless @timeouts
+      for name, handle of @timeouts
+        @clearTimeout name
+      return
+
+    setInterval: (name, time, handler) ->
+      @clearInterval name
+      @intervals ?= {}
+      handle = setInterval handler, time
+      @intervals[name] = handle
+      handle
+
+    clearInterval: (name) ->
+      return unless @intervals and @intervals[name]
+      clearInterval @intervals[name]
+      delete @intervals[name]
+      return
+
+    clearAllIntervals: ->
+      return unless @intervals
+      for name, handle of @intervals
+        @clearInterval name
+      return
+
+    clearDelayed: ->
+      @clearAllTimeouts()
+      @clearAllIntervals()
+      return
+
+  # You’re frozen when your heart’s not open
+  Object.freeze? Delayer
+
+  module.exports = Delayer
+
 require.define 'chaplin/lib/event_broker': (exports, require, module) ->
   mediator = require 'chaplin/mediator'
 
@@ -2142,6 +2224,7 @@ require.define 'chaplin': (exports, require, module) ->
   CollectionView = require 'chaplin/views/collection_view'
   Route = require 'chaplin/lib/route'
   Router = require 'chaplin/lib/router'
+  Delayer = require 'chaplin/lib/delayer'
   EventBroker = require 'chaplin/lib/event_broker'
   support = require 'chaplin/lib/support'
   SyncMachine = require 'chaplin/lib/sync_machine'
@@ -2159,6 +2242,7 @@ require.define 'chaplin': (exports, require, module) ->
     CollectionView,
     Route,
     Router,
+    Delayer,
     EventBroker,
     support,
     SyncMachine,

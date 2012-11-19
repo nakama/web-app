@@ -12423,17 +12423,20 @@ require.define({
 
 require.define({
   'chaplin/application': function(exports, require, module) {
-    var Application, Backbone, Dispatcher, Layout, Router, mediator;
+    var Application, Backbone, Dispatcher, EventBroker, Layout, Router, mediator;
     Backbone = require('backbone');
     mediator = require('chaplin/mediator');
     Dispatcher = require('chaplin/dispatcher');
     Layout = require('chaplin/views/layout');
     Router = require('chaplin/lib/router');
+    EventBroker = require('chaplin/lib/event_broker');
     return module.exports = Application = (function() {
 
       function Application() {}
 
       Application.extend = Backbone.Model.extend;
+
+      _(Application.prototype).extend(EventBroker);
 
       Application.prototype.title = '';
 
@@ -13390,10 +13393,12 @@ require.define({
         if (this.disposed) {
           return;
         }
-        _ref = this.subviews;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          subview = _ref[_i];
-          subview.dispose();
+        if (this.subviews) {
+          _ref = this.subviews;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            subview = _ref[_i];
+            subview.dispose();
+          }
         }
         this.unsubscribeAllEvents();
         this.modelUnbindAll();
@@ -14015,6 +14020,83 @@ require.define({
 });
 
 require.define({
+  'chaplin/lib/delayer': function(exports, require, module) {
+    var Delayer;
+    Delayer = {
+      setTimeout: function(name, time, handler) {
+        var handle, wrappedHandler, _ref,
+          _this = this;
+        if ((_ref = this.timeouts) == null) {
+          this.timeouts = {};
+        }
+        this.clearTimeout(name);
+        wrappedHandler = function() {
+          delete _this.timeouts[name];
+          return handler();
+        };
+        handle = setTimeout(wrappedHandler, time);
+        this.timeouts[name] = handle;
+        return handle;
+      },
+      clearTimeout: function(name) {
+        if (!(this.timeouts && (this.timeouts[name] != null))) {
+          return;
+        }
+        clearTimeout(this.timeouts[name]);
+        delete this.timeouts[name];
+      },
+      clearAllTimeouts: function() {
+        var handle, name, _ref;
+        if (!this.timeouts) {
+          return;
+        }
+        _ref = this.timeouts;
+        for (name in _ref) {
+          handle = _ref[name];
+          this.clearTimeout(name);
+        }
+      },
+      setInterval: function(name, time, handler) {
+        var handle, _ref;
+        this.clearInterval(name);
+        if ((_ref = this.intervals) == null) {
+          this.intervals = {};
+        }
+        handle = setInterval(handler, time);
+        this.intervals[name] = handle;
+        return handle;
+      },
+      clearInterval: function(name) {
+        if (!(this.intervals && this.intervals[name])) {
+          return;
+        }
+        clearInterval(this.intervals[name]);
+        delete this.intervals[name];
+      },
+      clearAllIntervals: function() {
+        var handle, name, _ref;
+        if (!this.intervals) {
+          return;
+        }
+        _ref = this.intervals;
+        for (name in _ref) {
+          handle = _ref[name];
+          this.clearInterval(name);
+        }
+      },
+      clearDelayed: function() {
+        this.clearAllTimeouts();
+        this.clearAllIntervals();
+      }
+    };
+    if (typeof Object.freeze === "function") {
+      Object.freeze(Delayer);
+    }
+    return module.exports = Delayer;
+  }
+});
+
+require.define({
   'chaplin/lib/event_broker': function(exports, require, module) {
     var EventBroker, mediator;
     mediator = require('chaplin/mediator');
@@ -14223,7 +14305,7 @@ require.define({
 
 require.define({
   'chaplin': function(exports, require, module) {
-    var Application, Collection, CollectionView, Controller, Dispatcher, EventBroker, Layout, Model, Route, Router, SyncMachine, View, mediator, support, utils;
+    var Application, Collection, CollectionView, Controller, Delayer, Dispatcher, EventBroker, Layout, Model, Route, Router, SyncMachine, View, mediator, support, utils;
     Application = require('chaplin/application');
     mediator = require('chaplin/mediator');
     Dispatcher = require('chaplin/dispatcher');
@@ -14235,6 +14317,7 @@ require.define({
     CollectionView = require('chaplin/views/collection_view');
     Route = require('chaplin/lib/route');
     Router = require('chaplin/lib/router');
+    Delayer = require('chaplin/lib/delayer');
     EventBroker = require('chaplin/lib/event_broker');
     support = require('chaplin/lib/support');
     SyncMachine = require('chaplin/lib/sync_machine');
@@ -14251,6 +14334,7 @@ require.define({
       CollectionView: CollectionView,
       Route: Route,
       Router: Router,
+      Delayer: Delayer,
       EventBroker: EventBroker,
       support: support,
       SyncMachine: SyncMachine,
