@@ -12,8 +12,6 @@ module.exports = class User extends Model
 			type: "POST"
 			url: "http://50.19.65.14:8080/auth/user/add"
 			data: options
-			headers:            
-				'Accept' : 'application/json'
 			
 			success: (data, status, jqxhr) ->
 				console.log "User creation successful", arguments
@@ -23,7 +21,7 @@ module.exports = class User extends Model
 			error: ->
 				console.log "User creation failed", arguments
 
-	login: (options) ->
+	login: (options, callback) ->
 		console.log "Logging in user..."
 
 		$.ajax
@@ -31,7 +29,10 @@ module.exports = class User extends Model
 			url: "http://50.19.65.14:8080/auth/user/login"
 			data: options
 
-			success: ->
+			success: (data, status, jqxhr) ->
 				console.log "User login successful", arguments
+				if typeof callback is "function"
+					callback(data, status, jqxhr)
+
 			error: ->
 				console.log "User login failed", arguments

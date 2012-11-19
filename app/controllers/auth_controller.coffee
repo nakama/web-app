@@ -1,7 +1,7 @@
 {Controller, mediator} = require 'common'
-User = require 'models/user'
-JoinView = require 'views/join'
-LoginView         = require 'views/login'
+User                   = require 'models/user'
+JoinView               = require 'views/join'
+LoginView              = require 'views/login'
 
 module.exports = class AuthController extends Controller
 	
@@ -9,10 +9,10 @@ module.exports = class AuthController extends Controller
 		super
 		@user = mediator.user = new User
 
-	join: ->
-		@subscribeEvent 'modal:join:success', =>
-			@redirectTo '/dashboard'
+		@subscribeEvent 'auth:success', =>
+			@redirectTo 'dashboard'
 
+	join: ->
 		new JoinView
 			model: new User
 

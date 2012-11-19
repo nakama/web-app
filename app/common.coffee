@@ -24,6 +24,8 @@ module.exports = common =
 			$.ajaxSetup
 				cache: false
 				dataType: 'json'
+				headers:            
+					'Accept' : 'application/json'
 
 			#@initMediator()
 			@initTemplateHelpers()

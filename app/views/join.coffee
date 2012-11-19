@@ -29,4 +29,4 @@ module.exports = class JoinView extends ModalView
     @model.create data, (data) ->
       console.log "Join data response", data
 
-      mediator.publish 'modal:join:success', @
+      mediator.publish 'auth:success', @

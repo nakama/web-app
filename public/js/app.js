@@ -125,7 +125,10 @@ window.require.define({"common": function(exports, require, module) {
         var routes;
         $.ajaxSetup({
           cache: false,
-          dataType: 'json'
+          dataType: 'json',
+          headers: {
+            'Accept': 'application/json'
+          }
         });
         this.initTemplateHelpers();
         this.initDispatcher();
@@ -180,15 +183,15 @@ window.require.define({"controllers/auth_controller": function(exports, require,
     }
 
     AuthController.prototype.initialize = function() {
+      var _this = this;
       AuthController.__super__.initialize.apply(this, arguments);
-      return this.user = mediator.user = new User;
+      this.user = mediator.user = new User;
+      return this.subscribeEvent('auth:success', function() {
+        return _this.redirectTo('dashboard');
+      });
     };
 
     AuthController.prototype.join = function() {
-      var _this = this;
-      this.subscribeEvent('modal:join:success', function() {
-        return _this.redirectTo('/dashboard');
-      });
       return new JoinView({
         model: new User
       });
@@ -597,9 +600,6 @@ window.require.define({"models/user": function(exports, require, module) {
         type: "POST",
         url: "http://50.19.65.14:8080/auth/user/add",
         data: options,
-        headers: {
-          'Accept': 'application/json'
-        },
         success: function(data, status, jqxhr) {
           console.log("User creation successful", arguments);
           if (typeof callback === "function") {
@@ -612,14 +612,17 @@ window.require.define({"models/user": function(exports, require, module) {
       });
     };
 
-    User.prototype.login = function(options) {
+    User.prototype.login = function(options, callback) {
       console.log("Logging in user...");
       return $.ajax({
         type: "POST",
         url: "http://50.19.65.14:8080/auth/user/login",
         data: options,
-        success: function() {
-          return console.log("User login successful", arguments);
+        success: function(data, status, jqxhr) {
+          console.log("User login successful", arguments);
+          if (typeof callback === "function") {
+            return callback(data, status, jqxhr);
+          }
         },
         error: function() {
           return console.log("User login failed", arguments);
@@ -908,7 +911,7 @@ window.require.define({"views/join": function(exports, require, module) {
       console.log("Submitting form with the data:", data);
       return this.model.create(data, function(data) {
         console.log("Join data response", data);
-        return mediator.publish('modal:join:success', this);
+        return mediator.publish('auth:success', this);
       });
     };
 
@@ -963,7 +966,7 @@ window.require.define({"views/layout": function(exports, require, module) {
 }});
 
 window.require.define({"views/login": function(exports, require, module) {
-  var LoginView, ModalView, log, mediator, template, _ref,
+  var LoginView, ModalView, User, log, mediator, template, _ref,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -973,6 +976,8 @@ window.require.define({"views/login": function(exports, require, module) {
   ModalView = require('views/base/modal');
 
   template = require('views/templates/login');
+
+  User = require('models/user');
 
   module.exports = LoginView = (function(_super) {
 
@@ -1002,8 +1007,19 @@ window.require.define({"views/login": function(exports, require, module) {
     };
 
     LoginView.prototype.modalSubmit = function(e) {
+      var data;
       e.preventDefault();
-      return console.log("hit");
+      data = {
+        username: $('#auth-username').val(),
+        password: $('#auth-password').val()
+      };
+      log("Submitting Login with the data:", {
+        data: data
+      });
+      return this.model.login(data, function(data) {
+        console.log("Login data response", data);
+        return mediator.publish('auth:success', this);
+      });
     };
 
     LoginView.prototype.showCreateAccountView = function(e) {

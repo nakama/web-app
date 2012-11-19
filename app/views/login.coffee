@@ -1,6 +1,7 @@
 {log, mediator} = require 'common'
 ModalView = require 'views/base/modal'
 template  = require 'views/templates/login'
+User = require 'models/user'
 
 module.exports = class LoginView extends ModalView
   template: template
@@ -18,8 +19,18 @@ module.exports = class LoginView extends ModalView
     
   modalSubmit: (e) =>
     e.preventDefault();
-    console.log "hit"
-    #window.location.href = '/dashboard'
+    
+    data = 
+      username: $('#auth-username').val()
+      password: $('#auth-password').val()
+
+    log "Submitting Login with the data:",
+      data: data
+
+    @model.login data, (data) ->
+      console.log "Login data response", data
+
+      mediator.publish 'auth:success', @
 
   showCreateAccountView: (e) ->
     e.preventDefault();
