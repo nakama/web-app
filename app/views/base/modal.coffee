@@ -7,10 +7,9 @@ module.exports = class ModalView extends View
 		role: 'dialog'
 		'aria-hidden': true
 		'tabindex': '-1'
-
-	defaults:
-		isModal: yes
-		size: 'normal'
+		
+	initialize: (options) ->
+		@options.size = options?.size || 'normal'
 
 	afterRender: ->
 		# Setup automatic disposal

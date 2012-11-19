@@ -669,9 +669,8 @@ window.require.define({"views/base/modal": function(exports, require, module) {
       'tabindex': '-1'
     };
 
-    ModalView.prototype.defaults = {
-      isModal: true,
-      size: 'normal'
+    ModalView.prototype.initialize = function(options) {
+      return this.options.size = (options != null ? options.size : void 0) || 'normal';
     };
 
     ModalView.prototype.afterRender = function() {
