@@ -180,16 +180,10 @@ Backbone.Validation = (function(_){
           // Return any error messages to Backbone, unless the forceUpdate flag is set.
           // Then we do not return anything and fools Backbone to believe the validation was
           // a success. That way Backbone will update the model regardless.
-          console.log("Invalid:", result.invalidAttrs)
-          console.log("Typeof:", typeof result.invalidAttrs)
-          console.log("Changed:", changedAttrs)
-          console.log("Typeof:", typeof changedAttrs)
           var changed;
           if(typeof changedAttrs === "string") {
             changed = changedAttrs;
-          }
-
-          else {
+          } else {
             changed = _.keys(changedAttrs);
           }
           if (!opt.forceUpdate && _.intersection(_.keys(result.invalidAttrs), changed).length > 0) {
