@@ -1,7 +1,6 @@
 {log, mediator} = require 'common'
-ModalView = require 'views/base/modal'
-template  = require 'views/templates/login'
-User = require 'models/user'
+ModalView       = require 'views/base/modal'
+template        = require 'views/templates/login'
 
 module.exports = class LoginView extends ModalView
   template: template
@@ -15,7 +14,10 @@ module.exports = class LoginView extends ModalView
 
   initialize: (data) ->
     super
-    console.log("Initializing the Login View");
+    log "Initializing the Login View",
+      model: @model
+
+    Backbone.Validation.bind(this)
     
   modalSubmit: (e) =>
     e.preventDefault();
@@ -26,6 +28,21 @@ module.exports = class LoginView extends ModalView
 
     log "Submitting Login with the data:",
       data: data
+
+    @model.validate 'username'
+
+    @model.bind 'validated:invalid', (model, errors) ->
+      log "Validation failed:",
+        errors: errors
+        model: model
+
+      _.each errors, (str, field) ->
+        log "Looping through errors",
+          field: field
+          str: str
+          jfield: $("input[name=#{field}]")
+
+        $("input[name=#{field}]").after("<p>#{str}</p>")
 
     @model.login data, (data) ->
       console.log "Login data response", data

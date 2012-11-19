@@ -1,6 +1,8 @@
 Chaplin    = require 'chaplin'
 mediator   = Chaplin.mediator
 HeaderView = require 'views/header'
+logger     = require 'lib/logger'
+log        = logger.log
 
 module.exports = class Layout extends Chaplin.Layout
 
@@ -10,7 +12,7 @@ module.exports = class Layout extends Chaplin.Layout
 	initialize: ->
 		super
 
-		console.log "Initializing the Layout"
+		log "Initializing the Layout"
 
 		@header = new HeaderView
 			model: mediator.user

@@ -193,13 +193,13 @@ window.require.define({"controllers/auth_controller": function(exports, require,
 
     AuthController.prototype.join = function() {
       return new JoinView({
-        model: new User
+        model: mediator.user
       });
     };
 
     AuthController.prototype.login = function() {
       return this.view = new LoginView({
-        model: this.user
+        model: mediator.user
       });
     };
 
@@ -343,17 +343,13 @@ window.require.define({"controllers/home_controller": function(exports, require,
 }});
 
 window.require.define({"controllers/modal_controller": function(exports, require, module) {
-  var Controller, JoinView, LoginView, ModalController, User, log, mediator, _ref,
+  var Controller, ModalController, User, log, mediator, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   _ref = require('common'), Controller = _ref.Controller, log = _ref.log, mediator = _ref.mediator;
 
   User = require('models/user');
-
-  JoinView = require('views/join');
-
-  LoginView = require('views/login');
 
   module.exports = ModalController = (function(_super) {
 
@@ -407,13 +403,13 @@ window.require.define({"controllers/modal_controller": function(exports, require
 }});
 
 window.require.define({"initialize": function(exports, require, module) {
-  var Application;
+  var Application, log, _ref;
 
-  Application = require('common').Application;
+  _ref = require('common'), Application = _ref.Application, log = _ref.log;
 
   $(function() {
     var app;
-    console.log("Starting the application");
+    log("Starting the application");
     app = new Application();
     return app.initialize();
   });
@@ -589,6 +585,16 @@ window.require.define({"models/user": function(exports, require, module) {
     function User() {
       return User.__super__.constructor.apply(this, arguments);
     }
+
+    User.prototype.defaults = {
+      username: null
+    };
+
+    User.prototype.validation = {
+      username: {
+        required: true
+      }
+    };
 
     User.prototype.initialize = function() {
       return User.__super__.initialize.apply(this, arguments);
@@ -924,7 +930,7 @@ window.require.define({"views/join": function(exports, require, module) {
 }});
 
 window.require.define({"views/layout": function(exports, require, module) {
-  var Chaplin, HeaderView, Layout, mediator,
+  var Chaplin, HeaderView, Layout, log, logger, mediator,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -933,6 +939,10 @@ window.require.define({"views/layout": function(exports, require, module) {
   mediator = Chaplin.mediator;
 
   HeaderView = require('views/header');
+
+  logger = require('lib/logger');
+
+  log = logger.log;
 
   module.exports = Layout = (function(_super) {
 
@@ -948,7 +958,7 @@ window.require.define({"views/layout": function(exports, require, module) {
 
     Layout.prototype.initialize = function() {
       Layout.__super__.initialize.apply(this, arguments);
-      console.log("Initializing the Layout");
+      log("Initializing the Layout");
       return this.header = new HeaderView({
         model: mediator.user
       });
@@ -966,7 +976,7 @@ window.require.define({"views/layout": function(exports, require, module) {
 }});
 
 window.require.define({"views/login": function(exports, require, module) {
-  var LoginView, ModalView, User, log, mediator, template, _ref,
+  var LoginView, ModalView, log, mediator, template, _ref,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -976,8 +986,6 @@ window.require.define({"views/login": function(exports, require, module) {
   ModalView = require('views/base/modal');
 
   template = require('views/templates/login');
-
-  User = require('models/user');
 
   module.exports = LoginView = (function(_super) {
 
@@ -1003,7 +1011,10 @@ window.require.define({"views/login": function(exports, require, module) {
 
     LoginView.prototype.initialize = function(data) {
       LoginView.__super__.initialize.apply(this, arguments);
-      return console.log("Initializing the Login View");
+      log("Initializing the Login View", {
+        model: this.model
+      });
+      return Backbone.Validation.bind(this);
     };
 
     LoginView.prototype.modalSubmit = function(e) {
@@ -1015,6 +1026,21 @@ window.require.define({"views/login": function(exports, require, module) {
       };
       log("Submitting Login with the data:", {
         data: data
+      });
+      this.model.validate('username');
+      this.model.bind('validated:invalid', function(model, errors) {
+        log("Validation failed:", {
+          errors: errors,
+          model: model
+        });
+        return _.each(errors, function(str, field) {
+          log("Looping through errors", {
+            field: field,
+            str: str,
+            jfield: $("input[name=" + field + "]")
+          });
+          return $("input[name=" + field + "]").after("<p>" + str + "</p>");
+        });
       });
       return this.model.login(data, function(data) {
         console.log("Login data response", data);
@@ -1383,7 +1409,7 @@ window.require.define({"views/templates/login": function(exports, require, modul
     var foundHelper, self=this;
 
 
-    return "<div class=\"modal-header\">\n	<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n	<h3>Login</h3>\n</div>\n<div class=\"modal-body\">\n	<div><input type=\"text\" placeholder=\"Username\" /></div>\n	<div><input type=\"password\" placeholder=\"Password\" /></div>\n</div>\n<div class=\"modal-footer\">\n	<a class=\"btn\" href=\"#create-account\">Create Account</a>\n	<button id=\"modal-submit\" class=\"btn btn-primary\">Login</button>\n</div>";});
+    return "<div class=\"modal-header\">\n	<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n	<h3>Login</h3>\n</div>\n<div class=\"modal-body\">\n	<div><input id=\"auth-username\" type=\"text\" name=\"username\" placeholder=\"Username\" /></div>\n	<div><input id=\"auth-password\" type=\"password\" name=\"password\" placeholder=\"Password\" /></div>\n</div>\n<div class=\"modal-footer\">\n	<a class=\"btn\" href=\"#create-account\">Create Account</a>\n	<button id=\"modal-submit\" class=\"btn btn-primary\">Login</button>\n</div>";});
 }});
 
 window.require.define({"views/templates/photo_collection": function(exports, require, module) {

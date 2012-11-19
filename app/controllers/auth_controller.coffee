@@ -14,8 +14,8 @@ module.exports = class AuthController extends Controller
 
 	join: ->
 		new JoinView
-			model: new User
+			model: mediator.user
 
 	login: ->
 		@view = new LoginView
-    		model: @user
+    		model: mediator.user
