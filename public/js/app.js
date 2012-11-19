@@ -144,9 +144,11 @@ window.require.define({"common": function(exports, require, module) {
       },
       initTemplateHelpers: function() {},
       initControllers: function() {
-        var AuthController;
+        var AuthController, ModalController;
         AuthController = require('controllers/auth_controller');
-        return this.auth = new AuthController;
+        this.auth = new AuthController;
+        ModalController = require('controllers/modal_controller');
+        return this.modal = new ModalController;
       },
       initMediator: function() {
         return mediator.user = null;
@@ -157,7 +159,7 @@ window.require.define({"common": function(exports, require, module) {
 }});
 
 window.require.define({"controllers/auth_controller": function(exports, require, module) {
-  var AuthController, Controller, JoinView, User, mediator, _ref,
+  var AuthController, Controller, JoinView, LoginView, User, mediator, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -166,6 +168,8 @@ window.require.define({"controllers/auth_controller": function(exports, require,
   User = require('models/user');
 
   JoinView = require('views/join');
+
+  LoginView = require('views/login');
 
   module.exports = AuthController = (function(_super) {
 
@@ -180,7 +184,17 @@ window.require.define({"controllers/auth_controller": function(exports, require,
       return this.user = mediator.user = new User;
     };
 
+    AuthController.prototype.index = function() {
+      return this.view = new LoginView({
+        model: this.user
+      });
+    };
+
     AuthController.prototype.join = function() {
+      var _this = this;
+      this.subscribeEvent('modal:join:success', function() {
+        return _this.redirectTo('/dashboard');
+      });
       return new JoinView({
         model: new User
       });
@@ -303,15 +317,11 @@ window.require.define({"controllers/header_controller": function(exports, requir
 }});
 
 window.require.define({"controllers/home_controller": function(exports, require, module) {
-  var Controller, HomeController, LoginView, User,
+  var Controller, HomeController,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   Controller = require('controllers/base/controller');
-
-  LoginView = require('views/login');
-
-  User = require('models/user');
 
   module.exports = HomeController = (function(_super) {
 
@@ -323,15 +333,44 @@ window.require.define({"controllers/home_controller": function(exports, require,
 
     HomeController.prototype.historyURL = '';
 
-    HomeController.prototype.index = function() {
-      console.log('Loading Login View');
-      this.user = new User;
-      return this.view = new LoginView({
-        model: this.user
-      });
+    return HomeController;
+
+  })(Controller);
+  
+}});
+
+window.require.define({"controllers/modal_controller": function(exports, require, module) {
+  var Controller, JoinView, LoginView, ModalController, User, log, mediator, _ref,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  _ref = require('common'), Controller = _ref.Controller, log = _ref.log, mediator = _ref.mediator;
+
+  User = require('models/user');
+
+  JoinView = require('views/join');
+
+  LoginView = require('views/login');
+
+  module.exports = ModalController = (function(_super) {
+
+    __extends(ModalController, _super);
+
+    function ModalController() {
+      return ModalController.__super__.constructor.apply(this, arguments);
+    }
+
+    ModalController.prototype.initialize = function() {
+      ModalController.__super__.initialize.apply(this, arguments);
+      return this.subscribeEvent('modal:redirect', this.modalRedirect);
     };
 
-    return HomeController;
+    ModalController.prototype.modalRedirect = function(path) {
+      log("Modal called redirect to:", path);
+      return this.redirectTo(path);
+    };
+
+    return ModalController;
 
   })(Controller);
   
@@ -567,7 +606,7 @@ window.require.define({"models/user": function(exports, require, module) {
 window.require.define({"routes": function(exports, require, module) {
   
   module.exports = function(match) {
-    match('', 'home#index');
+    match('', 'auth#index');
     match('dashboard', 'dashboard#index');
     return match('join', 'auth#join');
   };
@@ -784,9 +823,11 @@ window.require.define({"views/header": function(exports, require, module) {
 }});
 
 window.require.define({"views/join": function(exports, require, module) {
-  var JoinView, ModalView, template,
+  var JoinView, ModalView, mediator, template,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  mediator = require('common').mediator;
 
   ModalView = require('views/base/modal');
 
@@ -829,7 +870,7 @@ window.require.define({"views/join": function(exports, require, module) {
       console.log("Submitting form with the data:", data);
       return this.model.create(data, function(data) {
         console.log("Join data response", data);
-        return window.location.href = '/dashboard';
+        return mediator.publish('modal:join:success', this);
       });
     };
 
@@ -906,10 +947,12 @@ window.require.define({"views/layout": function(exports, require, module) {
 }});
 
 window.require.define({"views/login": function(exports, require, module) {
-  var LoginView, ModalView, template,
+  var LoginView, ModalView, log, mediator, template, _ref,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  _ref = require('common'), log = _ref.log, mediator = _ref.mediator;
 
   ModalView = require('views/base/modal');
 
@@ -950,7 +993,7 @@ window.require.define({"views/login": function(exports, require, module) {
 
     LoginView.prototype.showCreateAccountView = function(e) {
       e.preventDefault();
-      return window.location.href = '/join';
+      return mediator.publish('modal:redirect', 'join');
     };
 
     return LoginView;

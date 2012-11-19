@@ -1,3 +1,4 @@
+{mediator} = require 'common'
 ModalView = require 'views/base/modal'
 template  = require 'views/templates/join'
 
@@ -28,4 +29,4 @@ module.exports = class JoinView extends ModalView
     @model.create data, (data) ->
       console.log "Join data response", data
 
-      window.location.href = '/dashboard'
+      mediator.publish 'modal:join:success', @

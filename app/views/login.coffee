@@ -1,3 +1,4 @@
+{log, mediator} = require 'common'
 ModalView = require 'views/base/modal'
 template  = require 'views/templates/login'
 
@@ -22,4 +23,4 @@ module.exports = class LoginView extends ModalView
 
   showCreateAccountView: (e) ->
     e.preventDefault();
-    window.location.href = '/join'
+    mediator.publish 'modal:redirect', 'join'

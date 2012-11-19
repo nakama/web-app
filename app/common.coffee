@@ -63,6 +63,9 @@ module.exports = common =
 			AuthController = require 'controllers/auth_controller'
 			@auth = new AuthController
 
+			ModalController = require 'controllers/modal_controller'
+			@modal = new ModalController
+
 		# Create additional mediator properties
 		# -------------------------------------
 		initMediator: ->
