@@ -680,6 +680,17 @@ li {
   -ms-transition-duration: 0s;
   transition-duration: 0s;
 }
+.modal.fade {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  -ms-transition: none;
+  transition: none;
+}
 .modal-container {
   padding: 10px;
 }
