@@ -9,13 +9,13 @@ module.exports = class AuthController extends Controller
 		super
 		@user = mediator.user = new User
 
-	index: ->
-		@view = new LoginView
-    		model: @user
-
 	join: ->
 		@subscribeEvent 'modal:join:success', =>
 			@redirectTo '/dashboard'
 
 		new JoinView
 			model: new User
+
+	login: ->
+		@view = new LoginView
+    		model: @user

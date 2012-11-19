@@ -184,12 +184,6 @@ window.require.define({"controllers/auth_controller": function(exports, require,
       return this.user = mediator.user = new User;
     };
 
-    AuthController.prototype.index = function() {
-      return this.view = new LoginView({
-        model: this.user
-      });
-    };
-
     AuthController.prototype.join = function() {
       var _this = this;
       this.subscribeEvent('modal:join:success', function() {
@@ -197,6 +191,12 @@ window.require.define({"controllers/auth_controller": function(exports, require,
       });
       return new JoinView({
         model: new User
+      });
+    };
+
+    AuthController.prototype.login = function() {
+      return this.view = new LoginView({
+        model: this.user
       });
     };
 
@@ -614,9 +614,10 @@ window.require.define({"models/user": function(exports, require, module) {
 window.require.define({"routes": function(exports, require, module) {
   
   module.exports = function(match) {
-    match('', 'auth#index');
+    match('', 'auth#login');
     match('dashboard', 'dashboard#index');
-    return match('join', 'auth#join');
+    match('join', 'auth#join');
+    return match('login', 'auth#login');
   };
   
 }});
@@ -666,7 +667,7 @@ window.require.define({"views/base/modal": function(exports, require, module) {
     ModalView.prototype.attributes = {
       role: 'dialog',
       'aria-hidden': true,
-      'tabindex': '-1'
+      tabindex: '-1'
     };
 
     ModalView.prototype.initialize = function(options) {
@@ -1321,7 +1322,7 @@ window.require.define({"views/templates/header": function(exports, require, modu
     var foundHelper, self=this;
 
 
-    return "<div class=\"container\">\n	<a class=\"brand\" href=\"#\">Nakama</a>\n	<ul class=\"nav\">\n		<li><a href=\"#upload\">Upload</a></li>\n		<li><a href=\"#\">Logout</a></li>\n	</ul>\n</div>";});
+    return "<div class=\"container\">\n	<a class=\"brand\" href=\"#\">Nakama</a>\n	<ul class=\"nav\">\n		<li><a href=\"#settings\">Settings</a></li>	\n		<li><a href=\"#login\">Login</a></li>\n	</ul>\n</div>";});
 }});
 
 window.require.define({"views/templates/join": function(exports, require, module) {

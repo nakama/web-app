@@ -6,7 +6,7 @@ module.exports = class ModalView extends View
 	attributes:
 		role: 'dialog'
 		'aria-hidden': true
-		'tabindex': '-1'
+		tabindex: '-1'
 		
 	initialize: (options) ->
 		@options.size = options?.size || 'normal'
@@ -18,4 +18,4 @@ module.exports = class ModalView extends View
 		@$el.addClass 'size-' + @options.size
 
 		# Show it
-		@$el.modal('show')
+		@$el.modal 'show'
