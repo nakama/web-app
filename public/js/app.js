@@ -362,7 +362,8 @@ window.require.define({"controllers/modal_controller": function(exports, require
 
     ModalController.prototype.initialize = function() {
       ModalController.__super__.initialize.apply(this, arguments);
-      return this.subscribeEvent('modal:redirect', this.modalRedirect);
+      this.subscribeEvent('modal:redirect', this.modalRedirect);
+      return this.subscribeEvent('modal:submit', this.modalSubmit);
     };
 
     ModalController.prototype.modalRedirect = function(path, scope) {
@@ -373,6 +374,27 @@ window.require.define({"controllers/modal_controller": function(exports, require
       $('.modal-backdrop').remove();
       $.proxy(this.dispose, scope);
       return this.redirectTo(path);
+    };
+
+    ModalController.prototype.modalSubmit = function() {
+      $("#modal-submit").text('');
+      return $("#modal-submit").spin({
+        lines: 11,
+        length: 3,
+        width: 2,
+        radius: 5,
+        corners: 0,
+        rotate: 0,
+        color: '#000',
+        speed: 1,
+        trail: 50,
+        shadow: false,
+        hwaccel: false,
+        className: 'spinner',
+        zIndex: 100,
+        top: 'auto',
+        left: 'auto'
+      });
     };
 
     return ModalController;
@@ -791,11 +813,11 @@ window.require.define({"views/dashboard_view": function(exports, require, module
 }});
 
 window.require.define({"views/header": function(exports, require, module) {
-  var HeaderView, View, template,
+  var HeaderView, View, log, mediator, template, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  View = require('views/base/view');
+  _ref = require('common'), log = _ref.log, mediator = _ref.mediator, View = _ref.View;
 
   template = require('views/templates/header');
 
@@ -819,9 +841,17 @@ window.require.define({"views/header": function(exports, require, module) {
 
     HeaderView.prototype.template = template;
 
+    HeaderView.prototype.events = {
+      'click a[href="#settings"]': 'settings'
+    };
+
     HeaderView.prototype.initialize = function() {
       HeaderView.__super__.initialize.apply(this, arguments);
       return console.log("Initializing the Header View");
+    };
+
+    HeaderView.prototype.settings = function(e) {
+      return e.preventDefault();
     };
 
     return HeaderView;
@@ -889,11 +919,13 @@ window.require.define({"views/join": function(exports, require, module) {
 }});
 
 window.require.define({"views/layout": function(exports, require, module) {
-  var Chaplin, HeaderView, Layout, UploadView, User,
+  var Chaplin, HeaderView, Layout, UploadView, User, mediator,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   Chaplin = require('chaplin');
+
+  mediator = Chaplin.mediator;
 
   User = require('models/user');
 
@@ -910,7 +942,6 @@ window.require.define({"views/layout": function(exports, require, module) {
     }
 
     Layout.prototype.events = {
-      'click a[href="#upload"]': 'showUpload',
       'click #modal-submit': 'modalSubmit'
     };
 
@@ -922,30 +953,7 @@ window.require.define({"views/layout": function(exports, require, module) {
 
     Layout.prototype.modalSubmit = function(e) {
       e.preventDefault();
-      $("#modal-submit").text('');
-      return $("#modal-submit").spin({
-        lines: 11,
-        length: 3,
-        width: 2,
-        radius: 5,
-        corners: 0,
-        rotate: 0,
-        color: '#000',
-        speed: 1,
-        trail: 50,
-        shadow: false,
-        hwaccel: false,
-        className: 'spinner',
-        zIndex: 100,
-        top: 'auto',
-        left: 'auto'
-      });
-    };
-
-    Layout.prototype.showUpload = function(e) {
-      e.preventDefault();
-      console.log("Showing Upload");
-      return this.upload = new UploadView;
+      return mediator.publish('modal:submit');
     };
 
     return Layout;
@@ -995,8 +1003,7 @@ window.require.define({"views/login": function(exports, require, module) {
 
     LoginView.prototype.modalSubmit = function(e) {
       e.preventDefault();
-      console.log("hit");
-      return window.location.href = '/dashboard';
+      return console.log("hit");
     };
 
     LoginView.prototype.showCreateAccountView = function(e) {
@@ -1319,10 +1326,30 @@ window.require.define({"views/photo_collection_view": function(exports, require,
 window.require.define({"views/templates/header": function(exports, require, module) {
   module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
     helpers = helpers || Handlebars.helpers;
-    var foundHelper, self=this;
+    var buffer = "", stack1, stack2, foundHelper, tmp1, self=this;
 
+  function program1(depth0,data) {
+    
+    
+    return "\n		<li><a href=\"#settings\">Settings</a></li>\n		<li><a href=\"#logout\">Logout</a></li>\n		";}
 
-    return "<div class=\"container\">\n	<a class=\"brand\" href=\"#\">Nakama</a>\n	<ul class=\"nav\">\n		<li><a href=\"#settings\">Settings</a></li>	\n		<li><a href=\"#login\">Login</a></li>\n	</ul>\n</div>";});
+  function program3(depth0,data) {
+    
+    
+    return "\n		<li><a href=\"#login\">Login</a></li>\n		";}
+
+    buffer += "<div class=\"container\">\n	<a class=\"brand\" href=\"#\">Nakama</a>\n	<ul class=\"nav\">\n		";
+    foundHelper = helpers.username;
+    stack1 = foundHelper || depth0.username;
+    stack2 = helpers['if'];
+    tmp1 = self.program(1, program1, data);
+    tmp1.hash = {};
+    tmp1.fn = tmp1;
+    tmp1.inverse = self.program(3, program3, data);
+    stack1 = stack2.call(depth0, stack1, tmp1);
+    if(stack1 || stack1 === 0) { buffer += stack1; }
+    buffer += "\n	</ul>\n</div>";
+    return buffer;});
 }});
 
 window.require.define({"views/templates/join": function(exports, require, module) {

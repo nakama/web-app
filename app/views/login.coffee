@@ -19,7 +19,7 @@ module.exports = class LoginView extends ModalView
   modalSubmit: (e) =>
     e.preventDefault();
     console.log "hit"
-    window.location.href = '/dashboard'
+    #window.location.href = '/dashboard'
 
   showCreateAccountView: (e) ->
     e.preventDefault();

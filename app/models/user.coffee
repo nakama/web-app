@@ -14,6 +14,7 @@ module.exports = class User extends Model
 			data: options
 			headers:            
 				'Accept' : 'application/json'
+			
 			success: (data, status, jqxhr) ->
 				console.log "User creation successful", arguments
 				if typeof callback is "function"
@@ -29,6 +30,7 @@ module.exports = class User extends Model
 			type: "POST"
 			url: "http://50.19.65.14:8080/auth/user/login"
 			data: options
+
 			success: ->
 				console.log "User login successful", arguments
 			error: ->

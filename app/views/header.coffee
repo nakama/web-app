@@ -1,4 +1,4 @@
-View = require 'views/base/view'
+{log, mediator, View}   = require 'common'
 template = require 'views/templates/header'
 
 module.exports = class HeaderView extends View
@@ -9,8 +9,13 @@ module.exports = class HeaderView extends View
 	tagName: 'header'
 	template: template
 
+	events:
+		'click a[href="#settings"]': 'settings'
+
 	initialize: ->
 		super
 		console.log("Initializing the Header View");
 
-		
+	settings: (e) ->
+		e.preventDefault()
+
