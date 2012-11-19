@@ -849,8 +849,10 @@ window.require.define({"views/header": function(exports, require, module) {
     };
 
     HeaderView.prototype.initialize = function() {
+      var _ref1;
       HeaderView.__super__.initialize.apply(this, arguments);
-      return console.log("Initializing the Header View");
+      log("Initializing the Header View");
+      return (_ref1 = this.model) != null ? _ref1.on('change', this.render, this) : void 0;
     };
 
     HeaderView.prototype.settings = function(e) {
@@ -922,7 +924,7 @@ window.require.define({"views/join": function(exports, require, module) {
 }});
 
 window.require.define({"views/layout": function(exports, require, module) {
-  var Chaplin, HeaderView, Layout, UploadView, User, mediator,
+  var Chaplin, HeaderView, Layout, mediator,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -930,11 +932,7 @@ window.require.define({"views/layout": function(exports, require, module) {
 
   mediator = Chaplin.mediator;
 
-  User = require('models/user');
-
   HeaderView = require('views/header');
-
-  UploadView = require('views/upload');
 
   module.exports = Layout = (function(_super) {
 
@@ -951,7 +949,9 @@ window.require.define({"views/layout": function(exports, require, module) {
     Layout.prototype.initialize = function() {
       Layout.__super__.initialize.apply(this, arguments);
       console.log("Initializing the Layout");
-      return this.header = new HeaderView;
+      return this.header = new HeaderView({
+        model: mediator.user
+      });
     };
 
     Layout.prototype.modalSubmit = function(e) {

@@ -1,8 +1,6 @@
 Chaplin    = require 'chaplin'
 mediator   = Chaplin.mediator
-User       = require 'models/user'
 HeaderView = require 'views/header'
-UploadView = require 'views/upload'
 
 module.exports = class Layout extends Chaplin.Layout
 
@@ -15,7 +13,7 @@ module.exports = class Layout extends Chaplin.Layout
 		console.log "Initializing the Layout"
 
 		@header = new HeaderView
-			#model: User
+			model: mediator.user
 
 	modalSubmit: (e) ->
 		e.preventDefault()

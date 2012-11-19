@@ -1,5 +1,5 @@
-{log, mediator, View}   = require 'common'
-template = require 'views/templates/header'
+{log, mediator, View} = require 'common'
+template              = require 'views/templates/header'
 
 module.exports = class HeaderView extends View
 	autoRender: true
@@ -14,8 +14,8 @@ module.exports = class HeaderView extends View
 
 	initialize: ->
 		super
-		console.log("Initializing the Header View");
+		log("Initializing the Header View");
+		@model?.on 'change', @render, @
 
 	settings: (e) ->
 		e.preventDefault()
-
