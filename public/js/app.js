@@ -1331,7 +1331,7 @@ window.require.define({"views/templates/join": function(exports, require, module
     var foundHelper, self=this;
 
 
-    return "<div class=\"modal-container\">\n	<h1>Create Account</h1>\n	<div><input id=\"create-account-name\" type=\"text\" placeholder=\"Name\" /></div>\n	<div><input id=\"create-account-email\" type=\"text\" placeholder=\"Email\" /></div>\n	<div><input id=\"create-account-username\" type=\"text\" placeholder=\"Username\" /></div>\n	<div><input id=\"create-account-password\" type=\"password\" placeholder=\"Password\" /></div>\n	<div>\n		<button id=\"modal-submit\" class=\"btn btn-primary\">Submit</button>\n	</div>\n</div>";});
+    return "<div class=\"modal-header\">\n	<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n	<h3>Create Account</h3>\n</div>\n<div class=\"modal-body\">\n	<div><input id=\"create-account-name\" type=\"text\" placeholder=\"Name\" /></div>\n	<div><input id=\"create-account-email\" type=\"text\" placeholder=\"Email\" /></div>\n	<div><input id=\"create-account-username\" type=\"text\" placeholder=\"Username\" /></div>\n	<div><input id=\"create-account-password\" type=\"password\" placeholder=\"Password\" /></div>\n</div>\n<div class=\"modal-footer\">\n	<button id=\"modal-submit\" class=\"btn btn-primary\">Submit</button>\n</div>";});
 }});
 
 window.require.define({"views/templates/login": function(exports, require, module) {
@@ -1340,7 +1340,7 @@ window.require.define({"views/templates/login": function(exports, require, modul
     var foundHelper, self=this;
 
 
-    return "<div class=\"modal-container\">\n	<h1>Login</h1>\n	<div><input type=\"text\" placeholder=\"Username\" /></div>\n	<div><input type=\"password\" placeholder=\"Password\" /></div>\n	<div>\n		<button id=\"modal-submit\" class=\"btn btn-primary\">Login</button>\n		<a class=\"btn\" href=\"#create-account\">Create Account</a>\n	</div>\n</div>";});
+    return "<div class=\"modal-header\">\n	<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n	<h3>Login</h3>\n</div>\n<div class=\"modal-body\">\n	<div><input type=\"text\" placeholder=\"Username\" /></div>\n	<div><input type=\"password\" placeholder=\"Password\" /></div>\n</div>\n<div class=\"modal-footer\">\n	<a class=\"btn\" href=\"#create-account\">Create Account</a>\n	<button id=\"modal-submit\" class=\"btn btn-primary\">Login</button>\n</div>";});
 }});
 
 window.require.define({"views/templates/photo_collection": function(exports, require, module) {
