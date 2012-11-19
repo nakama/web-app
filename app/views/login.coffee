@@ -23,4 +23,4 @@ module.exports = class LoginView extends ModalView
 
   showCreateAccountView: (e) ->
     e.preventDefault();
-    mediator.publish 'modal:redirect', 'join'
+    mediator.publish 'modal:redirect', 'join', @

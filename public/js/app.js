@@ -365,8 +365,13 @@ window.require.define({"controllers/modal_controller": function(exports, require
       return this.subscribeEvent('modal:redirect', this.modalRedirect);
     };
 
-    ModalController.prototype.modalRedirect = function(path) {
-      log("Modal called redirect to:", path);
+    ModalController.prototype.modalRedirect = function(path, scope) {
+      log("Modal called redirect to:", {
+        path: path,
+        scope: scope
+      });
+      $('.modal-backdrop').remove();
+      $.proxy(this.dispose, scope);
       return this.redirectTo(path);
     };
 
@@ -996,7 +1001,7 @@ window.require.define({"views/login": function(exports, require, module) {
 
     LoginView.prototype.showCreateAccountView = function(e) {
       e.preventDefault();
-      return mediator.publish('modal:redirect', 'join');
+      return mediator.publish('modal:redirect', 'join', this);
     };
 
     return LoginView;

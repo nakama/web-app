@@ -10,7 +10,12 @@ module.exports = class ModalController extends Controller
 
 		@subscribeEvent 'modal:redirect', @modalRedirect
 
-	modalRedirect: (path) ->
-		log "Modal called redirect to:", path
+	modalRedirect: (path, scope) ->
+		log "Modal called redirect to:",
+			path: path
+			scope: scope
+
+		$('.modal-backdrop').remove() #Remove old backdrop
+		$.proxy(@dispose, scope) #Dispose old modal
 
 		@redirectTo path
