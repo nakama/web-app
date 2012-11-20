@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "brunch": "latest",
+    "auto-reload-brunch": "latest",
     "javascript-brunch": ">= 1.0 < 1.5",
     "coffee-script-brunch": ">= 1.0 < 1.5",
     "css-brunch": ">= 1.0 < 1.5",
