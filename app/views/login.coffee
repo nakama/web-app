@@ -44,6 +44,8 @@ module.exports = class LoginView extends ModalView
         errors: errors
         model: model
 
+      mediator.publish 'modal:error', errors, @
+
       _.each errors, (str, field) ->
         log "Looping through errors",
           field: field
