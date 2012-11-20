@@ -17,7 +17,7 @@ module.exports = class LoginView extends ModalView
     log "Initializing the Login View",
       model: @model
 
-    Backbone.Validation.bind(this)
+    #Backbone.Validation.bind(this)
     
   onSubmit: (e) =>
     e.preventDefault();
@@ -29,6 +29,12 @@ module.exports = class LoginView extends ModalView
     log "Submitting Login with the data:",
       data: data
 
+    @model.login data, (data) ->
+      log "Login data response", data
+
+      mediator.publish 'auth:success', @
+
+    ###
     @model.validate 'username'
 
     @model.bind 'validated:valid', (model) =>
@@ -56,6 +62,7 @@ module.exports = class LoginView extends ModalView
         $("input[name=#{field}]").tooltip
           trigger: 'manual'
           placement: 'right'
+    ###
 
   showCreateAccountView: (e) ->
     e.preventDefault();
