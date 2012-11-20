@@ -1,13 +1,11 @@
-Controller        = require 'controllers/base/controller'
-HeaderView        = require 'views/header'
-User              = require 'models/user'
+{Controller, log, mediator} = require 'common'
+HeaderView                  = require 'views/header'
 
 module.exports = class HeaderController extends Controller
 
 	initialize: ->
 		super
-		console.log 'Loading Header View'
+		log 'Loading Header View'
 
-		@user = new User
 		@view = new HeaderView
-			model: @user
+			model: mediator.user

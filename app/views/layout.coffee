@@ -1,6 +1,5 @@
 Chaplin    = require 'chaplin'
 mediator   = Chaplin.mediator
-HeaderView = require 'views/header'
 logger     = require 'lib/logger'
 log        = logger.log
 
@@ -13,9 +12,6 @@ module.exports = class Layout extends Chaplin.Layout
 		super
 
 		log "Initializing the Layout"
-
-		@header = new HeaderView
-			model: mediator.user
 
 	modalSubmit: (e) ->
 		e.preventDefault()

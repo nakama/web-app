@@ -11,11 +11,25 @@ module.exports = class HeaderView extends View
 
 	events:
 		'click a[href="#settings"]': 'settings'
+		'click a[href="#logout"]': 'onLogout'
 
 	initialize: ->
 		super
-		log("Initializing the Header View");
-		@model?.on 'change', @render, @
+		log("Initializing the Header View")
+		
+		if @model or @collection
+			#rendered = no
+			@modelBind 'change', =>
+				log "Header View re-rendering",
+					model: @model
+
+				@render(yes)
+				#rendered = yes
+
+	onLogout: (e) ->
+		e.preventDefault()
+
+		mediator.publish 'auth:logout'
 
 	settings: (e) ->
 		e.preventDefault()

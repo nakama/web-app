@@ -1,4 +1,4 @@
-Model = require 'models/base/model'
+{log, Model} = require 'common'
 
 module.exports = class User extends Model
 
@@ -15,7 +15,8 @@ module.exports = class User extends Model
 		super
 
 	create: (options, callback) ->
-		console.log "Creating user...", options
+		log "Creating user...",
+			options: options
 
 		$.ajax
 			type: "POST"
@@ -23,25 +24,36 @@ module.exports = class User extends Model
 			data: options
 			
 			success: (data, status, jqxhr) ->
-				console.log "User creation successful", arguments
+				log "User creation successful",
+					arguments: arguments
+
 				if typeof callback is "function"
 					callback(data, status, jqxhr)
 
 			error: ->
-				console.log "User creation failed", arguments
+				log "User creation failed",
+					arguments: arguments
 
 	login: (options, callback) ->
-		console.log "Logging in user..."
+		log "Logging in user...",
+			options: options
 
 		$.ajax
 			type: "POST"
 			url: "http://50.19.65.14:8080/auth/user/login"
 			data: options
 
-			success: (data, status, jqxhr) ->
-				console.log "User login successful", arguments
+			success: (data, status, jqxhr) =>
+				log "User login successful",
+					arguments: arguments
+
 				if typeof callback is "function"
+					log "User model set with:",
+						data: options
+
+					@set options
 					callback(data, status, jqxhr)
 
 			error: ->
-				console.log "User login failed", arguments
+				log "User login failed",
+					arguments: arguments
