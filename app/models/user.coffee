@@ -28,6 +28,11 @@ module.exports = class User extends Model
 					arguments: arguments
 
 				if typeof callback is "function"
+					log "User model set with:",
+						data: options
+
+					@set options
+
 					callback(data, status, jqxhr)
 
 			error: ->

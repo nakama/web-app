@@ -18,13 +18,13 @@ module.exports = class HeaderView extends View
 		log("Initializing the Header View")
 		
 		if @model or @collection
-			#rendered = no
+			rendered = no
 			@modelBind 'change', =>
 				log "Header View re-rendering",
 					model: @model
 
 				@render(yes)
-				#rendered = yes
+				rendered = yes
 
 	onLogout: (e) ->
 		e.preventDefault()
