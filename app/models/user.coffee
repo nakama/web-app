@@ -2,8 +2,10 @@ Model = require 'models/base/model'
 
 module.exports = class User extends Model
 
+	###
 	defaults:
 		username: null
+	###
 
 	validation:
 		username:
