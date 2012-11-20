@@ -10,6 +10,7 @@ module.exports = class AuthController extends Controller
 		@user = mediator.user = new User
 
 		@subscribeEvent 'auth:success', =>
+			mediator.publish 'modal:clear', @
 			@redirectTo 'dashboard'
 
 	join: ->

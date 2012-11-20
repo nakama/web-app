@@ -6,9 +6,13 @@ module.exports = class ModalController extends Controller
 	initialize: ->
 		super
 
+		@subscribeEvent 'modal:clear', @onClear
+		@subscribeEvent 'modal:error', @onError
 		@subscribeEvent 'modal:redirect', @onRedirect
 		@subscribeEvent 'modal:submit', @onSubmit
-		@subscribeEvent 'modal:error', @onError
+
+	onClear: ->
+		$('.modal-backdrop').remove()
 
 	onError: (errors, scope) ->
 		$("#modal-submit").spin false
