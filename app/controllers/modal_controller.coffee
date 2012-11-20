@@ -6,15 +6,15 @@ module.exports = class ModalController extends Controller
 	initialize: ->
 		super
 
-		@subscribeEvent 'modal:redirect', @modalRedirect
-		@subscribeEvent 'modal:submit', @modalSubmit
+		@subscribeEvent 'modal:redirect', @onRedirect
+		@subscribeEvent 'modal:submit', @onSubmit
 		@subscribeEvent 'modal:error', @onError
 
 	onError: (errors, scope) ->
 		$("#modal-submit").spin false
 		$("#modal-submit").text 'Login'
 
-	modalRedirect: (path, scope) ->
+	onRedirect: (path, scope) ->
 		log "Modal called redirect to:",
 			path: path
 			scope: scope
@@ -24,7 +24,7 @@ module.exports = class ModalController extends Controller
 
 		@redirectTo path
 
-	modalSubmit: ->
+	onSubmit: ->
 		$("#modal-submit").text ''
 		$("#modal-submit").spin
 			lines: 11
