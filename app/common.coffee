@@ -1,7 +1,34 @@
 Chaplin  = require 'chaplin'
 logger   = require 'lib/logger'
+log      = logger.log
 
 module.exports = common =
+	api: (options, callback) ->
+		log 'API call initialized',
+			options: options
+
+		set = options.set or yes
+
+		$.ajax
+			type: options.type or 'POST'
+			url: 'http://50.19.65.14:8080' + options.url
+			data: JSON.stringify(options.data)
+
+			success: (data, status, jqxhr) =>
+				log 'API call successful',
+					arguments: arguments
+
+				if set
+					log 'Model set'
+					@set options.data
+
+				if typeof callback is 'function'
+					callback(data, status, jqxhr)
+
+			error: ->
+				log 'API call failed',
+					arguments: arguments
+
 	mediator : Chaplin.mediator
 
 	error    : logger.error
@@ -24,6 +51,7 @@ module.exports = common =
 			$.ajaxSetup
 				cache: false
 				dataType: 'json'
+				contentType: 'application/json'
 				headers:            
 					'Accept' : 'application/json'
 
