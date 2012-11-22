@@ -10,7 +10,9 @@ var config  = require('./config/app'),
 	hbs     = require('hbs'),
 	path    = require('path'),
 	_       = require('underscore'),
-	util    = require('util')
+	util    = require('util'),
+	redis   = require("redis"),
+	client  = redis.createClient()
 
 // - Server Settings
 require('./config/express')(app, config, __dirname, express, hbs, path, util);
