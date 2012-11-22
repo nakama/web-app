@@ -29,6 +29,8 @@ module.exports = class LoginView extends ModalView
     log "Submitting Login with the data:",
       data: data
 
+    mediator.publish 'socket:msg', data
+
     @model.login data, ->
       #log "Login data response", data
 

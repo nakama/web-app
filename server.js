@@ -22,8 +22,9 @@ app.get('*', routes.index);
 require('./config/startup')(_, app, config, process, server, util);
 
 io.sockets.on('connection', function (socket) {
-	socket.emit('news', { hello: 'world' });
-	socket.on('my other event', function (data) {
-		console.log(data);
+	
+	socket.on('server:msg', function (data) {
+		console.log("Server received message:", data);
+		socket.emit('msg', "Got your message bro!")
 	});
 });
