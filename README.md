@@ -20,9 +20,10 @@ Now install the repo's dependencies:
     npm install -g brunch forever supervisor
     npm install
 
-##Start the server
+##Start the web app
 
     bin/dev_start
+    redis-server
 
 ##Auto-build changes to web app
 
