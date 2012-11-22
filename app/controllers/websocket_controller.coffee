@@ -6,7 +6,7 @@ module.exports = class WebsocketController extends Controller
 		super
 		log 'Loading Websocket Controller'
 
-		socket = io.connect window.location.origin
+		@socket = io.connect window.location.origin
 
-		socket.on 'msg', (data) ->
+		@socket.on 'msg', (data) ->
 			log data
