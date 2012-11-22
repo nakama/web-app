@@ -1,4 +1,4 @@
-module.exports = function(_, app, config, process, util) {
+module.exports = function(_, app, config, process, server, util) {
 	/*var numCPUs = require('os').cpus().length;
 	if (cluster.isMaster && (process.env.NODE_CLUSTERED === 1)) {
 
@@ -51,7 +51,8 @@ module.exports = function(_, app, config, process, util) {
 		}
 
 	} else {*/
-		app.listen(config.app.port);
+		//app.listen(config.app.port);
+		server.listen(config.app.port);
 		util.log("Express server instance listening on port " + config.app.port);
 	//}
 }

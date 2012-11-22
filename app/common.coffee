@@ -90,6 +90,9 @@ module.exports = common =
 		# Instantiate common controllers
 		# ------------------------------
 		initControllers: ->
+			WebsocketController = require 'controllers/websocket_controller'
+			@websocket = new WebsocketController
+
 			AuthController = require 'controllers/auth_controller'
 			@auth = new AuthController
 
