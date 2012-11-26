@@ -25,6 +25,8 @@ Now install the repo's dependencies:
     bin/dev_start
     redis-server
 
+View the website at: [http://localhost.naka.ma:3001](http://localhost.naka.ma:3001)
+
 ##Auto-build changes to web app
 
     brunch w
