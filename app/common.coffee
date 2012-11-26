@@ -86,6 +86,7 @@ module.exports = common =
 		# Instantiate template helpers
 		# ------------------------------
 		initTemplateHelpers: ->
+			require 'views/templates/helpers/common'
 
 		# Instantiate common controllers
 		# ------------------------------
