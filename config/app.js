@@ -45,7 +45,8 @@ module.exports = {
 
 				local: {
 					clientId: "6692e4c309da4c859e8c3c8c0cde263b",
-					clientSecret: "828ad3c00a5b402daed2c0b56c0f86af"
+					clientSecret: "828ad3c00a5b402daed2c0b56c0f86af",
+					redirect: "http://localhost.naka.ma:3001/oauth"
 				}
 			},
 
