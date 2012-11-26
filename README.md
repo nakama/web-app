@@ -21,9 +21,13 @@ Now install the repo's dependencies:
     npm install
 
 ##Start the web app
+Run each of these in a seperate terminal tab:
+
+    redis-server
 
     bin/dev_start
-    redis-server
+
+View the website at: [http://localhost.naka.ma:3001](http://localhost.naka.ma:3001)
 
 ##Auto-build changes to web app
 
