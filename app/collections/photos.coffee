@@ -10,7 +10,7 @@ module.exports = class Photos extends Collection
 		params = _.extend
 			type: 'GET'
 			dataType: 'jsonp'
-			url: @.url
+			url: @url
 			processData: false
 		, options
 
