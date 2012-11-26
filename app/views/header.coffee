@@ -17,7 +17,7 @@ module.exports = class HeaderView extends View
 
 	initialize: ->
 		super
-		log("Initializing the Header View")
+		log "Initializing the Header View"
 		
 		if @model or @collection
 			rendered = no
@@ -39,7 +39,5 @@ module.exports = class HeaderView extends View
 	upload: (e) ->
 		e.preventDefault()
 
-		mediator.user.set('urlInstagramRedirect', 'http://localhost.naka.ma:3001/oauth')
-
 		new UploadView
-			model: mediator.user
+			model: @model

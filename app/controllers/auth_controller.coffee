@@ -24,6 +24,8 @@ module.exports = class AuthController extends Controller
 			if location.pathname isnt '/'
 				window.location.href = '/' #don't know why I need to hard-refresh this
 
+		mediator.user.set('urlInstagramRedirect', 'http://localhost.naka.ma:3001/oauth')
+
 		@header = new HeaderView
 			model: mediator.user
 
