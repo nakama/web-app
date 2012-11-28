@@ -1,5 +1,6 @@
 module.exports = (match) ->
-	match '',          'auth#login'
+	match '',          'home#connect'
+	#match 'join',      'home#join'
+	#match 'login',     'home#login'
+
 	match 'dashboard', 'dashboard#index'
-	match 'join',      'auth#join'
-	match 'login',     'auth#login'

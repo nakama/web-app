@@ -5,7 +5,7 @@ module.exports = class HeaderController extends Controller
 
 	initialize: ->
 		super
-		log 'Loading Header View'
+		log 'Initializing the Header Controller'
 
 		@view = new HeaderView
 			model: mediator.user

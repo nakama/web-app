@@ -1,13 +1,14 @@
 {Controller, log, mediator} = require 'common'
 User                        = require 'models/user'
 HeaderView                  = require 'views/header'
-JoinView                    = require 'views/join'
-LoginView                   = require 'views/login'
+HeaderController            = require 'controllers/header_controller'
 
 module.exports = class AuthController extends Controller
 	
 	initialize: ->
 		super
+
+		log "Initializing the Authentication Controller"
 
 		userData = store.get('nakama-user')
 
@@ -21,25 +22,21 @@ module.exports = class AuthController extends Controller
 		# No user found - redirect to login
 		else
 			log "User not found"
-			if location.pathname isnt '/'
+
+			if location.pathname is '/'
+				#do nothing
+			else
 				window.location.href = '/' #don't know why I need to hard-refresh this
 
 		# Need to find a better home for these type of settings
-		mediator.user.set('urlInstagramRedirect', 'http://localhost.naka.ma:3001/oauth')
+		#mediator.user.set('urlInstagramRedirect', 'http://localhost.naka.ma:3001/oauth')
 
-		@header = new HeaderView
-			model: mediator.user
+		new HeaderController
+		#@header = new HeaderView
+		#	model: mediator.user
 
 		@subscribeEvent 'auth:logout', @onLogout
 		@subscribeEvent 'auth:success', @onSuccess
-
-	join: ->
-		new JoinView
-			model: mediator.user
-
-	login: ->
-		@view = new LoginView
-			model: mediator.user
 
 	onLogout: ->
 		store.remove 'nakama-user'

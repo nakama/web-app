@@ -4,7 +4,7 @@ module.exports = class WebsocketController extends Controller
 
 	initialize: ->
 		super
-		log 'Loading Websocket Controller'
+		log 'Initializing the Websocket Controller'
 
 		@subscribeEvent 'socket:msg', @msg
 

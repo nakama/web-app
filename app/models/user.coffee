@@ -13,6 +13,7 @@ module.exports = class User extends Model
 
 	initialize: ->
 		super
+		console.log @
 
 	create: (data, callback) ->
 		log 'Creating user...',
@@ -24,27 +25,37 @@ module.exports = class User extends Model
 
 		api.call @, options, callback
 
-		###
-		$.ajax
-			type: "POST"
-			url: "http://50.19.65.14:8080/auth/user/add"
-			data: options
-			
-			success: (data, status, jqxhr) ->
-				log "User creation successful",
-					arguments: arguments
+	find: (options, callback) ->
 
-				if typeof callback is "function"
-					log "User model set with:",
-						data: options
+		url = '/auth/user/get'
 
-					@set options
-					callback(data, status, jqxhr)
+		if options
 
-			error: ->
-				log "User creation failed",
-					arguments: arguments
-		###
+			# Get user by service and service identifier (id, token)
+			if options.service? and options.identifier? and options.value?
+				url += "/#{options.service}/#{options.identifier}/#{options.value}"
+
+			# Get user by ID explicit
+			else if options.id?
+				url += "/#{options.id}"
+
+			# Get uesr by ID
+			else if typeof options is 'string'
+				url += "/#{options}"
+
+			# Don't have enough information to get user
+			else
+				console.warn "Please fix the options for user.get()"
+				return
+
+			options =
+				type: 'GET'
+				url: url
+
+			log 'Getting user...',
+				options: options
+
+			api.call @, options, callback
 
 	login: (data, callback) ->
 		log 'Logging in user...',
@@ -56,56 +67,12 @@ module.exports = class User extends Model
 
 		api.call @, options, callback
 
-		###
-		$.ajax
-			type: "POST"
-			url: "http://50.19.65.14:8080/auth/user/login"
-			data: options
-
-			success: (data, status, jqxhr) =>
-				log "User login successful",
-					arguments: arguments
-
-				if typeof callback is "function"
-					log "User model set with:",
-						data: options
-
-					@set options
-					callback(data, status, jqxhr)
-
-			error: ->
-				log "User login failed",
-					arguments: arguments
-		###
-
 	update: (data, callback) ->
 		log 'Updating user...',
 			data: data
 
 		options = 
 			data: data
-			url: '/auth/user/login'
+			url: '/auth/user/update'
 
 		api.call @, options, callback
-
-		###
-		$.ajax
-			type: "POST"
-			url: "http://50.19.65.14:8080/auth/user/update"
-			data: options
-			
-			success: (data, status, jqxhr) ->
-				log "User update successful",
-					arguments: arguments
-
-				if typeof callback is "function"
-					log "User model set with:",
-						data: options
-
-					@set options
-					callback(data, status, jqxhr)
-
-			error: ->
-				log "User update failed",
-					arguments: arguments
-		###

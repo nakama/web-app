@@ -7,12 +7,13 @@ module.exports = common =
 		log 'API call initialized',
 			options: options
 
-		set = options.set or yes
+		data = if options.data then JSON.stringify(options.data) else null
+		set  = options.set or yes
 
 		$.ajax
 			type: options.type or 'POST'
 			url: 'http://50.19.65.14:8080' + options.url
-			data: JSON.stringify(options.data)
+			data: data
 
 			success: (data, status, jqxhr) =>
 				log 'API call successful',
@@ -38,10 +39,11 @@ module.exports = common =
 	Collection     : require 'models/base/collection'
 	CollectionView : require 'views/base/collection_view'
 	Controller     : require 'controllers/base/controller'
+	ModalView      : require 'views/base/modal'
 	Model          : require 'models/base/model'
 	PageView       : require 'views/base/page_view'
 	View           : require 'views/base/view'
-	Application    : Chaplin.Application.extend
+	Application    : module.exports = class Application extends Chaplin.Application
 		title: 'Nakama'
 
 		initialize: ->
@@ -61,7 +63,14 @@ module.exports = common =
 			@initLayout()
 
 			# Application-specific scaffold
-			@initControllers()
+			WebsocketController = require 'controllers/websocket_controller'
+			@websocket = new WebsocketController
+
+			AuthController = require 'controllers/auth_controller'
+			@auth = new AuthController
+
+			ModalController = require 'controllers/modal_controller'
+			@modal = new ModalController
 
 			# Register all routes and start routing
 			routes   = require 'routes'
@@ -87,18 +96,6 @@ module.exports = common =
 		# ------------------------------
 		initTemplateHelpers: ->
 			require 'views/templates/helpers/common'
-
-		# Instantiate common controllers
-		# ------------------------------
-		initControllers: ->
-			WebsocketController = require 'controllers/websocket_controller'
-			@websocket = new WebsocketController
-
-			AuthController = require 'controllers/auth_controller'
-			@auth = new AuthController
-
-			ModalController = require 'controllers/modal_controller'
-			@modal = new ModalController
 
 		# Create additional mediator properties
 		# -------------------------------------

@@ -19,6 +19,7 @@ module.exports = class HeaderView extends View
 		super
 		log "Initializing the Header View"
 		
+		###
 		if @model or @collection
 			rendered = no
 			@modelBind 'change', =>
@@ -27,6 +28,7 @@ module.exports = class HeaderView extends View
 
 				@render(yes)
 				rendered = yes
+		###
 
 	onLogout: (e) ->
 		e.preventDefault()
@@ -39,5 +41,5 @@ module.exports = class HeaderView extends View
 	upload: (e) ->
 		e.preventDefault()
 
-		new UploadView
+		@view = new UploadView
 			model: @model
