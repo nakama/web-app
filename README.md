@@ -23,8 +23,6 @@ Now install the repo's dependencies:
 ##Start the web app
 Run each of these in a seperate terminal tab:
 
-    redis-server
-
     bin/dev_start
 
 View the website at: [http://localhost.naka.ma:3001](http://localhost.naka.ma:3001)
