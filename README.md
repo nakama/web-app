@@ -21,7 +21,6 @@ Now install the repo's dependencies:
     npm install
 
 ##Start the web app
-Run each of these in a seperate terminal tab:
 
     bin/dev_start
 
