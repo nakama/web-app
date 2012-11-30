@@ -1,6 +1,5 @@
 {log, mediator, View} = require 'common'
 template              = require 'views/templates/header'
-UploadView            = require 'views/upload'
 
 module.exports = class HeaderView extends View
 	autoRender: true
@@ -11,7 +10,6 @@ module.exports = class HeaderView extends View
 	template: template
 
 	events:
-		'click a[href="#upload"]'   : 'upload'
 		'click a[href="#settings"]' : 'settings'
 		'click a[href="#logout"]'   : 'onLogout'
 
@@ -37,9 +35,3 @@ module.exports = class HeaderView extends View
 
 	settings: (e) ->
 		e.preventDefault()
-
-	upload: (e) ->
-		e.preventDefault()
-
-		@view = new UploadView
-			model: @model

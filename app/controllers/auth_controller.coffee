@@ -28,12 +28,7 @@ module.exports = class AuthController extends Controller
 			else
 				window.location.href = '/' #don't know why I need to hard-refresh this
 
-		# Need to find a better home for these type of settings
-		#mediator.user.set('urlInstagramRedirect', 'http://localhost.naka.ma:3001/oauth')
-
 		new HeaderController
-		#@header = new HeaderView
-		#	model: mediator.user
 
 		@subscribeEvent 'auth:logout', @onLogout
 		@subscribeEvent 'auth:success', @onSuccess
