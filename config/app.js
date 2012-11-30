@@ -4,7 +4,10 @@ module.exports = {
 		port: 3001,
 		session_secret: "yomama",
 		static: "/public",
-
+		redis : {
+			port: 6379,
+			host:"50.19.65.14"
+		}, 
 		oauth: {
 			dropbox: {
 				live: {
