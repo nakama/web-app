@@ -67,6 +67,16 @@ module.exports = class User extends Model
 
 		api.call @, options, callback
 
+	loginInstagram: (data, callback) ->
+		log 'Logging in Instagram user...',
+			data: data
+
+		options = 
+			data: data
+			url: '/auth/user/login/instagram'
+
+		api.call @, options, callback
+
 	update: (data, callback) ->
 		log 'Updating user...',
 			data: data

@@ -11,9 +11,9 @@ module.exports = class HeaderView extends View
 	template: template
 
 	events:
-		'click a[href="#upload"]': 'upload'
-		'click a[href="#settings"]': 'settings'
-		'click a[href="#logout"]': 'onLogout'
+		'click a[href="#upload"]'   : 'upload'
+		'click a[href="#settings"]' : 'settings'
+		'click a[href="#logout"]'   : 'onLogout'
 
 	initialize: ->
 		super

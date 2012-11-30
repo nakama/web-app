@@ -2,6 +2,7 @@
 ConnectView            = require 'views/connect'
 JoinView               = require 'views/join'
 LoginView              = require 'views/login'
+OAuthView              = require 'views/oauth'
 
 module.exports = class HomeController extends Controller
 	historyURL: ''
@@ -16,4 +17,8 @@ module.exports = class HomeController extends Controller
 
 	login: ->
 		@view = new LoginView
+			model: mediator.user
+
+	oauth: ->
+		@view = new OAuthView
 			model: mediator.user
