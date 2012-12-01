@@ -9,7 +9,6 @@ Edit `/etc/hosts` and add this line:
 Run install commands below for services you do not have:
 
     brew install node
-    brew install redis
 
 Next clone the repo:
 
