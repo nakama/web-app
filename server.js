@@ -11,13 +11,12 @@ var config  = require('./config/app'),
 	path    = require('path'),
 	_       = require('underscore'),
 	util    = require('util'),
-	redis   = require("redis"),
+	redis   = require("redis")
 	
 
 // - Redis pubsub
 subscribe  = redis.createClient(config.app.redis.port, config.app.redis.host);
 publish  = redis.createClient(config.app.redis.port, config.app.redis.host);
-
 
 // - Server Settings
 require('./config/express')(app, config, __dirname, express, hbs, path, util);
@@ -29,18 +28,33 @@ app.get('*', routes.index);
 require('./config/startup')(_, app, config, process, server, util);
 
 io.sockets.on('connection', function (socket) {
+	
+	//Client sent a message, do something with it
 	socket.on('server:msg', function (data) {
 		console.log("Server received message:", data);
 		socket.emit('msg', "Got your message bro!")
-		publish.publish("test132", "I am sending a message.");
-    });
-});
+		//publish.publish("test132", "I am sending a message.");
 
-subscribe.subscribe("test132"); 
-subscribe.on("message", function (channel, message) {
+
+    });
+
+	//Client requests photos for user
+    socket.on('api:photos:fetch', function(data) {
+    	console.log('api:photos:fetch')
+    	console.log(data)
+    	console.log('')
+
+    	publish.publish("photoFetcher", data);
+    });
+
+	//Redis got a message, send it to client
+    subscribe.on("message", function (channel, message) {
   		console.log("redis client received msg " + channel + ": " + message);
         socket.emit('msg', message)
+	});
 });
+
+subscribe.subscribe("test132");
 
 subscribe.on("error", function (err) {
     console.log("Redis says: " + err);
@@ -65,4 +79,3 @@ subscribe.on("unsubscribe", function () {
     console.log("Redis unsubscribe to channel: ");
     subscribe.end();
 });
-

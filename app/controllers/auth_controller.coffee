@@ -37,11 +37,18 @@ module.exports = class AuthController extends Controller
 		store.remove 'nakama-user'
 		window.location.href = '/'
 
-	onSuccess: (data) ->
+	onSuccess: (data, scope) ->
+		log "on usccess",
+			data: data
+
+		mediator.user.set('id', data.id)
+		mediator.user.set('profile', data.profile)
+		mediator.user.set('services', data.services)
+
 		store.set 'nakama-user', mediator.user
 
 		log "User set:",
 			user: mediator.user
 
-		mediator.publish 'modal:clear', @
+		mediator.publish 'modal:clear', scope
 		@redirectTo 'dashboard'

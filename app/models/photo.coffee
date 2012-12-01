@@ -1,14 +1,11 @@
-Model = require 'models/base/model'
+{api, log, mediator, Model} = require 'common'
 
 module.exports = class Photo extends Model
-	defaults:
-		author: null
-		data: null
-		location: null
-		path: null
-		stars: null
-		tags: []
 
 	initialize: ->
-		console.log "Initializing the Photo Model"
 		super
+		log "Initializing the Photo Model"
+
+	fetch: ->
+
+		mediator.publish 'api', 'photos:fetch', mediator.user

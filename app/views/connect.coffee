@@ -63,6 +63,7 @@ module.exports = class ConnectView extends ModalView
     e.preventDefault()
 
     user = @model
+    view = @
 
     IG.login (response) ->
       if response.session
@@ -93,7 +94,7 @@ module.exports = class ConnectView extends ModalView
             user.loginInstagram data, (data) ->
               console.log "Login Instagram data response", data
 
-              mediator.publish 'auth:success', @
+              mediator.publish 'auth:success', data.object, view
 
           # Assume new user
           else

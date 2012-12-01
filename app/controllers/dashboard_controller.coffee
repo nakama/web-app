@@ -1,17 +1,18 @@
-Controller = require 'controllers/base/controller'
-PhotoCollection     = require 'collections/photos'
-PhotoCollectionView  = require 'views/photo_collection_view'
-
-logger = require 'lib/logger'
-log    = logger.log
+{Controller, log, mediator} = require 'common'
+PhotoCollection             = require 'collections/photos'
+PhotoCollectionView         = require 'views/photo_collection_view'
 
 module.exports = class DashboardController extends Controller
-  historyURL: 'dashboard'
+	historyURL: 'dashboard'
 
-  index: ->
-    log 'Loading Photo Collection'
+	index: ->
+		log 'Loading Photo Collection'
 
-    @collection = new PhotoCollection
-    @view = new PhotoCollectionView
-        collection: @collection
-    @view.collection.fetch()
+		mediator.publish 'api', 'photos:fetch', mediator.user.attributes
+
+		###
+		@collection = new PhotoCollection
+		@view = new PhotoCollectionView
+		    collection: @collection
+		@view.collection.fetch()
+		###
