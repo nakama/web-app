@@ -12,7 +12,7 @@ module.exports = common =
 
 		$.ajax
 			type: options.type or 'POST'
-			url: 'http://50.19.65.14:8080' + options.url
+			url: 'http://ec2-23-23-8-2.compute-1.amazonaws.com:8080' + options.url
 			data: data
 
 			success: (data, status, jqxhr) =>
