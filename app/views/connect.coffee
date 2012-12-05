@@ -134,13 +134,13 @@ module.exports = class ConnectView extends ModalView
                   instagram:
                     avatar: $avatar.val()
                     id: $id.val()
-                    token: $token.val()
+                    auth_token: $token.val()
                     username: $susername.val()
 
               user.create data, (data) ->
                 console.log "Join data response", data
 
-                mediator.publish 'auth:success', @
+                mediator.publish 'auth:success', data.object, view
 
 
     , {scope: ['comments', 'likes']}

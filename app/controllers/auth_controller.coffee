@@ -38,7 +38,7 @@ module.exports = class AuthController extends Controller
 		window.location.href = '/'
 
 	onSuccess: (data, scope) ->
-		log "on usccess",
+		log "on success",
 			data: data
 
 		mediator.user.set('id', data.id)

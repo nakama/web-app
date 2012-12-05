@@ -6,7 +6,7 @@ module.exports = {
 		static: "/public",
 		redis : {
 			port: 6379,
-			host:"50.19.65.14"
+			host:"ec2-23-23-8-2.compute-1.amazonaws.com"
 		}, 
 		oauth: {
 			dropbox: {
