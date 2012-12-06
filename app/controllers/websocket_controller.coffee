@@ -12,8 +12,11 @@ module.exports = class WebsocketController extends Controller
 		@socket = io.connect window.location.origin
 
 		@socket.on 'msg', (data) ->
-			log "Received message from server",
-				data: data
+			#log "Received message from server",
+			#	data: data
+
+			if data.api
+				mediator.publish data.api, data.object
 
 	api: (call, data) ->
 		log "Making API call: #{call}",

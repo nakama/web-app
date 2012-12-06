@@ -1,6 +1,7 @@
-CollectionView = require 'views/base/collection_view'
-itemView       = require 'views/photo_collection_item_view'
-template       = require 'views/templates/photo_collection'
+{CollectionView, log, mediator} = require 'common'
+itemView         = require 'views/photo_collection_item_view'
+template         = require 'views/templates/photo_collection'
+Photo                       = require 'models/photo'
 
 module.exports = class PhotoCollectionView extends CollectionView
   template: template
@@ -14,22 +15,36 @@ module.exports = class PhotoCollectionView extends CollectionView
     #'hover .photo-wrapper': 'hoverInWrapper'
     #'mouseout .photo-wrapper': 'hoverOutWrapper'
 
-  initialize: (data) ->
+  initialize: ->
     super
-    #console.log("Initializing the PhotoCollectionView");
-    #@wrapMethod('renderAllItems')
 
-    ###
-    rendered = no
-    @modelBind 'change', =>
-      @render() unless rendered
-      rendered = yes
-    ###
+    @subscribeEvent 'api:photos:fetched', @onFetched
+
+    @modelBind 'change', ->
+      log "PhotoCollection View change",
+          model: if @model then @model else null
+          collection: if @collection then @collection else null
+
+      @render
+      @renderAllItems
 
   afterRender: ->
     super
 
     #console.log "How many times am I rendering?"
+
+  onFetched: (photos) ->
+    if photos instanceof Array
+
+      log "Photos fetched",
+        photos: photos
+
+      #@add photos
+      
+      _.each photos, (photo) =>
+        #photo = new Photo photo
+        #console.log photo
+        @collection.add photo
 
   hoverInWrapper: (e) ->
     e.preventDefault()

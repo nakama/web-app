@@ -51,7 +51,7 @@ io.sockets.on('connection', function (socket) {
 
     	var data = {
 			action: "fetch",
-			callback: "photoFetcherReturn",
+			callback: "photoFetchReturn",
 			request: {
 				user: user
 			}
@@ -63,8 +63,8 @@ io.sockets.on('connection', function (socket) {
     	console.log(data)
     	console.log('')
 
-    	publish.publish('photoFetcher', data);
-    	subscribe.subscribe("photoFetcherReturn");
+    	publish.publish('photo', data);
+    	subscribe.subscribe("photoFetchReturn");
 
 		subscribe.on("message", function (channel, message) {
 	  		console.log("redis client received msg " + channel + ": " + message);
@@ -75,7 +75,9 @@ io.sockets.on('connection', function (socket) {
 			action: "list",
 			callback: "photoReturn",
 			request: {
-				userId: user.id
+				user: {
+					id: user.id
+				}
 			}
 		}
 
@@ -91,6 +93,9 @@ io.sockets.on('connection', function (socket) {
 		subscribe.on("message", function (channel, message) {
 	  		console.log("redis client received msg ")
 	  		console.log(message);
+	        //socket.emit('msg', message)
+	        message = JSON.parse(message)
+	        message.api = 'api:photos:fetched'
 	        socket.emit('msg', message)
 		});
 
