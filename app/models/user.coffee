@@ -16,8 +16,6 @@ module.exports = class User extends Model
 		console.log @
 
 	create: (data, callback) ->
-		log 'Creating user...',
-			data: data
 
 		options = 
 			data: data
@@ -52,14 +50,9 @@ module.exports = class User extends Model
 				type: 'GET'
 				url: url
 
-			log 'Getting user...',
-				options: options
-
 			api.call @, options, callback
 
 	login: (data, callback) ->
-		log 'Logging in user...',
-			data: data
 
 		options = 
 			data: data
@@ -68,8 +61,6 @@ module.exports = class User extends Model
 		api.call @, options, callback
 
 	loginInstagram: (data, callback) ->
-		log 'Logging in Instagram user...',
-			data: data
 
 		options = 
 			data: data
@@ -78,8 +69,6 @@ module.exports = class User extends Model
 		api.call @, options, callback
 
 	update: (data, callback) ->
-		log 'Updating user...',
-			data: data
 
 		options = 
 			data: data

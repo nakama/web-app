@@ -7,11 +7,12 @@ module.exports = class Photos extends Collection
 	#url: 'https://api.instagram.com/v1/users/self/feed?access_token=18632811.6692e4c.5c9a339173dc4fe9ae0faff04c363a56'
 	
 	initialize: ->
+		super
 		log "Initializing the Photo Collection"
 
-		#@subscribeEvent 'api:photos:fetched', @onFetched
+		@subscribeEvent 'api:photos:fetched', @onFetched
 
-	sync: (method, model, options) ->
+	#sync: (method, model, options) ->
 		###
 		params = _.extend
 			type: 'GET'
@@ -23,7 +24,7 @@ module.exports = class Photos extends Collection
 		$.ajax(params)
 		###
 
-	parse: (response) ->
+	#parse: (response) ->
 		###
 		log "Instragram response",
 			response: response
@@ -31,9 +32,10 @@ module.exports = class Photos extends Collection
 		response.data
 		###
 
-	fetch: ->
-		mediator.publish 'api', 'photos:fetch', mediator.user.attributes
+	#fetch: ->
+	#	mediator.publish 'api', 'photos:fetch', mediator.user.attributes
 
+	
 	onFetched: (photos) ->
 		if photos instanceof Array
 
@@ -42,7 +44,12 @@ module.exports = class Photos extends Collection
 
 			#@add photos
 			
-			_.each photos, (photo) =>
+			_.each photos, (photo, inc) =>
+				#delete photo.attributes
+				#delete photo.id
+				#photo.id = inc
 				photo = new Photo photo
 				console.log photo
 				@add photo
+
+			mediator.publish 'isotope:reset'

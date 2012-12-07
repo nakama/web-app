@@ -20,7 +20,6 @@ module.exports = common =
 					arguments: arguments
 
 				if set
-					log 'Model set'
 					@set options.data
 
 				if typeof callback is 'function'

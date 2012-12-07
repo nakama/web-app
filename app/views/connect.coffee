@@ -67,7 +67,6 @@ module.exports = class ConnectView extends ModalView
 
     IG.login (response) ->
       if response.session
-        console.log response
         
         # See if user exists with Instagram ID
         options = 
@@ -76,23 +75,17 @@ module.exports = class ConnectView extends ModalView
           value: response.session.id
 
         user.find options, (data) ->
-          console.log arguments
 
           # Found existing user
           if data.message is 'success' and data.object?
 
             # Log in existing user
 
-            log "Instagram user exists"
+            log "Instagram user exists",
+              data: data.object
 
-            data =
-              password: 'oauth-xxx'
-              id: response.session.id
-              auth_token: response.session.access_token
-              username: response.session.username
-
-            user.loginInstagram data, (data) ->
-              console.log "Login Instagram data response", data
+            user.loginInstagram data.object, (data) ->
+              log "Login Instagram data response", data
 
               mediator.publish 'auth:success', data.object, view
 

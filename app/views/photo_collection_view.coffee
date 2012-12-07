@@ -18,8 +18,10 @@ module.exports = class PhotoCollectionView extends CollectionView
   initialize: ->
     super
 
-    @subscribeEvent 'api:photos:fetched', @onFetched
+    #@subscribeEvent 'api:photos:fetched', @onFetched
+    @subscribeEvent 'isotope:reset', @isotopeReset
 
+    ###
     @modelBind 'change', ->
       log "PhotoCollection View change",
           model: if @model then @model else null
@@ -27,24 +29,10 @@ module.exports = class PhotoCollectionView extends CollectionView
 
       @render
       @renderAllItems
-
-  afterRender: ->
-    super
-
-    #console.log "How many times am I rendering?"
-
-  onFetched: (photos) ->
-    if photos instanceof Array
-
-      log "Photos fetched",
-        photos: photos
-
-      #@add photos
-      
-      _.each photos, (photo) =>
-        #photo = new Photo photo
-        #console.log photo
-        @collection.add photo
+    ###
+    @collection.on 'add', ->
+      log "PhotoCollectionView item added",
+        arguments: arguments
 
   hoverInWrapper: (e) ->
     e.preventDefault()
@@ -78,10 +66,7 @@ module.exports = class PhotoCollectionView extends CollectionView
         height: '60px'
       }, { duration: 200, queue: false } )
 
-  renderAllItems: ->
-    super
-    #console.log 'collection rendered'
-
+  isotopeReset: ->
     $photoList = $("#photos-list")
     isotopeConfig =
       itemSelector: ".photo-wrapper"
@@ -128,6 +113,12 @@ module.exports = class PhotoCollectionView extends CollectionView
         $footer.animate({
           height: '60px'
         }, { duration: 200, queue: false } )
+
+  renderAllItems: ->
+    super
+    #console.log 'collection rendered'
+
+    @isotopeReset()
 
     ###
     navButtons = {

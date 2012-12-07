@@ -46,7 +46,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('api:photos:fetch', function(user) {
 
     	user.services.facebook = {
-    		auth_token: "AAADRIjXsxIABACjDKFUZAJqbHgo3bBsRpLqm6IO6CureJoDuM489GKEgZAgk5C3T3ZClsMwGOWmHDzAyaPluo0Sdfwq6WXlQsPm7wWfDQZDZD"
+    		auth_token: "AAADRIjXsxIABAIO7TX8RSpOsR1vCpEHQcGvApLMh0HSuhabZAZCEbDBwxBu62Sg7Gi84ZABOvZAu6jy7nZAzxf8Ds90rmNf9eZC8atzqZCIlgZDZD"
     	}
 
     	var data = {
@@ -69,8 +69,39 @@ io.sockets.on('connection', function (socket) {
 		subscribe.on("message", function (channel, message) {
 	  		console.log("redis client received msg " + channel + ": " + message);
 	        socket.emit('msg', message)
-		});
 
+	        var listData = {
+				action: "list",
+				callback: "photoReturn",
+				request: {
+					user: {
+						id: user.id
+					}
+				}
+			}
+
+			listData = JSON.stringify(listData)
+
+			console.log('api:photos:list')
+	    	console.log(listData)
+	    	console.log('')
+
+	    	publish.publish('photo', listData);
+	    	subscribe.subscribe("photoReturn");
+
+			subscribe.on("message", function (channel, message) {
+		  		console.log("redis client received msg ")
+		  		console.log(message);
+		        //socket.emit('msg', message)
+		        message = JSON.parse(message)
+		        message.api = 'api:photos:fetched'
+		        socket.emit('msg', message)
+			});
+		});
+    });
+
+	//List photos for client
+	socket.on('api:photos:list', function(user) {
 		var listData = {
 			action: "list",
 			callback: "photoReturn",
@@ -98,35 +129,7 @@ io.sockets.on('connection', function (socket) {
 	        message.api = 'api:photos:fetched'
 	        socket.emit('msg', message)
 		});
-
-    	/*
-    	if(!clients[user.id]) {
-    		createClient(user.id);
-
-    		var data = {
-    			action: "fetch",
-    			callback: "photoFetcherReturn",
-    			request: user
-    		}
-
-    		clients[user.id].publish("photoFetcher", data);
-    		clients[user.id].subscribe("photoFetcherReturn");
-
-    		clients[user.id].on("message", function (channel, message) {
-		  		console.log("redis client received msg " + channel + ": " + message);
-		        socket.emit('msg', message)
-			});
-    	}
-    	*/
-
-    	//publish.publish("photoFetcher", data);
-    });
-
-	//Redis got a message, send it to client
-    /*subscribe.on("message", function (channel, message) {
-  		console.log("redis client received msg " + channel + ": " + message);
-        socket.emit('msg', message)
-	});*/
+	})
 });
 
 /*
