@@ -11,6 +11,7 @@ module.exports = common =
 		set  = options.set or yes
 
 		$.ajax
+			contentType: 'application/json'
 			type: options.type or 'POST'
 			url: 'http://ec2-23-23-8-2.compute-1.amazonaws.com:8080' + options.url
 			data: data
@@ -55,6 +56,9 @@ module.exports = common =
 				contentType: 'application/json'
 				headers:            
 					'Accept' : 'application/json'
+				timeout     : 2500
+				xhrFields:
+					withCredentials: true
 
 			#@initMediator()
 			@initTemplateHelpers()

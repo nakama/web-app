@@ -43,11 +43,11 @@ module.exports = class User extends Model
 
 			# Get user by ID explicit
 			else if options.id?
-				url += "/#{options.id}"
+				url += "/id/#{options.id}"
 
 			# Get uesr by ID
 			else if typeof options is 'string'
-				url += "/#{options}"
+				url += "/id/#{options}"
 
 			# Don't have enough information to get user
 			else
@@ -63,6 +63,7 @@ module.exports = class User extends Model
 
 		options = 
 			data: data
+			type: 'POST'
 			url: '/auth/user/login'
 
 		api.call @, options, callback

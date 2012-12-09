@@ -2,7 +2,7 @@
 User = require 'models/user'
 
 describe 'User Model', ->
-	
+
 	beforeEach ->
 		@model = new User()
 
@@ -59,7 +59,8 @@ describe 'User Model', ->
 
 		it 'should be able to find user by ID', (done) ->
 			@model.find '24989575694867494587980951453', (data) ->
-				console.log data
+				expect(data.message).to.have.eql('success')
+				expect(data.object).to.have.property('id')
 				done()
 
 		it 'should be able to find user by ID (explicit)', (done) ->
@@ -67,7 +68,8 @@ describe 'User Model', ->
 				id: '24989575694867494587980951453'
 
 			@model.find params, (data) ->
-				console.log data
+				expect(data.message).to.have.eql('success')
+				expect(data.object).to.have.property('id')
 				done()
 
 		it 'should be able to find user by Instagram ID', (done) ->
@@ -77,7 +79,8 @@ describe 'User Model', ->
 				value: '18632811'
 
 			@model.find params, (data) ->
-				console.log data
+				expect(data.message).to.have.eql('success')
+				expect(data.object).to.have.property('id')
 				done()
 
 	describe 'Login', ->
@@ -88,5 +91,13 @@ describe 'User Model', ->
 				password: 'F4stp4ss'
 
 			@model.login params, (data) ->
-				console.log data
+				done()
+
+		it 'should be able to detect a failed login', (done) ->
+			params =
+				username: 'chris'
+				password: 'F4stp4ss'
+
+			@model.login params, (data) ->
+				expect(data.message).to.eql('password not match')
 				done()
