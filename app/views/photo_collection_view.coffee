@@ -10,6 +10,7 @@ module.exports = class PhotoCollectionView extends CollectionView
   itemView: itemView
   listSelector: '#photos-list'
   id: "photo-collection-wrapper"
+  animationDuration: 0
 
   #events:
     #'hover .photo-wrapper': 'hoverInWrapper'
