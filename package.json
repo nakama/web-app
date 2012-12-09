@@ -24,6 +24,11 @@
     "underscore": "1.4.2"
   },
   "devDependencies": {
+    "grunt-contrib-coffee": "0.3.2",
+    "grunt-contrib-concat": "https://github.com/avos/grunt-contrib-concat/tarball/master",
+    "grunt-contrib-handlebars": "https://github.com/avos/grunt-contrib-handlebars/tarball/master",
+    "grunt-wrap": "https://github.com/avos/grunt-wrap/tarball/master",
+
     "brunch": "latest",
     "auto-reload-brunch": "latest",
     "javascript-brunch": ">= 1.0 < 1.5",

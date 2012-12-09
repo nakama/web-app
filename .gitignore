@@ -3,4 +3,6 @@ dist/*
 logs/*
 node_modules/*
 public/*
+test/js/*
 tmp/*
+wrap/*

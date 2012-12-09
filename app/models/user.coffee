@@ -51,8 +51,7 @@ module.exports = class User extends Model
 
 			# Don't have enough information to get user
 			else
-				console.warn "Please fix the options for user.get()"
-				return
+				console.warn "Please fix the options for user.get()", options
 
 			options =
 				type: 'GET'
