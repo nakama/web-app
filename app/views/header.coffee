@@ -20,6 +20,14 @@ module.exports = class HeaderView extends View
 
 		@modelBind 'change', @render
 
+	afterRender: ->
+		super
+
+		$('#grid-slider').change (e) ->
+			val = $(this).val()
+
+			mediator.publish 'grid:toggle', val
+
 	onLogout: (e) ->
 		e.preventDefault()
 
