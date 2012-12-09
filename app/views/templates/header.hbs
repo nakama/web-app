@@ -1,5 +1,8 @@
 <div class="container">
 	<a class="brand" href="#">Nakama</a>
+	<form class="form-search">
+		<input type="text" class="input-medium search-query">
+	</form>
 	<ul class="nav">
 		{{#if username}}
 		<li><a href="#settings">Settings</a></li>
@@ -8,4 +11,9 @@
 		<li><a href="#login">Login</a></li>
 		{{/if}}
 	</ul>
+	<div id="grid-layouts">
+		<a href="#small">100px</a>
+		<a href="#medium">300px</a>
+		<a href="#row-long">Horizontal</a>
+	</div>
 </div>

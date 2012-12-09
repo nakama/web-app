@@ -19,13 +19,6 @@ module.exports = class ConnectView extends ModalView
     log "Initializing the Connect View",
       model: @model
 
-  afterRender: ->
-    super
-
-    #if location.pathname is '/dashboard'
-      #console.log "hit"
-      #$('#login-services-custom').hide()
-
   connectFacebook: (e) ->
     e.preventDefault()
 

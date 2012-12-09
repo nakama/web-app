@@ -1,4 +1,5 @@
 {Controller, log, mediator} = require 'common'
+ConnectView                 = require 'views/connect'
 PhotoCollection             = require 'collections/photos'
 PhotoCollectionView         = require 'views/photo_collection_view'
 

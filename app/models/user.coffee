@@ -13,7 +13,12 @@ module.exports = class User extends Model
 
 	initialize: ->
 		super
-		console.log @
+
+	connectFacebook: ->
+		# do nothing
+
+	connectInstagram: ->
+		# do nothing
 
 	create: (data, callback) ->
 
@@ -22,6 +27,9 @@ module.exports = class User extends Model
 			url: '/auth/user/add'
 
 		api.call @, options, callback
+
+	delete: ->
+		# do nothing
 
 	find: (options, callback) ->
 
@@ -59,6 +67,9 @@ module.exports = class User extends Model
 			url: '/auth/user/login'
 
 		api.call @, options, callback
+
+	loginFacebook: (data, callback) ->
+		# do nothing
 
 	loginInstagram: (data, callback) ->
 

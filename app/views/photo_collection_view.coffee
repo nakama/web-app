@@ -17,9 +17,11 @@ module.exports = class PhotoCollectionView extends CollectionView
 
   initialize: ->
     super
+    log 'initializing the Photo Collection View'
 
     #@subscribeEvent 'api:photos:fetched', @onFetched
-    @subscribeEvent 'isotope:reset', @isotopeReset
+    @subscribeEvent 'grid:reset', @gridReset
+    @subscribeEvent 'grid:toggle', @gridToggle
 
     ###
     @modelBind 'change', ->
@@ -66,17 +68,20 @@ module.exports = class PhotoCollectionView extends CollectionView
         height: '60px'
       }, { duration: 200, queue: false } )
 
-  isotopeReset: ->
+  gridReset: ->
     $photoList = $("#photos-list")
     isotopeConfig =
       itemSelector: ".photo-wrapper"
+      layoutMode: 'fitRows'
+      ###
       layoutMode: "cellsByRow"
       cellsByRow:
         columnWidth: 260
         rowHeight: 390
+      ###
 
     $photoList.imagesLoaded ->
-      console.log "Photos loaded", @
+      log "Photos loaded"
       $photoList.isotope isotopeConfig
       
       #Tell isotope what data can be sorted
@@ -84,6 +89,7 @@ module.exports = class PhotoCollectionView extends CollectionView
         stars: ($elem) ->
           $elem.find("[data-stars]").text()
 
+      ###
       $('#photos-list .photo-wrapper').hover ( (e) ->
         e.preventDefault()
 
@@ -113,12 +119,17 @@ module.exports = class PhotoCollectionView extends CollectionView
         $footer.animate({
           height: '60px'
         }, { duration: 200, queue: false } )
+      ###
+
+  gridToggle: (e) ->
+    #not sure what to do yet
+    @gridReset()
 
   renderAllItems: ->
     super
     #console.log 'collection rendered'
 
-    @isotopeReset()
+    @gridReset()
 
     ###
     navButtons = {

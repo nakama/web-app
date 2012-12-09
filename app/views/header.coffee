@@ -10,28 +10,27 @@ module.exports = class HeaderView extends View
 	template: template
 
 	events:
-		'click a[href="#settings"]' : 'settings'
+		#'click a[href="#settings"]' : 'settings'
 		'click a[href="#logout"]'   : 'onLogout'
+		'click #grid-layouts a'     : 'toggleGrid'
 
 	initialize: ->
 		super
-		log "Initializing the Header View"
-		
-		###
-		if @model or @collection
-			rendered = no
-			@modelBind 'change', =>
-				log "Header View re-rendering",
-					model: @model
+		log 'Initializing the Header View'
 
-				@render(yes)
-				rendered = yes
-		###
+		@modelBind 'change', @render
 
 	onLogout: (e) ->
 		e.preventDefault()
 
 		mediator.publish 'auth:logout'
 
+	toggleGrid: (e) ->
+		e.preventDefault()
+
+		mediator.publish 'grid:toggle', e
+
+	###
 	settings: (e) ->
 		e.preventDefault()
+	###

@@ -63,13 +63,16 @@ module.exports = common =
 
 			# Application-specific scaffold
 			WebsocketController = require 'controllers/websocket_controller'
-			@websocket = new WebsocketController
+			new WebsocketController
 
 			AuthController = require 'controllers/auth_controller'
-			@auth = new AuthController
+			new AuthController
+
+			LayoutController = require 'controllers/layout_controller'
+			new LayoutController
 
 			ModalController = require 'controllers/modal_controller'
-			@modal = new ModalController
+			new ModalController
 
 			# Register all routes and start routing
 			routes   = require 'routes'

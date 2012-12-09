@@ -5,11 +5,15 @@
 <div class="modal-body">
 	<div id="login-services-wrapper">
 		<div id="login-services">
-			<a href="#connectinstagram">Instagram</a>
-			<a href="#connectfacebook">Facebook</a>
+			<a class="{{#if services.instagram}}connected{{/if}}" href="#connectinstagram">Instagram</a>
+			<a class="{{#if services.facebook}}connected{{/if}}" href="#connectfacebook">Facebook</a>
 		</div>
-		<div><input id="auth-username" type="text" name="username" placeholder="Username" /></div>
-		<div><input id="auth-password" type="password" name="password" placeholder="Password" /></div>
+		{{#unless dashboard}}
+		<div id="login-services-custom">
+			<div><input id="auth-username" type="text" name="username" placeholder="Username" /></div>
+			<div><input id="auth-password" type="password" name="password" placeholder="Password" /></div>
+		</div>
+		{{/unless}}
 	</div>
 	<div id="login-services-extra">
 		<h3>Account Details</h3>
