@@ -83,7 +83,6 @@ module.exports = class PhotoCollectionView extends CollectionView
     ###
 
     @$photoList.imagesLoaded =>
-      log "Photos loaded"
       @$photoList.isotope @isotopeConfig
       
       #Tell isotope what data can be sorted
