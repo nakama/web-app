@@ -5,7 +5,7 @@ module.exports = class PhotoCollectionItemView extends View
 	template: template
 	autoRender: false
 	tagName: 'li'
-	className: 'photo-wrapper'
+	className: 'photo-wrapper '
 
 	initialize: ->
 		super
@@ -14,7 +14,11 @@ module.exports = class PhotoCollectionItemView extends View
 
 	render: ->
 		super
-		@togglePhotoSize()
+		#@togglePhotoSize()
+
+	afterRender: ->
+		super
+		@$el.addClass 'small'
 
 	togglePhotoSize: (e) ->
 		if e?.target
@@ -26,3 +30,6 @@ module.exports = class PhotoCollectionItemView extends View
 		@$el.removeClass 'medium'
 		@$el.removeClass 'row-long'
 		@$el.addClass size
+
+
+		#@$el.switchClass('small', 'medium')

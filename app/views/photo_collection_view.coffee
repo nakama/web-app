@@ -36,6 +36,11 @@ module.exports = class PhotoCollectionView extends CollectionView
       log "PhotoCollectionView item added",
         arguments: arguments
 
+    @$photoList = $("#photos-list")
+    @isotopeConfig =
+      itemSelector: ".photo-wrapper"
+      layoutMode: 'fitRows'
+
   hoverInWrapper: (e) ->
     e.preventDefault()
 
@@ -69,23 +74,20 @@ module.exports = class PhotoCollectionView extends CollectionView
       }, { duration: 200, queue: false } )
 
   gridReset: ->
-    $photoList = $("#photos-list")
-    isotopeConfig =
-      itemSelector: ".photo-wrapper"
-      layoutMode: 'fitRows'
-      ###
-      layoutMode: "cellsByRow"
-      cellsByRow:
-        columnWidth: 260
-        rowHeight: 390
-      ###
+    
+    ###
+    layoutMode: "cellsByRow"
+    cellsByRow:
+      columnWidth: 260
+      rowHeight: 390
+    ###
 
-    $photoList.imagesLoaded ->
+    @$photoList.imagesLoaded =>
       log "Photos loaded"
-      $photoList.isotope isotopeConfig
+      @$photoList.isotope @isotopeConfig
       
       #Tell isotope what data can be sorted
-      $photoList.isotope getSortData:
+      @$photoList.isotope getSortData:
         stars: ($elem) ->
           $elem.find("[data-stars]").text()
 
