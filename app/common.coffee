@@ -4,16 +4,16 @@ log      = logger.log
 
 module.exports = common =
 	api: (options, callback) ->
-		log 'API call initialized',
-			options: options
 
 		data = if options.data then JSON.stringify(options.data) else null
 		set  = options.set or yes
+		type = options.type or 'POST'
+		url = 'http://ec2-23-23-8-2.compute-1.amazonaws.com:8080' + options.url
 
-		$.ajax
+		ajaxOptions = 
 			contentType: 'application/json'
-			type: options.type or 'POST'
-			url: 'http://ec2-23-23-8-2.compute-1.amazonaws.com:8080' + options.url
+			type: type
+			url: url
 			data: data
 
 			success: (data, status, jqxhr) =>
@@ -29,6 +29,12 @@ module.exports = common =
 			error: ->
 				log 'API call failed',
 					arguments: arguments
+
+		log 'API call initialized',
+			options: options
+			ajaxOptions: ajaxOptions
+
+		$.ajax ajaxOptions
 
 	mediator : Chaplin.mediator
 
@@ -57,8 +63,8 @@ module.exports = common =
 				headers:            
 					'Accept' : 'application/json'
 				timeout     : 2500
-				xhrFields:
-					withCredentials: true
+				#xhrFields:
+				#	withCredentials: true
 
 			#@initMediator()
 			@initTemplateHelpers()

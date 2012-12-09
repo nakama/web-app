@@ -46,7 +46,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('api:photos:fetch', function(user) {
 
     	user.services.facebook = {
-    		auth_token: "AAADRIjXsxIABAIO7TX8RSpOsR1vCpEHQcGvApLMh0HSuhabZAZCEbDBwxBu62Sg7Gi84ZABOvZAu6jy7nZAzxf8Ds90rmNf9eZC8atzqZCIlgZDZD"
+    		auth_token: "AAADRIjXsxIABACmYIkXOYpvLz2U03YCKRSjqquK3YZAEeyjnLvJGCvoAgwAxYR2OP63Ug36N401CGUL9ktttc6oqsECavoCg02hr4wAZDZD"
     	}
 
     	var data = {

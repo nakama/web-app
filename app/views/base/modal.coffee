@@ -9,6 +9,7 @@ module.exports = class ModalView extends View
 		tabindex: '-1'
 		
 	initialize: (options) ->
+		super
 		@options.size = options?.size || 'normal'
 
 	afterRender: ->
