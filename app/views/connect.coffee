@@ -1,4 +1,5 @@
 {log, mediator} = require 'common'
+Instagram       = require 'models/instagram'
 ModalView       = require 'views/base/modal'
 template        = require 'views/templates/connect'
 
@@ -10,8 +11,8 @@ module.exports = class ConnectView extends ModalView
 
   events:
     #'click #modal-submit'              : 'onSubmit'
-    'click a[href="#create-account"]'  : 'showCreateAccountView'
-    'click a[href="#connectfacebook"]' : 'connectFacebook'
+    'click a[href="#create-account"]'   : 'showCreateAccountView'
+    #'click a[href="#connectfacebook"]'  : 'connectFacebook'
     'click a[href="#connectinstagram"]' : 'connectInstagram'
 
   initialize: (data) ->
@@ -25,125 +26,88 @@ module.exports = class ConnectView extends ModalView
     #if location.pathname is '/dashboard'
       #console.log "hit"
       #$('#login-services-custom').hide()
-
-  connectFacebook: (e) ->
-    e.preventDefault()
-
-    user = @model
-
-    FB.login (response) ->
-      
-      # Connected
-      if response.authResponse
-        
-        log "Connected to Facebook",
-          response: response
-
-        # See if user exists with Facebook ID
-        options = 
-          service: 'facebook'
-          identifier: 'id'
-          value: response.authResponse.userID
-
-        user.find options, (data) ->
-          console.log arguments
-
-          # Found existing user
-          if data.message is 'success' and data.object?
-
-            # Log in existing user
-
-          # Assume new user
-          else
-
-            # Populate Facebook data for new account
-
-            # Create new user account
-            # user.create 
-      
-      # Cancelled
-      else
-        #window.location.href = '/'
-    , {scope:'user_photos,offline_access'}
     
+  #### Connect Instagram
+  # Attempt to connect a user to Nakama using Instagram
+  #
+  # `e` should be an `Object`
+
   connectInstagram: (e) ->
     e.preventDefault()
 
     user = @model
     view = @
 
-    IG.login (response) ->
-      if response.session
-        
-        # See if user exists with Instagram ID
-        options = 
-          service: 'instagram'
-          identifier: 'id'
-          value: response.session.id
+    instagram = new Instagram
 
-        user.find options, (data) ->
+    instagram.login (res, err) ->
 
-          # Found existing user
-          if data.message is 'success' and data.object?
+      # There was an error connecting to Instagram
+      if err
+        console.warn "There was a problem connecting to Instagram."
+        return
+      
+      options = 
+        service: 'instagram'
+        identifier: 'id'
+        value: res.session.id
 
-            # Log in existing user
+      # See if user exists in Nakama with Instagram ID
+      user.find options, (data) ->
 
-            log "Instagram user exists",
-              data: data.object
+        # User exists
+        if data.message is 'success' and data.object?
 
-            user.loginInstagram data.object, (data) ->
-              log "Login Instagram data response", data
+          # Log in existing user
+
+          log "Instagram user exists",
+            data: data.object
+
+          user.loginInstagram data.object, (res) ->
+            log "Login Instagram data response", res
+
+            mediator.publish 'auth:success', res.object, view
+
+        # Assume new user
+        else
+
+          # Populate Instagram data for new account
+
+          log "Instagram user does not exists"
+
+          $name     = $('#create-account-name')
+          $email    = $('#create-account-email')
+          $username = $('#create-account-username')
+          $avatar   = $('#create-account-avatar')
+
+          $name.val(res.session.full_name)
+          $avatar.val(res.session.profile_picture)
+
+          $('#login-services-wrapper').hide()
+          $('#login-services-extra').show()
+          $('#modal-submit').text('Submit')
+
+          $('#modal-submit').on 'click', (e) ->
+            e.preventDefault()
+
+            data = 
+              username: $username.val()
+              password: 'oauth-xxx'
+              profile:
+                name: $name.val()
+                email: $email.val()
+              services:
+                instagram:
+                  avatar: res.session.profile_picture
+                  id: res.session.id
+                  auth_token: res.session.access_token
+                  username: res.session.username
+
+            # Create a new user in Nakama
+            user.create data, (data) ->
+              console.log "Join data response", data
 
               mediator.publish 'auth:success', data.object, view
-
-          # Assume new user
-          else
-
-            # Populate Instagram data for new account
-
-            log "Instagram user does not exists"
-
-            $name     = $('#create-account-name')
-            $email    = $('#create-account-email')
-            $username = $('#create-account-username')
-            $avatar   = $('#create-account-avatar')
-            $id       = $('#create-account-id')
-            $token    = $('#create-account-token')
-            $susername = $('#create-account-service-username')
-
-            $name.val(response.session.full_name)
-            $avatar.val(response.session.profile_picture)
-            $token.val(response.session.access_token)
-            $id.val(response.session.id)
-            $susername.val(response.session.username)
-
-            $('#login-services-wrapper').hide()
-            $('#login-services-extra').show()
-            $('#modal-submit').text('Submit')
-
-            $('#modal-submit').on 'click', (e) ->
-              e.preventDefault()
-
-              data = 
-                username: $username.val()
-                password: 'oauth-xxx'
-                profile:
-                  name: $name.val()
-                  email: $email.val()
-                services:
-                  instagram:
-                    avatar: $avatar.val()
-                    id: $id.val()
-                    auth_token: $token.val()
-                    username: $susername.val()
-
-              user.create data, (data) ->
-                console.log "Join data response", data
-
-                mediator.publish 'auth:success', data.object, view
-
-
-    , {scope: ['comments', 'likes']}
 
   onSubmit: (e) =>
     e.preventDefault()

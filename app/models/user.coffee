@@ -1,4 +1,4 @@
-{api, log, Model} = require 'common'
+{api, log, mediator, Model} = require 'common'
 
 module.exports = class User extends Model
 
@@ -14,8 +14,73 @@ module.exports = class User extends Model
 	initialize: ->
 		super
 
-	connectFacebook: ->
-		# do nothing
+	checkAuth: ->
+		window.fbAsyncInit = =>
+			FB.init
+				appId      : '229944863802496'
+				channelUrl : '//localhost.naka.ma/channel.html'
+				status     : true
+				cookie     : true
+				xfbml      : true
+
+			FB.getLoginStatus (response) =>
+				log 'Facebook Status',
+					response: response
+
+				# User has connected their facebook account
+				if response.status is 'connected'
+					log 'Facebook account is connected'
+
+				# User has not connected their facebook account
+				else if response.status is 'not_authorized'
+					log 'Facebook account is not authorized'
+
+				# User is not logged in
+				else
+					log 'Facebook account is not logged in'
+
+					@connectFacebook()
+
+
+	connectFacebook: (e, model) ->
+	    e?.preventDefault()
+
+	    user = if model then model else mediator.user
+
+	    FB.login (response) ->
+	      
+	      # Connected
+	      if response.authResponse
+	        
+	        log "Connected to Facebook",
+	          response: response
+
+	        # See if user exists with Facebook ID
+	        options = 
+	          service: 'facebook'
+	          identifier: 'id'
+	          value: response.authResponse.userID
+
+	        user.find options, (data) ->
+	          console.log arguments
+
+	          # Found existing user
+	          if data.message is 'success' and data.object?
+
+	            # Log in existing user
+
+	          # Assume new user
+	          else
+
+	            # Populate Facebook data for new account
+
+	            # Create new user account
+	            # user.create 
+	      
+	      # Cancelled
+	      else
+	        #window.location.href = '/'
+	    , {scope:'user_photos'}
 
 	connectInstagram: ->
 		# do nothing
@@ -58,6 +123,12 @@ module.exports = class User extends Model
 				url: url
 
 			api.call @, options, callback
+
+	findByFacebookID: (id) ->
+		# need to implement
+
+	findByInstagramID: (id) ->
+		# need to implement
 
 	login: (data, callback) ->
 
