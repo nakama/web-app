@@ -12,12 +12,14 @@ module.exports = class AuthController extends Controller
 
 		userData = store.get('nakama-user')
 
-		mediator.user = new User(userData)
+		user = mediator.user = new User(userData)
 
 		if userData
 			#do nothing at the moment
 			log "User found:",
 				userData: userData
+
+			user.checkAuth()
 
 		# No user found - redirect to login
 		else
