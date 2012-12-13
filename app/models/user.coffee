@@ -1,11 +1,8 @@
 {api, log, mediator, Model} = require 'common'
+Facebook                    = require 'models/facebook'
+Instagram                   = require 'models/instagram'
 
 module.exports = class User extends Model
-
-	###
-	defaults:
-		username: null
-	###
 
 	validation:
 		username:
@@ -42,48 +39,79 @@ module.exports = class User extends Model
 					@connectFacebook()
 
 
-	connectFacebook: (e, model) ->
-	    e?.preventDefault()
+	connectFacebook: (callback) ->
+		e?.preventDefault()
 
-	    user = if model then model else mediator.user
+		FB.login (response) =>
 
-	    FB.login (response) ->
-	      
-	      # Connected
-	      if response.authResponse
-	        
-	        log "Connected to Facebook",
-	          response: response
+			# Connected
+			if response.authResponse
 
-	        # See if user exists with Facebook ID
-	        options = 
-	          service: 'facebook'
-	          identifier: 'id'
-	          value: response.authResponse.userID
+				log "Connected to Facebook",
+					response: response
 
-	        user.find options, (data) ->
-	          console.log arguments
+				# See if user exists with Facebook ID
+				options = 
+					service: 'facebook'
+					identifier: 'id'
+					value: response.authResponse.userID
 
-	          # Found existing user
-	          if data.message is 'success' and data.object?
+				@user.find options, (data) ->
+					console.log arguments
 
-	            # Log in existing user
+					# Found existing user
+					if data.message is 'success' and data.object?
 
-	          # Assume new user
-	          else
+						# Log in existing user
 
-	            # Populate Facebook data for new account
+					# Assume new user
+					else
 
-	            # Create new user account
-	            # user.create 
-	      
-	      # Cancelled
-	      else
-	        #window.location.href = '/'
-	    , {scope:'user_photos'}
+						# Populate Facebook data for new account
 
-	connectInstagram: ->
-		# do nothing
+						# Create new user account
+						# user.create 
+
+			# Cancelled
+			else
+				#window.location.href = '/'
+		, {scope:'user_photos'}
+
+	connectInstagram: (callback) ->
+
+		instagram = new Instagram
+		user      = @
+
+		instagram.login (res, err) =>
+
+			# There was an error connecting to Instagram
+			if err
+				console.warn "There was a problem connecting to Instagram."
+				return
+
+			options = 
+				service: 'instagram'
+				identifier: 'id'
+				value: res.session.id
+
+			# See if user exists in Nakama with Instagram ID
+			@find options, (data) =>
+
+				# User exists
+				if data.message is 'success' and data.object?
+					console.log "1"
+					# Log in existing user
+
+					log "Instagram user exists",
+						data: data.object
+
+					@loginInstagram data.object, (res) ->
+						log "Login Instagram data response", res
+						callback(true, res)
+
+				else
+					console.log "2"
+					callback(false, res)
 
 	create: (data, callback) ->
 
@@ -92,6 +120,32 @@ module.exports = class User extends Model
 			url: '/auth/user/add'
 
 		api.call @, options, callback
+
+	# Create new user from oAuth service
+	createByService: (service, data, callback) ->
+
+		log "User does not exist for service: #{service} - creating new user",
+			data: data
+
+		user = 
+			username: data.username
+			password: 'oauth-xxx'
+			profile:
+				name: data.name
+				email: data.email
+			services: {}
+
+		user.services[service] =
+			avatar: data.session.profile_picture
+			id: data.session.id
+			auth_token: data.session.access_token
+			username: data.session.username
+
+		# Create a new user in Nakama
+		@create user, (res) ->
+			console.log "Join data response", res
+
+			callback(res)
 
 	delete: ->
 		# do nothing
