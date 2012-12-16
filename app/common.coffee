@@ -8,13 +8,13 @@ module.exports = common =
 		data = if options.data then JSON.stringify(options.data) else null
 		set  = options.set or yes
 		type = options.type or 'POST'
-		url = 'http://ec2-23-23-8-2.compute-1.amazonaws.com:8080' + options.url
+		url  = 'http://ec2-23-23-8-2.compute-1.amazonaws.com:8080' + options.url
 
 		ajaxOptions = 
-			contentType: 'application/json'
-			type: type
-			url: url
-			data: data
+			contentType : 'application/json'
+			type        : type
+			url         : url
+			data        : data
 
 			success: (data, status, jqxhr) =>
 				log 'API call successful',

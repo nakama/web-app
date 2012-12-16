@@ -28,7 +28,7 @@ module.exports = class AuthController extends Controller
 			if location.pathname is '/'
 				#do nothing
 			else
-				window.location.href = '/' #don't know why I need to hard-refresh this
+				#window.location.href = '/' #don't know why I need to hard-refresh this
 
 		new HeaderController
 
