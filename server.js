@@ -43,13 +43,13 @@ io.sockets.on('connection', function (socket) {
     });
 
 	//Client requests photos for user
-    socket.on('api:photos:fetch', function(user) {
+    socket.on('api:photos:fetch', function(res) {
 
     	var data = {
 			action: "fetch",
 			callback: "photoFetchReturn",
 			request: {
-				user: user
+				user: res.user
 			}
 		}
 
@@ -64,18 +64,21 @@ io.sockets.on('connection', function (socket) {
 
 		subscribe.on("message", function (channel, message) {
 	  		console.log("redis client received msg " + channel + ": " + message);
+	        
 	        message = JSON.parse(message)
-	        message.api = 'api:photos:fetched'
+	        message.api = 'api:collections:fetched'
 	        socket.emit('msg', message)
 
-	        /*
-	        var listData = {
+	        /*var listData = {
 				action: "list",
 				callback: "photoReturn",
 				request: {
 					user: {
 						id: user.id
-					}
+					},
+					index: 0,
+					limit: 100,
+					parentId: message.object[0]._id
 				}
 			}
 
@@ -89,9 +92,8 @@ io.sockets.on('connection', function (socket) {
 	    	subscribe.subscribe("photoReturn");
 
 			subscribe.on("message", function (channel, message) {
-		  		console.log("redis client received msg ")
+		  		console.log("redis client received msg " + channel + ": " + message);
 		  		console.log(message);
-		        //socket.emit('msg', message)
 		        message = JSON.parse(message)
 		        message.api = 'api:photos:fetched'
 		        socket.emit('msg', message)
@@ -99,15 +101,51 @@ io.sockets.on('connection', function (socket) {
 		});
     });
 
-	//List photos for client
-	socket.on('api:photos:list', function(user) {
+	//List collections
+	socket.on('api:photos:collections', function(res) {
 		var listData = {
 			action: "list",
 			callback: "photoReturn",
 			request: {
 				user: {
-					id: user.id
-				}
+					id: res.user.id
+				},
+				index: "0",
+				limit: "100"
+			}
+		}
+
+		listData = JSON.stringify(listData)
+
+		console.log('api:photos:collections')
+    	console.log(listData)
+    	console.log('')
+
+    	publish.publish('photo', listData);
+    	subscribe.subscribe("photoReturn");
+
+		subscribe.on("message", function (channel, message) {
+	  		console.log("redis client received msg ")
+	  		console.log(message);
+	        //socket.emit('msg', message)
+	        message = JSON.parse(message)
+	        message.api = 'api:photos:collections:fetched'
+	        socket.emit('msg', message)
+		});
+	});
+
+	//List photos of a collection
+	socket.on('api:photos:list', function(res) {
+		var listData = {
+			action: "list",
+			callback: "photoReturn",
+			request: {
+				user: {
+					id: res.user.id
+				},
+				index: "0",
+				limit: "100",
+				parentId: res.collection._id
 			}
 		}
 
@@ -128,7 +166,7 @@ io.sockets.on('connection', function (socket) {
 	        message.api = 'api:photos:fetched'
 	        socket.emit('msg', message)
 		});
-	})
+	});
 });
 
 /*

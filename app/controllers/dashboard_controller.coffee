@@ -9,10 +9,27 @@ module.exports = class DashboardController extends Controller
 	initialize: ->
 		super
 
+		@subscribeEvent 'api:photos:collections:fetched', @onCollectionsFetched
+
 	index: ->
 		@collection = new PhotoCollection
 		@view = new PhotoCollectionView
 		    collection: @collection
 		#@view.collection.fetch()
-		mediator.publish 'api', 'photos:fetch', mediator.user.attributes
-		#mediator.publish 'api', 'photos:list', mediator.user.attributes
+		data =
+			user: mediator.user.toJSON()
+
+		mediator.publish 'api', 'photos:collections', data
+		
+		
+
+	onCollectionsFetched: (res) ->
+		console.log "res", res
+
+		if res
+			data =
+				collection:
+					_id: res[0]._id
+				user: mediator.user.toJSON()
+
+			mediator.publish 'api', 'photos:list', data

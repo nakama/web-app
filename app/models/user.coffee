@@ -142,6 +142,7 @@ module.exports = class User extends Model
 		@create user, (res) ->
 			console.log "Join data response", res
 
+			mediator.user.set user
 			store.set 'nakama-user', user
 			callback(res)
 
