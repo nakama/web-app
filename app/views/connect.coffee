@@ -128,7 +128,7 @@ module.exports = class ConnectView extends ModalView
 
       user.createByService service, data, (result) ->
         # On first login, fetch the photos from services
-        mediator.publish 'api', 'photos:fetch', mediator.user.attributes
+        mediator.publish 'api', 'photos:fetch', {user: mediator.user.toJSON()}
         callback(result)
 
   ###

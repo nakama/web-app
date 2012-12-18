@@ -34,23 +34,14 @@ app.get('*', routes.index);
 require('./config/startup')(_, app, config, process, server, util);
 
 io.sockets.on('connection', function (socket) {
-	
-	//Client sent a message, do something with it
-	socket.on('server:msg', function (data) {
-		console.log("Server received message:", data);
-		socket.emit('msg', "Got your message bro!")
-		//publish.publish("test132", "I am sending a message.");
-    });
 
-	//Client requests photos for user
+	//Fetch photos
     socket.on('api:photos:fetch', function(res) {
 
     	var data = {
 			action: "fetch",
 			callback: "photoFetchReturn",
-			request: {
-				user: res.user
-			}
+			request: res
 		}
 
     	data = JSON.stringify(data)
@@ -68,36 +59,6 @@ io.sockets.on('connection', function (socket) {
 	        message = JSON.parse(message)
 	        message.api = 'api:collections:fetched'
 	        socket.emit('msg', message)
-
-	        /*var listData = {
-				action: "list",
-				callback: "photoReturn",
-				request: {
-					user: {
-						id: user.id
-					},
-					index: 0,
-					limit: 100,
-					parentId: message.object[0]._id
-				}
-			}
-
-			listData = JSON.stringify(listData)
-
-			console.log('api:photos:list')
-	    	console.log(listData)
-	    	console.log('')
-
-	    	publish.publish('photo', listData);
-	    	subscribe.subscribe("photoReturn");
-
-			subscribe.on("message", function (channel, message) {
-		  		console.log("redis client received msg " + channel + ": " + message);
-		  		console.log(message);
-		        message = JSON.parse(message)
-		        message.api = 'api:photos:fetched'
-		        socket.emit('msg', message)
-			});*/
 		});
     });
 
@@ -105,14 +66,8 @@ io.sockets.on('connection', function (socket) {
 	socket.on('api:photos:collections', function(res) {
 		var listData = {
 			action: "list",
-			callback: "photoReturn",
-			request: {
-				user: {
-					id: res.user.id
-				},
-				index: "0",
-				limit: "100"
-			}
+			callback: "photoReturnCollections",
+			request: res
 		}
 
 		listData = JSON.stringify(listData)
@@ -122,7 +77,7 @@ io.sockets.on('connection', function (socket) {
     	console.log('')
 
     	publish.publish('photo', listData);
-    	subscribe.subscribe("photoReturn");
+    	subscribe.subscribe("photoReturnCollections");
 
 		subscribe.on("message", function (channel, message) {
 	  		console.log("redis client received msg ")
@@ -138,15 +93,8 @@ io.sockets.on('connection', function (socket) {
 	socket.on('api:photos:list', function(res) {
 		var listData = {
 			action: "list",
-			callback: "photoReturn",
-			request: {
-				user: {
-					id: res.user.id
-				},
-				index: "0",
-				limit: "100",
-				parentId: res.collection._id
-			}
+			callback: "photoReturnList",
+			request: res
 		}
 
 		listData = JSON.stringify(listData)
@@ -156,7 +104,7 @@ io.sockets.on('connection', function (socket) {
     	console.log('')
 
     	publish.publish('photo', listData);
-    	subscribe.subscribe("photoReturn");
+    	subscribe.subscribe("photoReturnList");
 
 		subscribe.on("message", function (channel, message) {
 	  		console.log("redis client received msg ")

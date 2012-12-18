@@ -17,11 +17,13 @@ module.exports = class DashboardController extends Controller
 		    collection: @collection
 		#@view.collection.fetch()
 		data =
-			user: mediator.user.toJSON()
+			skip: "0"
+			limit: "100"
+			user:
+				id: mediator.user.get 'id'
 
-		mediator.publish 'api', 'photos:collections', data
-		
-		
+
+		mediator.publish 'api', 'photos:collections', data		
 
 	onCollectionsFetched: (res) ->
 		console.log "res", res
@@ -30,6 +32,20 @@ module.exports = class DashboardController extends Controller
 			data =
 				collection:
 					_id: res[0]._id
-				user: mediator.user.toJSON()
+				skip: "0"
+				limit: "100"
+				user:
+					id: mediator.user.get 'id'
 
 			mediator.publish 'api', 'photos:list', data
+
+
+			###data =
+				collection:
+					_id: res[0]._id
+				skip: "100"
+				limit: "100"
+				user:
+					id: mediator.user.get 'id'
+
+			mediator.publish 'api', 'photos:list', data###
