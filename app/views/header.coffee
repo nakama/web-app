@@ -1,4 +1,5 @@
 {log, mediator, View} = require 'common'
+SearchView            = require 'views/search'
 template              = require 'views/templates/header'
 
 module.exports = class HeaderView extends View
@@ -18,10 +19,15 @@ module.exports = class HeaderView extends View
 		super
 		log 'Initializing the Header View'
 
+
+
 		@modelBind 'change', @render
 
 	afterRender: ->
 		super
+
+		new SearchView
+			model: @model
 
 		$('#grid-slider').change (e) ->
 			val = $(this).val()

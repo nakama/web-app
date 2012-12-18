@@ -12,35 +12,32 @@ module.exports = class User extends Model
 		super
 
 	checkAuth: ->
-		window.fbAsyncInit = =>
-			FB.init
-				appId      : '229944863802496'
-				channelUrl : '//localhost.naka.ma/channel.html'
-				status     : true
-				cookie     : true
-				xfbml      : true
-
-			FB.getLoginStatus (response) =>
-				log 'Facebook Status',
-					response: response
-
-				# User has connected their facebook account
-				if response.status is 'connected'
-					log 'Facebook account is connected'
-
-				# User has not connected their facebook account
-				else if response.status is 'not_authorized'
-					log 'Facebook account is not authorized'
-
-				# User is not logged in
-				else
-					log 'Facebook account is not logged in'
-
-					@connectFacebook()
-
+		# do nothing atm
 
 	connectFacebook: (callback) ->
 		e?.preventDefault()
+
+		console.log "hit"
+			
+		###
+		FB.getLoginStatus (response) =>
+			log 'Facebook Status',
+				response: response
+
+			# User has connected their facebook account
+			if response.status is 'connected'
+				log 'Facebook account is connected'
+
+			# User has not connected their facebook account
+			else if response.status is 'not_authorized'
+				log 'Facebook account is not authorized'
+
+			# User is not logged in
+			else
+				log 'Facebook account is not logged in'
+
+				@connectFacebook()
+		###
 
 		FB.login (response) =>
 
@@ -56,7 +53,7 @@ module.exports = class User extends Model
 					identifier: 'id'
 					value: response.authResponse.userID
 
-				@user.find options, (data) ->
+				@find options, (data) =>
 					console.log arguments
 
 					# Found existing user
@@ -64,13 +61,13 @@ module.exports = class User extends Model
 
 						# Log in existing user
 
+						log "Facebook user exists",
+							data: data.object
+
 					# Assume new user
 					else
-
-						# Populate Facebook data for new account
-
-						# Create new user account
-						# user.create 
+						console.log "2"
+						callback(false, response)
 
 			# Cancelled
 			else
@@ -139,12 +136,13 @@ module.exports = class User extends Model
 			avatar: data.session.profile_picture
 			id: data.session.id
 			auth_token: data.session.access_token
-			username: data.session.username
+			username: (data.session.username or "")
 
 		# Create a new user in Nakama
 		@create user, (res) ->
 			console.log "Join data response", res
 
+			store.set 'nakama-user', user
 			callback(res)
 
 	delete: ->

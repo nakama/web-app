@@ -37,6 +37,19 @@ module.exports = class ConnectView extends ModalView
     user = @model
     view = @
 
+    user.connectFacebook (exists, res) =>
+      log "Connecting to Facebook..."
+        res: res
+
+      # User exists
+      if exists
+        mediator.publish 'auth:success', res.object, view
+
+      # Assume new user
+      else
+        @createNewUser 'facebook', res, (result) ->
+          mediator.publish 'auth:success', result.object, view
+
   #### Connect Instagram
   # Attempt to connect a user to Nakama using Instagram
   #
@@ -59,13 +72,18 @@ module.exports = class ConnectView extends ModalView
 
       # Assume new user
       else
-        @createNewUser res, (result) ->
+        @createNewUser 'facebook', res, (result) ->
           mediator.publish 'auth:success', result.object, view
 
   #### Create a new user
   #
   
-  createNewUser: (res, callback) ->
+  createNewUser: (service, res, callback) ->
+    log "Create new user",
+      res: res
+
+    user = @model
+
     $name     = $('#create-account-name')
     $email    = $('#create-account-email')
     $username = $('#create-account-username')
@@ -75,8 +93,21 @@ module.exports = class ConnectView extends ModalView
     $('#login-services-extra').show()
     $('#modal-submit').text('Submit')
 
-    $name.val(res.session.full_name)
-    $avatar.val(res.session.profile_picture)
+    # Need to keep things separated by service
+    unless res.session
+      res.session = {}
+
+    unless res.session.profile_picture
+      res.session.profile_picture = ""
+
+    unless res.session.full_name
+      res.session.full_name = ""
+
+    avatar = res.session.profile_picture
+    name   = res.session.full_name
+
+    $avatar.val(avatar)
+    $name.val(name)
 
     $('#modal-submit').on 'click', (e) ->
       e.preventDefault()
@@ -85,9 +116,10 @@ module.exports = class ConnectView extends ModalView
       res.name     = $name.val()
       res.email    = $email.val()
 
-      user.createByService 'instagram', res, (result) ->
+      user.createByService service, res, (result) ->
         callback(result)
 
+  ###
   onSubmit: (e) =>
     e.preventDefault()
     
@@ -107,11 +139,12 @@ module.exports = class ConnectView extends ModalView
     log "Submitting Login with the data:",
       data: data
 
-    mediator.publish 'socket:msg', data
+    #mediator.publish 'socket:msg', data
 
     @model.login data, ->
 
       mediator.publish 'auth:success', data
+  ###
 
   showCreateAccountView: (e) ->
     e.preventDefault();

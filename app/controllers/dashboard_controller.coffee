@@ -14,5 +14,5 @@ module.exports = class DashboardController extends Controller
 		@view = new PhotoCollectionView
 		    collection: @collection
 		#@view.collection.fetch()
-		#mediator.publish 'api', 'photos:fetch', mediator.user.attributes
-		mediator.publish 'api', 'photos:list', mediator.user.attributes
+		mediator.publish 'api', 'photos:fetch', mediator.user.attributes
+		#mediator.publish 'api', 'photos:list', mediator.user.attributes
