@@ -30,22 +30,21 @@ module.exports = class DashboardController extends Controller
 
 		if res
 			data =
-				collection:
-					_id: res[0]._id
+				parentId: res[0]._id
 				skip: "0"
-				limit: "100"
+				limit: "10"
 				user:
 					id: mediator.user.get 'id'
 
 			mediator.publish 'api', 'photos:list', data
 
 
-			###data =
+			data =
 				collection:
 					_id: res[0]._id
-				skip: "100"
-				limit: "100"
+				skip: "20"
+				limit: "10"
 				user:
 					id: mediator.user.get 'id'
 
-			mediator.publish 'api', 'photos:list', data###
+			mediator.publish 'api', 'photos:list', data
