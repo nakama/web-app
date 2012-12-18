@@ -93,18 +93,28 @@ module.exports = class ConnectView extends ModalView
     $('#login-services-extra').show()
     $('#modal-submit').text('Submit')
 
+    data = {}
+    data.session = {}
+
     # Need to keep things separated by service
-    unless res.session
-      res.session = {}
+    unless data.session
+      data.session = {}
 
-    unless res.session.profile_picture
-      res.session.profile_picture = ""
+    unless data.session.profile_picture
+      data.session.profile_picture = ""
 
-    unless res.session.full_name
-      res.session.full_name = ""
+    unless data.session.full_name
+      data.session.full_name = ""
 
-    avatar = res.session.profile_picture
-    name   = res.session.full_name
+    if service is 'facebook'
+      data.session.auth_token = res.authResponse.accessToken
+      data.session.id         = res.authResponse.userID
+
+    if service is 'instagram'
+      data.session.auth_token = res.session.access_token
+
+    avatar = data.session.profile_picture
+    name   = data.session.full_name
 
     $avatar.val(avatar)
     $name.val(name)
@@ -112,11 +122,11 @@ module.exports = class ConnectView extends ModalView
     $('#modal-submit').on 'click', (e) ->
       e.preventDefault()
 
-      res.username = $username.val()
-      res.name     = $name.val()
-      res.email    = $email.val()
+      data.username = $username.val()
+      data.name     = $name.val()
+      data.email    = $email.val()
 
-      user.createByService service, res, (result) ->
+      user.createByService service, data, (result) ->
         callback(result)
 
   ###

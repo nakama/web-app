@@ -135,7 +135,7 @@ module.exports = class User extends Model
 		user.services[service] =
 			avatar: data.session.profile_picture
 			id: data.session.id
-			auth_token: data.session.access_token
+			auth_token: data.session.auth_token
 			username: (data.session.username or "")
 
 		# Create a new user in Nakama

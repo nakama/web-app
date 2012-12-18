@@ -45,10 +45,6 @@ io.sockets.on('connection', function (socket) {
 	//Client requests photos for user
     socket.on('api:photos:fetch', function(user) {
 
-    	user.services.facebook = {
-    		auth_token: "AAADRIjXsxIABACmYIkXOYpvLz2U03YCKRSjqquK3YZAEeyjnLvJGCvoAgwAxYR2OP63Ug36N401CGUL9ktttc6oqsECavoCg02hr4wAZDZD"
-    	}
-
     	var data = {
 			action: "fetch",
 			callback: "photoFetchReturn",
@@ -68,8 +64,11 @@ io.sockets.on('connection', function (socket) {
 
 		subscribe.on("message", function (channel, message) {
 	  		console.log("redis client received msg " + channel + ": " + message);
+	        message = JSON.parse(message)
+	        message.api = 'api:photos:fetched'
 	        socket.emit('msg', message)
 
+	        /*
 	        var listData = {
 				action: "list",
 				callback: "photoReturn",
@@ -96,7 +95,7 @@ io.sockets.on('connection', function (socket) {
 		        message = JSON.parse(message)
 		        message.api = 'api:photos:fetched'
 		        socket.emit('msg', message)
-			});
+			});*/
 		});
     });
 
