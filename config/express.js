@@ -23,9 +23,9 @@ module.exports = function(app, config, DIR, express, hbs, path, util) {
 		});
 
 		util.log("Serving static files through node.js at: ");
-		var static = path.join(DIR, config.app.static)
-		console.log(static);
-		app.use(express.static(static));
+		var staticPath = path.join(DIR, config.app.static)
+		console.log(staticPath);
+		app.use(express.static(staticPath));
 		app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 		
 		app.use(app.router);
