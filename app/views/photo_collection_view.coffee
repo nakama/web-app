@@ -1,7 +1,9 @@
-{CollectionView, log, mediator} = require 'common'
+CollectionView   = require 'views/base/collection_view'
+{log}            = require 'lib/logger'
+mediator         = require 'mediator'
 itemView         = require 'views/photo_collection_item_view'
 template         = require 'views/templates/photo_collection'
-Photo                       = require 'models/photo'
+Photo            = require 'models/photo'
 
 module.exports = class PhotoCollectionView extends CollectionView
   template: template
@@ -16,23 +18,16 @@ module.exports = class PhotoCollectionView extends CollectionView
     #'hover .photo-wrapper': 'hoverInWrapper'
     #'mouseout .photo-wrapper': 'hoverOutWrapper'
 
-  initialize: ->
+  initialize: (options) ->
     super
-    log 'initializing the Photo Collection View'
+    log 'Initializing the Photo Collection View'
 
-    #@subscribeEvent 'api:photos:fetched', @onFetched
+    if options.template
+      @template = options.template
+
     @subscribeEvent 'grid:reset', @gridReset
     @subscribeEvent 'grid:toggle', @gridToggle
 
-    ###
-    @modelBind 'change', ->
-      log "PhotoCollection View change",
-          model: if @model then @model else null
-          collection: if @collection then @collection else null
-
-      @render
-      @renderAllItems
-    ###
     @collection.on 'add', ->
       log "PhotoCollectionView item added",
         arguments: arguments
