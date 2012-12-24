@@ -1,5 +1,7 @@
-{Controller, mediator} = require 'common'
-ConnectView            = require 'views/connect'
+Controller       = require 'controllers/base/controller'
+{log}            = require 'lib/logger'
+mediator         = require 'mediator'
+ConnectView      = require 'views/connect'
 
 module.exports = class HomeController extends Controller
 	historyURL: ''
