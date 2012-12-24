@@ -1,6 +1,7 @@
-{log, mediator} = require 'common'
-ModalView       = require 'views/base/modal'
-template        = require 'views/templates/connect'
+{log}            = require 'lib/logger'
+mediator       = require 'mediator'
+ModalView      = require 'views/base/modal'
+template       = require 'views/templates/connect'
 
 module.exports = class ConnectView extends ModalView
   template: template
@@ -23,7 +24,6 @@ module.exports = class ConnectView extends ModalView
     super
 
     #if location.pathname is '/dashboard'
-      #console.log "hit"
       #$('#login-services-custom').hide()
     
   #### Connect Facebok
@@ -37,12 +37,13 @@ module.exports = class ConnectView extends ModalView
     user = @model
     view = @
 
-    user.connectFacebook (exists, res) =>
+    user.connectFacebook (exists, res, token) =>
       log "Connecting to Facebook..."
         res: res
 
       # User exists
       if exists
+        res.object.services.facebook.auth_token = token
         mediator.publish 'auth:success', res.object, view
 
       # Assume new user
