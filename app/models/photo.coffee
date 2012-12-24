@@ -1,4 +1,7 @@
-{api, log, mediator, Model} = require 'common'
+api       = require 'lib/api'
+{log}            = require 'lib/logger'
+mediator  = require 'mediator'
+Model     = require 'models/base/model'
 
 module.exports = class Photo extends Model
 
