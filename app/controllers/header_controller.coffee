@@ -1,5 +1,7 @@
-{Controller, log, mediator} = require 'common'
-HeaderView                  = require 'views/header'
+Controller  = require 'controllers/base/controller'
+{log}       = require 'lib/logger'
+mediator    = require 'mediator'
+HeaderView  = require 'views/header'
 
 module.exports = class HeaderController extends Controller
 
