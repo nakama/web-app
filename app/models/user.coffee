@@ -1,6 +1,9 @@
-{api, log, mediator, Model} = require 'common'
-Facebook                    = require 'models/facebook'
-Instagram                   = require 'models/instagram'
+api         = require 'lib/api'
+{log}            = require 'lib/logger'
+mediator    = require 'mediator'
+Model       = require 'models/base/model'
+Facebook    = require 'models/facebook'
+Instagram   = require 'models/instagram'
 
 module.exports = class User extends Model
 
@@ -16,8 +19,6 @@ module.exports = class User extends Model
 
 	connectFacebook: (callback) ->
 		e?.preventDefault()
-
-		console.log "hit"
 			
 		###
 		FB.getLoginStatus (response) =>
@@ -63,6 +64,11 @@ module.exports = class User extends Model
 
 						log "Facebook user exists",
 							data: data.object
+
+						@loginFacebook data.object, (res) ->
+							log "Login Facebook data response", res
+							auth_token = response.authResponse.accessToken
+							callback(true, res, auth_token)
 
 					# Assume new user
 					else
@@ -193,7 +199,11 @@ module.exports = class User extends Model
 		api.call @, options, callback
 
 	loginFacebook: (data, callback) ->
-		# do nothing
+		options = 
+			data: data
+			url: '/auth/user/login/facebook'
+
+		api.call @, options, callback
 
 	loginInstagram: (data, callback) ->
 
