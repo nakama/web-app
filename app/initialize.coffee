@@ -1,8 +1,9 @@
-{Application, log} = require 'common'
+Application = require 'application'
+{log}       = require 'lib/logger'
 
-# Initialize the application on DOM ready event.
 $ ->
-  log "Starting the application"
+	log "Starting the application..."
 
-  app = new Application()
-  app.initialize()
+	app = new Application
+
+	app.initialize()
