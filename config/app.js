@@ -5,7 +5,7 @@ module.exports = {
 		session_secret: "yomama",
 		static: "/public",
 		redis : {
-			active: false,
+			active: true,
 			port: 6379,
 			host:"ec2-23-23-8-2.compute-1.amazonaws.com"
 		}, 
