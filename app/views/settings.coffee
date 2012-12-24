@@ -1,4 +1,5 @@
-{log, mediator} = require 'common'
+{log}            = require 'lib/logger'
+mediator        = require 'mediator'
 ModalView       = require 'views/base/modal'
 template        = require 'views/templates/connect'
 
