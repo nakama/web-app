@@ -1,7 +1,9 @@
-{Controller, log, mediator} = require 'common'
-User                        = require 'models/user'
-HeaderView                  = require 'views/header'
-HeaderController            = require 'controllers/header_controller'
+Controller       = require 'controllers/base/controller'
+{log}            = require 'lib/logger'
+mediator         = require 'mediator'
+User             = require 'models/user'
+HeaderView       = require 'views/header'
+HeaderController = require 'controllers/header_controller'
 
 module.exports = class AuthController extends Controller
 	
@@ -53,4 +55,5 @@ module.exports = class AuthController extends Controller
 			user: mediator.user
 
 		mediator.publish 'modal:clear', scope
-		@redirectTo 'dashboard'
+		path = mediator.user.get('username') + '/collections'
+		@redirectTo path
