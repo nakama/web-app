@@ -17,7 +17,7 @@ exports.config =
           'vendor/scripts/backbone-0.9.2.js',
           'vendor/scripts/backbone.validation.js',
           'vendor/scripts/chaplin-0.6.0-pre-299623f.js',
-          'vendor/scripts/bootstrap.min.js',
+          'vendor/scripts/bootstrap.js',
           'vendor/scripts/isotope-1.5.9.min.js'
         ]
 
