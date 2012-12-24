@@ -1,3 +1,5 @@
+{log} = require 'lib/logger'
+
 module.exports = (options, callback) ->
 
 	data = if options.data then JSON.stringify(options.data) else null
