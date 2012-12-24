@@ -1,0 +1,13 @@
+api       = require 'lib/api'
+{log}            = require 'lib/logger'
+mediator  = require 'mediator'
+Model     = require 'models/base/model'
+
+module.exports = class PhotoCollection extends Model
+
+	initialize: ->
+		super
+		###
+		log "Initializing the Photo Collection Model",
+			scope: @
+		###
