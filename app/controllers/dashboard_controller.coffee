@@ -1,7 +1,11 @@
-{Controller, log, mediator} = require 'common'
-ConnectView                 = require 'views/connect'
-PhotoCollection             = require 'collections/photos'
-PhotoCollectionView         = require 'views/photo_collection_view'
+Controller            = require 'controllers/base/controller'
+{log}                 = require 'lib/logger'
+mediator              = require 'mediator'
+ConnectView           = require 'views/connect'
+PhotoCollection       = require 'collections/photos'
+PhotosCollections     = require 'collections/photos_collections'
+PhotoCollectionView   = require 'views/photo_collection_view'
+PhotosCollectionsView = require 'views/collections/photos_collections'
 
 module.exports = class DashboardController extends Controller
 	historyURL: 'dashboard'
@@ -15,15 +19,30 @@ module.exports = class DashboardController extends Controller
 		@collection = new PhotoCollection
 		@view = new PhotoCollectionView
 		    collection: @collection
-		#@view.collection.fetch()
+
 		data =
 			skip: "0"
 			limit: "100"
-			user:
-				id: mediator.user.get 'id'
+			user: mediator.user.toJSON()
 
 
-		mediator.publish 'api', 'photos:collections', data		
+		mediator.publish 'api', 'photos:collections', data	
+
+	collections: ->
+		@collection = new PhotosCollections
+		@view = new PhotosCollectionsView
+		    collection: @collection
+		    template: require 'views/templates/collections/item'
+
+		data =
+			skip: "0"
+			limit: "100"
+			user: mediator.user.toJSON()
+
+		console.log "@#$@%@#%", mediator.user.toJSON()
+
+
+		mediator.publish 'api', 'photos:collections', data	
 
 	onCollectionsFetched: (res) ->
 		console.log "res", res
