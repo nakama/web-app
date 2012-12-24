@@ -1,5 +1,7 @@
-View     = require 'views/base/view'
-template = require 'views/templates/photo_collection_item'
+{log}            = require 'lib/logger'
+mediator    = require 'mediator'
+template    = require 'views/templates/photo_collection_item'
+View        = require 'views/base/view'
 
 module.exports = class PhotoCollectionItemView extends View
 	template: template
@@ -7,8 +9,14 @@ module.exports = class PhotoCollectionItemView extends View
 	tagName: 'li'
 	className: 'photo-wrapper '
 
-	initialize: ->
+	initialize: (options) ->
 		super
+
+		if options.templates
+			@template = options.template
+
+		log "model",
+			model: @model
 
 		@subscribeEvent 'grid:toggle', @togglePhotoSize
 
