@@ -1,4 +1,6 @@
-{Controller, log, mediator} = require 'common'
+Controller       = require 'controllers/base/controller'
+{log}            = require 'lib/logger'
+mediator         = require 'mediator'
 
 module.exports = class WebsocketController extends Controller
 
@@ -6,7 +8,6 @@ module.exports = class WebsocketController extends Controller
 		super
 		log 'Initializing the Websocket Controller'
 
-		@subscribeEvent 'socket:msg', @msg
 		@subscribeEvent 'api', @api
 
 		@socket = io.connect window.location.origin
@@ -16,6 +17,9 @@ module.exports = class WebsocketController extends Controller
 			#	data: data
 
 			if data.api
+				log "Web Socket: #{data.api}",
+					data: data.object
+
 				mediator.publish data.api, data.object
 
 	api: (call, data) ->
@@ -23,9 +27,3 @@ module.exports = class WebsocketController extends Controller
 			data: data
 
 		@socket.emit "api:#{call}", data
-
-	msg: (data) ->
-		log 'Sending message to server',
-			data: data
-
-		@socket.emit 'server:msg', data
