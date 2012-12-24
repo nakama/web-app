@@ -10,19 +10,22 @@ var config  = require('./config/app'),
 	hbs     = require('hbs'),
 	path    = require('path'),
 	_       = require('underscore'),
-	util    = require('util'),
-	redis   = require("redis")
+	util    = require('util')
 
-// - Redis pubsub
-subscribe  = redis.createClient(config.app.redis.port, config.app.redis.host);
-publish    = redis.createClient(config.app.redis.port, config.app.redis.host);
-var clients = {};
-//var subsribe = {};
-//var publish = {};
+if(config.app.redis.active) {
+	var redis   = require("redis")
 
-var createClient = function(channel) {
-	clients[channel] = redis.createClient(config.app.redis.port, config.app.redis.host);
-};
+	// - Redis pubsub
+	subscribe  = redis.createClient(config.app.redis.port, config.app.redis.host);
+	publish    = redis.createClient(config.app.redis.port, config.app.redis.host);
+	var clients = {};
+	//var subsribe = {};
+	//var publish = {};
+
+	var createClient = function(channel) {
+		clients[channel] = redis.createClient(config.app.redis.port, config.app.redis.host);
+	};
+}
 
 // - Server Settings
 require('./config/express')(app, config, __dirname, express, hbs, path, util);
@@ -35,86 +38,89 @@ require('./config/startup')(_, app, config, process, server, util);
 
 io.sockets.on('connection', function (socket) {
 
-	//Fetch photos
-    socket.on('api:photos:fetch', function(res) {
+	if(config.app.redis.active) {
 
-    	var data = {
-			action: "fetch",
-			callback: "photoFetchReturn",
-			request: res
-		}
+		//Fetch photos
+	    socket.on('api:photos:fetch', function(res) {
 
-    	data = JSON.stringify(data)
+	    	var data = {
+				action: "fetch",
+				callback: "photoFetchReturn",
+				request: res
+			}
 
-    	console.log('api:photos:fetch')
-    	console.log(data)
-    	console.log('')
+	    	data = JSON.stringify(data)
 
-    	publish.publish('photo', data);
-    	subscribe.subscribe("photoFetchReturn");
+	    	console.log('api:photos:fetch')
+	    	console.log(data)
+	    	console.log('')
 
-		subscribe.on("message", function (channel, message) {
-	  		console.log("redis client received msg " + channel + ": " + message);
-	        
-	        message = JSON.parse(message)
-	        message.api = 'api:collections:fetched'
-	        socket.emit('msg', message)
+	    	publish.publish('photo', data);
+	    	subscribe.subscribe("photoFetchReturn");
+
+			subscribe.on("message", function (channel, message) {
+		  		console.log("redis client received msg " + channel + ": " + message);
+		        
+		        message = JSON.parse(message)
+		        message.api = 'api:collections:fetched'
+		        socket.emit('msg', message)
+			});
+	    });
+
+		//List collections
+		socket.on('api:photos:collections', function(res) {
+			var listData = {
+				action: "fetch",
+				callback: "photoReturnCollections",
+				request: res
+			}
+
+			listData = JSON.stringify(listData)
+
+			console.log('api:photos:collections')
+	    	console.log(listData)
+	    	console.log('')
+
+	    	publish.publish('photo', listData);
+	    	subscribe.subscribe("photoReturnCollections");
+
+			subscribe.on("message", function (channel, message) {
+		  		console.log("redis client received msg ")
+		  		console.log(message);
+		        //socket.emit('msg', message)
+		        message = JSON.parse(message)
+		        message.api = 'api:photos:collections:fetched'
+		        socket.emit('msg', message)
+			});
 		});
-    });
 
-	//List collections
-	socket.on('api:photos:collections', function(res) {
-		var listData = {
-			action: "list",
-			callback: "photoReturnCollections",
-			request: res
-		}
+		//List photos of a collection
+		socket.on('api:photos:list', function(res) {
+			var listData = {
+				action: "list",
+				callback: "photoReturnList",
+				request: res
+			}
 
-		listData = JSON.stringify(listData)
+			listData = JSON.stringify(listData)
 
-		console.log('api:photos:collections')
-    	console.log(listData)
-    	console.log('')
+			console.log('api:photos:list')
+	    	console.log(listData)
+	    	console.log('')
 
-    	publish.publish('photo', listData);
-    	subscribe.subscribe("photoReturnCollections");
+	    	publish.publish('photo', listData);
+	    	subscribe.subscribe("photoReturnList");
 
-		subscribe.on("message", function (channel, message) {
-	  		console.log("redis client received msg ")
-	  		console.log(message);
-	        //socket.emit('msg', message)
-	        message = JSON.parse(message)
-	        message.api = 'api:photos:collections:fetched'
-	        socket.emit('msg', message)
+			subscribe.on("message", function (channel, message) {
+		  		console.log("redis client received msg ")
+		  		console.log(message);
+		        //socket.emit('msg', message)
+		        message = JSON.parse(message)
+		        message.api = 'api:photos:fetched'
+		        socket.emit('msg', message)
+			});
 		});
-	});
-
-	//List photos of a collection
-	socket.on('api:photos:list', function(res) {
-		var listData = {
-			action: "list",
-			callback: "photoReturnList",
-			request: res
-		}
-
-		listData = JSON.stringify(listData)
-
-		console.log('api:photos:list')
-    	console.log(listData)
-    	console.log('')
-
-    	publish.publish('photo', listData);
-    	subscribe.subscribe("photoReturnList");
-
-		subscribe.on("message", function (channel, message) {
-	  		console.log("redis client received msg ")
-	  		console.log(message);
-	        //socket.emit('msg', message)
-	        message = JSON.parse(message)
-	        message.api = 'api:photos:fetched'
-	        socket.emit('msg', message)
-		});
-	});
+	}
 });
 
 /*
