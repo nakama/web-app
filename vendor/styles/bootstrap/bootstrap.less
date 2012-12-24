@@ -1,0 +1,511 @@
+/*!
+ * Bootstrap v2.2.1
+ *
+ * Copyright 2012 Twitter, Inc
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Designed and built with all the love in the world @twitter by @mdo and @fat.
+ */
+
+// CSS Reset
+@import "_reset.less";
+
+// Core variables and mixins
+@import "_variables.less"; // Modify this for custom colors, font-sizes, etc
+@import "_mixins.less";
+
+// Grid system and page structure
+@import "_scaffolding.less";
+@import "_grid.less";
+@import "_layouts.less";
+
+// Base CSS
+@import "_type.less";
+@import "_code.less";
+@import "_forms.less";
+@import "_tables.less";
+
+// Components: common
+@import "_sprites.less";
+@import "_dropdowns.less";
+@import "_wells.less";
+@import "_component-animations.less";
+@import "_close.less";
+
+// Components: Buttons & Alerts
+@import "_buttons.less";
+@import "_button-groups.less";
+@import "_alerts.less"; // Note: alerts share common CSS with buttons and thus have styles in buttons.less
+
+// Components: Nav
+@import "_navs.less";
+@import "_navbar.less";
+@import "_breadcrumbs.less";
+@import "_pagination.less";
+@import "_pager.less";
+
+// Components: Popovers
+@import "_modals.less";
+@import "_tooltip.less";
+@import "_popovers.less";
+
+// Components: Misc
+@import "_thumbnails.less";
+@import "_media.less";
+@import "_labels-badges.less";
+@import "_progress-bars.less";
+@import "_accordion.less";
+@import "_carousel.less";
+@import "_hero-unit.less";
+
+// Utility classes
+@import "_utilities.less"; // Has to be last to override when necessary
+
+// Fonts
+@import "_fonts.less";
+
+// Global
+body {
+    padding-top: 100px;
+    background: @grayLightest;
+}
+
+menu {
+    padding: 0;
+}
+
+hr {
+    border: none;
+    border-bottom: 2px solid @grayLighter;
+}
+.container {
+    .box-sizing(border-box);
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+    padding-right: 30px;
+    padding-left: 30px;
+}
+.container-small {
+    .box-sizing(border-box);
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+
+// Global nav
+.navigation {
+    @navbarShadow: 0 0px 8px rgba(0,0,0,.2);
+    .box-shadow(@navbarShadow);
+    .navbar-inner {
+        padding-top: 8px;
+        padding-bottom: 8px;
+        background-image: none;
+        background-color: rgba(255,255,255,.9);
+        .box-shadow(none);
+    }
+    .primary {
+        border-bottom: 1px solid @white;
+        .form-search {
+            display: block;
+            float: left;
+            margin: 5px auto;
+            margin-left: 50%;
+            .input-append {
+                margin-left: -305px;
+                .btn {
+                    padding-left: 10px;
+                    padding-top: 0px;
+                    padding-bottom: 3px;
+                    .icon {
+                        color: @gray;
+                        display: block;
+                        padding-top: 5px;
+                    }
+                }
+            }
+        }
+    }
+    .secondary {
+        position: relative;
+        padding: 5px;
+        min-height: none;
+        border-top: 1px solid @grayLighter;
+        border-bottom: 1px solid @white;
+        form {
+            margin: 3px 0 0;
+            
+            select {
+                margin: 0 10px 0 0;
+            }
+            .btn {
+                margin-top: 2px;
+            }
+        }
+
+        // System Messaging
+        &.success {
+            background: rgba(85,209,56,1);
+            border-top: 1px solid darken(@green, 10%);
+            border-bottom: 1px solid darken(@green, 10%);
+            h1 {
+                color: @white;
+            }
+        }
+        h1 {
+            font-size: 18px;
+            color: @gray;
+            font-weight: normal;
+            text-align: center;
+            line-height: 1em;
+            margin: 10px 0 0;
+        }
+        h3 {
+            font-size: 16px;
+            font-weight: normal;
+        }
+        .close-message {
+            position: absolute;
+            top: 17px;
+            right: 42px;
+            color: @white;
+        }
+    }
+}
+
+.layout.nav {
+    font-size: 20px;
+    .btn-group {
+        margin: 0 9px 0;
+    }
+    .btn {
+        margin-top: 5px;
+    }
+    .btn-icon {
+        .clearfix();
+        i {
+            font-size: @iconMedium;
+        }
+    }
+}
+
+.filtering.form-search {
+    float: left;
+    margin: 5px 0;
+}
+
+// Reusable Elements
+
+.tags {
+    @tagBackgroundColor: @white;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    li, a {
+        float: left;
+        height: 19px;
+        line-height: 19px;
+        position: relative;
+        font-size: 10px;
+    }
+    li {
+        margin-bottom: 3px;
+    }
+    a {
+        margin-left: 15px;
+        margin-bottom: 20px;
+        padding: 0 4px 0 8px;
+        background: @tagBackgroundColor;
+        color: @grayDarker;
+        text-decoration: none;
+        .border-radius(2px);
+        &:before {
+            content: "";
+            float: left;
+            position: absolute;
+            top: 0;
+            left: -7px;
+            width: 0;
+            height: 0;
+            border-color: transparent @tagBackgroundColor transparent transparent;
+            border-style: solid;
+            border-width: 10px 8px 10px 0;
+        }
+        &:after {
+            content: "";
+            position: absolute;
+            top: 8px;
+            left: 0;
+            float: left;
+            width: 4px;
+            height: 4px;
+            .border-radius(2px);
+            background: #333;
+        }
+        &:hover {
+            background: @blue;
+            color: @white;
+        }
+        &:hover:before {
+            border-color: transparent @blue transparent transparent;
+        }
+    }
+}
+
+
+// Main content & photostream
+.content {
+    .container {
+        max-width: 960px;
+    }
+    .photos {
+        margin: 25px 0 0;
+        list-style: none;
+        > li {
+            position: relative;
+            overflow: hidden;
+            .box-sizing(border-box);
+            width: 25%;
+            padding: 0 2px;
+            float: left;
+            margin-bottom: 2px;
+            background: ;
+            border: 4px solid transparent;
+            @photoHoverShadow: 0 0 0 5px @white, 0 0 0 6px @grayLighter;
+            .box-shadow(none);
+            .border-radius(3px);
+            .transition(.2s all);
+            img {
+                width: 100%;
+                .border-radius(2px);
+                @photoShadow: 0px 2px 2px rgba(0,0,0,.3);
+                //.box-shadow(@photoShadow);
+            }
+            &.photo-group {
+                width: 100%;
+                margin-bottom: 4px;
+                line-height: 1em;
+                background: none;
+                border: none;
+                .border-radius(0);
+                .box-shadow(none);
+                &:hover {
+                    cursor: pointer;
+                    border-color: @grayLight;
+                    .box-shadow(none);
+                    border: none;
+                    .toggle-hide {
+                        color: @gray;
+                    }
+                }
+                h1 {
+                    float: left;
+                    font-size: 16px;
+                    line-height: 1em;
+                    color: @gray;
+                    font-weight: normal;
+                    span {
+                        font-weight: bold;
+                    }
+                }
+                .toggle-hide {
+                    float: right;
+                    font-size: @iconSmall;
+                    margin-top: 13px;
+                    line-height: 1em;
+                    color: @grayLighter;
+                    .transition(.2s all);
+                    &:hover {
+                        color: @grayLight;
+                    }
+                }
+            }
+            &:hover {
+                @photoHoverShadow: 0 0 0 4px @blue;
+                //.box-shadow(@photoHoverShadow);
+                border: 4px solid @blue;
+                .photo-actions {
+                    bottom: 0;
+                }
+            }
+            .photo-actions {
+                float: right;
+                .box-sizing(border-box);
+                position: absolute;
+                bottom: -50px;
+                left: 0px;
+                width: 100%;
+                height: 40px;
+                margin: 0;
+                padding: 12px 10px 10px;
+                background: rgba(0,0,0,.8);
+                text-align: left;
+                color: @white;
+                .transition(.2s all);
+                ul {
+                    list-style: none;
+                    margin: 0;
+                    li {
+                        display: block;
+                        float: left;
+                        padding-left: 10px;
+                        a {
+                            font-size: @iconMedium;
+                            color: @white;
+                            .transition(.2s all);
+                            &:hover {
+                                text-decoration: none;
+                                line-height: .8em;
+                            }
+                        }
+                        &.share:hover {
+                            a {
+                                color: @blue;
+                            }
+                        }
+                        &.tag:hover {
+                            a {
+                                color: @yellow;
+                            }
+                        }
+                        &.favorite:hover {
+                            a {
+                                color: @red;
+                            }
+                        }
+                        &.expand {
+                            float: right;
+                            &:hover {
+                                a {
+                                    color: @grayLight;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Social Signup
+.signup {
+    .modal-header {
+        text-align: center;
+        border: none;
+        padding: 25px 25px 0;
+    }
+    .modal-body {
+        padding: 0 25px 25px;
+    }
+    .signup-social {
+        margin: 20px 0;
+        .clearfix();
+        a {
+            .box-sizing(border-box);
+            float: left;
+            width: 150px;
+            height: 150px;
+            margin: 10px;
+            font-size: 72px;
+            text-align: center;
+            text-decoration: none;
+            .clearfix();
+            padding: .5em;
+            .border-radius(3em);
+            .transition(all .15s);
+            i {
+                width: 75px;
+                height: 75px;
+                line-height: 1.35em;
+                color: @white;
+            }
+            &.facebook {
+                background: @facebookBlue;
+            }
+            &.instagram {
+                background: @instagramBrown;
+            }
+            &.googleplus {
+                background: @googleBlue;
+            }
+            &.dropbox {
+                background: @dropboxBlue;
+            }
+            &.flickr {
+                background: @flickrPink;
+            }
+            &.foursquare {
+                background: @foursquareGreen;
+            }
+            &:hover {
+                background: @grayLight;
+            }
+        }
+    }
+    .connect-social {
+        margin: 20px 0 0;
+        .clearfix();
+        a {
+            .box-sizing(border-box);
+            float: left;
+            width: 150px;
+            height: 150px;
+            margin: 10px;
+            padding: .5em;
+            background: @grayLight;
+            font-size: 72px;
+            text-align: center;
+            text-decoration: none;
+            .border-radius(5px);
+            .transition(all .15s);
+            .clearfix();
+            i {
+                width: 75px;
+                height: 75px;
+                line-height: 1.35em;
+                color: @white;
+            }
+            &.facebook {
+                &:hover,&.active {
+                    background: @facebookBlue;
+                }
+            }
+            &.instagram {
+                &:hover,&.active {
+                    background: @instagramBrown;
+                }
+            }
+            &.googleplus {
+                &:hover,&.active {
+                    background: @googleBlue;
+                }
+            }
+            &.dropbox {
+                &:hover,&.active {
+                    background: @dropboxBlue;
+                }
+            }
+            &.flickr {
+                &:hover,&.active {
+                    background: @flickrPink;
+                }
+            }
+            &.foursquare {
+                &:hover,&.active {
+                    background: @foursquareGreen;
+                }
+            }
+            &.active {
+                position: relative;
+            }
+        }
+    }
+    .email {
+        text-align: center;
+    }
+}
