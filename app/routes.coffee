@@ -3,4 +3,5 @@ module.exports = (match) ->
 	#match 'join',      'home#join'
 	#match 'login',     'home#login'
 
-	match 'dashboard', 'dashboard#index'
+	match ':username/collections', 'dashboard#collections'
+	match 'dashboard',             'dashboard#index'
