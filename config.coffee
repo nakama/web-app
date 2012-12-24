@@ -12,11 +12,11 @@ exports.config =
         # even if they aren't specified in order.before.
         before: [
           'vendor/scripts/console-helper.js',
-          'vendor/scripts/jquery-1.8.3.js',
           'vendor/scripts/jquery-ui-1.9.2.custom.js',
           'vendor/scripts/underscore-1.4.0.js',
           'vendor/scripts/backbone-0.9.2.js',
           'vendor/scripts/backbone.validation.js',
+          'vendor/scripts/chaplin-0.6.0-pre-299623f.js',
           'vendor/scripts/bootstrap.min.js',
           'vendor/scripts/isotope-1.5.9.min.js'
         ]
