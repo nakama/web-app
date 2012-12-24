@@ -1,9 +1,11 @@
-{log, mediator, View} = require 'common'
-template              = require 'views/templates/search'
+{log}            = require 'lib/logger'
+mediator         = require 'mediator'
+template         = require 'views/templates/search'
+View             = require 'views/base/view'
 
 module.exports = class SearchView extends View
 	autoRender: true
-	container: '#global-search-wrapper'
+	container: 'header .search-container'
 	template: template
 
 	initialize: ->
@@ -24,6 +26,7 @@ module.exports = class SearchView extends View
 					"<div style=\"background-image:url(" + suggestion.path + ")\">" + suggestion.author + "<p>Lorem ipsum dolor sit amet, consectetur adipisicing " + "elit...</p></div>"
 
 		).bind "getSuggestions", (e, data) ->
+
 			$.ajax
 				dataType : 'json'
 				url: '/photos.json'
