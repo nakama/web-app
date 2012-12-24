@@ -1,5 +1,7 @@
-{Controller, log, mediator} = require 'common'
-User                        = require 'models/user'
+Controller       = require 'controllers/base/controller'
+{log}            = require 'lib/logger'
+mediator         = require 'mediator'
+User             = require 'models/user'
 
 module.exports = class ModalController extends Controller
 	
