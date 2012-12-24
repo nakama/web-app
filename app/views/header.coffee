@@ -15,8 +15,9 @@ module.exports = class HeaderView extends View
 
 	events:
 		#'click a[href="#settings"]' : 'settings'
-		'click a[href="#logout"]'   : 'onLogout'
-		'click #grid-layouts a'     : 'toggleGrid'
+		'click a[href="#logout"]'         : 'onLogout'
+		'click #grid-layouts a'           : 'toggleGrid'
+		'click a[href="#settings"] i'       : 'onSettings'
 
 	initialize: ->
 		super
@@ -38,10 +39,36 @@ module.exports = class HeaderView extends View
 
 			mediator.publish 'grid:toggle', val
 
+		content = [
+			'<menu>',
+			'<li><a href="#logout">Logout</a></li>',
+			'</menu>'
+		].join '\n'
+
+		@$settings = $('a[href="#settings"]').popover
+			html: 'true'
+			placement: 'bottom'
+			title: 'Settings'
+			#trigger: 'hover'
+			content: content
+
+		@$settingsVisible = false
+
 	onLogout: (e) ->
 		e.preventDefault()
 
 		mediator.publish 'auth:logout'
+
+	onSettings: (e) ->
+		e.preventDefault()
+		e.stopPropagation()
+
+		if @$settingsVisible
+			@$settings.popover 'hide'
+			@$settingsVisible = true
+		else
+			@$settings.popover 'show'
+			@$settingsVisible = false
 
 	toggleGrid: (e) ->
 		e.preventDefault()
