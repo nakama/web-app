@@ -67,29 +67,29 @@ io.sockets.on('connection', function (socket) {
 			});
 	    });
 
-		//List collections
-		socket.on('api:photos:collections', function(res) {
+		//Fetch collections
+		socket.on('api:collections:fetch', function(res) {
 			var listData = {
-				action: "fetch",
-				callback: "photoReturnCollections",
+				action: "list",
+				callback: "CollectionsFetched",
 				request: res
 			}
 
 			listData = JSON.stringify(listData)
 
-			console.log('api:photos:collections')
+			console.log('api:collections:fetch')
 	    	console.log(listData)
 	    	console.log('')
 
-	    	publish.publish('photo', listData);
-	    	subscribe.subscribe("photoReturnCollections");
+	    	publish.publish('collection', listData);
+	    	subscribe.subscribe("CollectionsFetched");
 
 			subscribe.on("message", function (channel, message) {
 		  		console.log("redis client received msg ")
 		  		console.log(message);
 		        //socket.emit('msg', message)
 		        message = JSON.parse(message)
-		        message.api = 'api:photos:collections:fetched'
+		        message.api = 'api:collections:fetched'
 		        socket.emit('msg', message)
 			});
 		});

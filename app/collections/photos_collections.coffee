@@ -10,7 +10,7 @@ module.exports = class PhotosCollections extends Collection
 		super
 		log "Initializing the Photos Collections Collection"
 
-		@subscribeEvent 'api:photos:collections:fetched', @onFetched
+		@subscribeEvent 'api:collections:fetched', @onFetched
 	
 	onFetched: (photosCollections) ->
 

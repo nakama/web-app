@@ -13,7 +13,7 @@ module.exports = class DashboardController extends Controller
 	initialize: ->
 		super
 
-		@subscribeEvent 'api:photos:collections:fetched', @onCollectionsFetched
+		@subscribeEvent 'api:collections:fetched', @onCollectionsFetched
 
 	index: ->
 		@collection = new PhotoCollection
@@ -39,10 +39,7 @@ module.exports = class DashboardController extends Controller
 			limit: "100"
 			user: mediator.user.toJSON()
 
-		console.log "@#$@%@#%", mediator.user.toJSON()
-
-
-		mediator.publish 'api', 'photos:collections', data	
+		mediator.publish 'api', 'collections:fetch', data	
 
 	onCollectionsFetched: (res) ->
 		console.log "res", res
