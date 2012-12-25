@@ -14,6 +14,8 @@ module.exports = class Application extends Chaplin.Application
 	initialize: ->
 		super
 
+		logger.set yes
+
 		# Initialize core components
 		$.ajaxSetup
 			cache        : false
