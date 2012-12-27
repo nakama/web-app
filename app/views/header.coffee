@@ -28,14 +28,6 @@ module.exports = class HeaderView extends View
 	afterRender: ->
 		super
 
-		new SearchView
-			model: @model
-
-		###
-		new SecondaryView
-			model: @model
-		###
-
 		$('#grid-slider').change (e) ->
 			val = $(this).val()
 
