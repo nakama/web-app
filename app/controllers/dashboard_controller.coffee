@@ -20,13 +20,15 @@ module.exports = class DashboardController extends Controller
 		@view = new PhotoCollectionView
 		    collection: @collection
 
+		###
 		data =
 			skip: "0"
 			limit: "100"
 			user: mediator.user.toJSON()
 
 
-		mediator.publish 'api', 'photos:collections', data	
+		mediator.publish 'api', 'photos:collections', data
+		###
 
 	collections: ->
 		@collection = new PhotosCollections
@@ -55,6 +57,7 @@ module.exports = class DashboardController extends Controller
 			mediator.publish 'api', 'photos:list', data
 
 
+			###
 			data =
 				collection:
 					_id: res[0]._id
@@ -64,3 +67,4 @@ module.exports = class DashboardController extends Controller
 					id: mediator.user.get 'id'
 
 			mediator.publish 'api', 'photos:list', data
+			###
