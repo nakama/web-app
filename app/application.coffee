@@ -29,11 +29,11 @@ module.exports = class Application extends Chaplin.Application
 		@initTemplateHelpers()
 		@initDispatcher()
 
+		new WebsocketController
+
 		new LayoutController
 		@initLayout()
-
-		# Application-specific scaffold
-		new WebsocketController
+		
 		new AuthController
 		new ModalController
 
