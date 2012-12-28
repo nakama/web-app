@@ -17,7 +17,7 @@ module.exports = class WebsocketController extends Controller
 			#	data: data
 
 			if data.api
-				log "Web Socket: #{data.api}",
+				log "Received Web Socket Message: #{data.api}",
 					data: data.object
 
 				mediator.publish data.api, data.object
