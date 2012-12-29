@@ -44,18 +44,19 @@ module.exports = class DashboardController extends Controller
 		mediator.publish 'api', 'collections:fetch', data	
 
 	onCollectionsFetched: (res) ->
-		console.log "res", res
 
 		if res
+			###
 			data =
-				parentId: res[0]._id
+				collections:
+					id: res[0]._id
 				skip: "0"
 				limit: "10"
 				user:
 					id: mediator.user.get 'id'
 
 			mediator.publish 'api', 'photos:list', data
-
+			###
 
 			###
 			data =
